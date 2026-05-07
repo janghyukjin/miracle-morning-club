@@ -8,8 +8,9 @@
 
 | 페이지 | 설명 |
 |---|---|
-| `index.html` | 메인 로드맵 (가이드라인, 문제집, Phase, 함께하기) |
-| `checklist.html` | 개인 진도 체크리스트 (localStorage 저장) |
+| `index.html` | 가이드 (운영 원칙, 문제집, Phase, 내일 시작 문제) |
+| `board.html` | 🌱 출석보드 (멤버별 잔디 + 최근 활동 + 커밋 가이드) |
+| `checklist.html` | 📋 개인 체크리스트 (localStorage 저장 + 페이스 알림) |
 | `solutions/` | 풀이 공유 폴더 (각자 본인 폴더에 push) |
 
 ## 🎯 핵심 기능

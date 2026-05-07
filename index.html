@@ -489,7 +489,7 @@ footer .download {
       <a href="#problems">문제집</a>
       <a href="#phases">로드맵</a>
       <a href="#tomorrow">내일 시작</a>
-      <a href="#together">함께하기</a>
+      <a href="board.html" style="color: var(--accent); font-weight: 700;">🌱 출석보드</a>
       <a href="checklist.html" style="color: var(--accent); font-weight: 700;">📋 체크리스트</a>
     </nav>
   </div>
@@ -732,62 +732,23 @@ footer .download {
   </div>
 </section>
 
-<!-- ============ TOGETHER ============ -->
-<section class="alt" id="together">
+<!-- ============ LINKS TO OTHER PAGES ============ -->
+<section class="alt">
   <div class="section-inner">
-    <h2 class="section-title">함께하기</h2>
-    <p class="section-sub">출석보드 + 풀이공유 — GitHub 잔디로 한눈에</p>
+    <h2 class="section-title">스터디 도구</h2>
+    <p class="section-sub">두 페이지로 진도 관리</p>
 
-    <div id="activity-loading" style="text-align:center; padding: 30px; color: var(--text-mute); font-size: 13px;">
-      📡 GitHub에서 활동 불러오는 중...
-    </div>
-
-    <div id="activity-content" style="display:none;">
-      <div class="dashboard" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 18px;">
-        <div class="stat">
-          <span class="stat-num" id="member-count">-</span>
-          <div class="stat-label">활동 멤버</div>
-        </div>
-        <div class="stat">
-          <span class="stat-num" id="commit-count">-</span>
-          <div class="stat-label">총 커밋 (지난 30일)</div>
-        </div>
-      </div>
-
-      <h3 style="color: var(--primary); font-size: 16px; margin: 18px 0 8px;">🌱 멤버별 26주 잔디</h3>
-      <p style="font-size: 12px; color: var(--text-mute); margin-bottom: 10px;">repo에 commit한 날 = 잔디 칠해짐 · 진할수록 많이 push</p>
-      <div id="member-heatmaps" class="card" style="overflow-x: auto;"></div>
-
-      <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">🔥 최근 활동</h3>
-      <div id="recent-commits" class="card" style="max-height: 380px; overflow-y: auto;"></div>
-    </div>
-
-    <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">📚 풀이 폴더 구조</h3>
-    <div class="card">
-      <pre style="background: var(--bg-alt); padding: 10px 14px; border-radius: 6px; font-family: 'SF Mono', Menlo, monospace; font-size: 12.5px; overflow-x: auto;">solutions/
-  ├── username1/
-  │   ├── week-01/
-  │   │   ├── lc-49-group-anagrams.md  (또는 .py / .go)
-  │   │   └── lc-347-top-k-frequent.md
-  │   └── week-02/
-  │       └── ...
-  ├── username2/
-  └── ...</pre>
-      <p style="margin-top: 10px; font-size: 13px; color: var(--text-soft);">
-        각자 본인 username 폴더에 풀이 push → GitHub 잔디 + commit 히스토리에 자동 누적<br>
-        파일명만 통일하면 자동으로 누가 어떤 문제 풀었는지 카운트됨
-      </p>
-    </div>
-
-    <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">🚀 시작하기</h3>
-    <div class="card">
-      <ol style="padding-left: 20px; color: var(--text-soft); font-size: 13.5px; line-height: 1.8;">
-        <li>관리자에게 <strong>collaborator 초대 요청</strong> (또는 fork 후 PR)</li>
-        <li>repo clone: <code style="background: var(--bg-alt); padding: 2px 5px; border-radius: 3px; font-size: 12px;">git clone https://github.com/janghyukjin/miracle-morning-club.git</code></li>
-        <li><code style="background: var(--bg-alt); padding: 2px 5px; border-radius: 3px; font-size: 12px;">solutions/[본인username]/</code> 폴더 생성</li>
-        <li>매일 푼 문제 commit + push → 자동 출석</li>
-        <li>이 페이지 새로고침하면 본인 활동이 위 보드에 반영됨</li>
-      </ol>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px;">
+      <a href="board.html" style="display:block;background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:24px;margin-bottom:6px;">🌱</div>
+        <div style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:4px;">출석보드</div>
+        <div style="font-size:13px;color:var(--text-soft);">멤버별 26주 잔디 · 최근 활동 · 커밋 가이드</div>
+      </a>
+      <a href="checklist.html" style="display:block;background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:24px;margin-bottom:6px;">📋</div>
+        <div style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:4px;">개인 체크리스트</div>
+        <div style="font-size:13px;color:var(--text-soft);">개인 진도 트래킹 · 페이스 알림 · 26주 캘린더</div>
+      </a>
     </div>
   </div>
 </section>
@@ -809,13 +770,7 @@ window.addEventListener('scroll', () => {
   if (window.scrollY > 500) fab.classList.add('show');
   else fab.classList.remove('show');
 });
-
-// ============ GITHUB ACTIVITY (출석보드) ============
-const REPO = 'janghyukjin/miracle-morning-club';
-const START_DATE = new Date(2026, 4, 8); // 5/8
-
-function dateKey(d) { return d.toISOString().slice(0, 10); }
-
+/* GitHub activity 스크립트는 board.html로 이동
 async function loadActivity() {
   try {
     // 26주 전부 가져오기 (시작일 기준)
@@ -968,7 +923,8 @@ function renderRecentCommits(commitList) {
   }).join('');
 }
 
-loadActivity();
+// loadActivity();
+*/
 </script>
 
 </body>

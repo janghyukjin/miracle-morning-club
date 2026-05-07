@@ -77,6 +77,64 @@ header.nav {
 }
 .hero p { color: var(--text-soft); font-size: 14px; }
 
+/* ============ PACE ALERT ============ */
+.pace-alert {
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 18px;
+  border: 2px solid;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.pace-alert.good {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: #065f46;
+}
+.pace-alert.warn {
+  background: var(--warm-light);
+  border-color: var(--warm);
+  color: #92400e;
+}
+.pace-alert.danger {
+  background: #fef2f2;
+  border-color: var(--red);
+  color: #991b1b;
+}
+.pace-alert.info {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: #1e40af;
+}
+.pace-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.pace-body { flex: 1; min-width: 0; }
+.pace-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.pace-msg {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+.pace-bar {
+  background: rgba(255,255,255,0.6);
+  height: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.pace-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+
 /* ============ DASHBOARD ============ */
 .container {
   max-width: 920px;
@@ -414,7 +472,11 @@ h2.section-h {
 <header class="nav">
   <div class="nav-inner">
     <a href="index.html" class="logo">🌅 미라클 모닝 클럽</a>
-    <a href="index.html" class="nav-back">← 홈으로</a>
+    <nav style="display:flex; gap:14px; align-items:center;">
+      <a href="index.html" style="color:var(--text-soft); text-decoration:none; font-size:13px; font-weight:500;">가이드</a>
+      <a href="board.html" style="color:var(--text-soft); text-decoration:none; font-size:13px; font-weight:500;">🌱 출석보드</a>
+      <a href="checklist.html" style="color:var(--accent); text-decoration:none; font-size:13px; font-weight:700;">📋 체크리스트</a>
+    </nav>
   </div>
 </header>
 
@@ -426,6 +488,9 @@ h2.section-h {
 
 <!-- ============ MAIN ============ -->
 <div class="container">
+
+  <!-- Pace Alert -->
+  <div id="pace-alert" class="pace-alert"></div>
 
   <!-- Dashboard -->
   <div class="dashboard">
@@ -774,12 +839,105 @@ function showToast(msg) {
 
 // ============ RENDER ============
 function render() {
+  renderPaceAlert();
   renderDashboard();
   renderProgress();
   renderHeatmap();
   renderToday();
   renderWeekPicker();
   renderWeekDetail(currentSelectedWeek);
+}
+
+// ============ PACE ALERT ============
+function renderPaceAlert() {
+  const cw = getCurrentWeek();
+  const today = new Date();
+  const daysSinceStart = Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24));
+
+  const alertEl = document.getElementById('pace-alert');
+
+  // 시작 전
+  if (daysSinceStart < 0) {
+    const daysUntilStart = Math.abs(daysSinceStart);
+    alertEl.className = 'pace-alert info';
+    alertEl.innerHTML = `
+      <div class="pace-icon">⏳</div>
+      <div class="pace-body">
+        <div class="pace-title">시작까지 ${daysUntilStart}일 남았어요</div>
+        <div class="pace-msg">2026-05-08 (목) 시작 · 미리 NeetCode 가입 + Pramp 계정 만들어두세요</div>
+      </div>
+    `;
+    return;
+  }
+
+  // 26주 종료 후
+  if (cw > 26) {
+    alertEl.className = 'pace-alert good';
+    alertEl.innerHTML = `
+      <div class="pace-icon">🎉</div>
+      <div class="pace-body">
+        <div class="pace-title">26주 완주! 잘하셨어요</div>
+        <div class="pace-msg">이제 인터뷰 진행 + 오퍼 협상 단계입니다</div>
+      </div>
+    `;
+    return;
+  }
+
+  // 진행 중 — 페이스 계산
+  const totalTasksOverall = getTotalTasks();
+  const doneTasksOverall = getDoneTasks();
+
+  // 이번주 진행률
+  const weekKeys = getAllTaskKeys(cw);
+  const weekDone = weekKeys.filter(k => isTaskDone(k)).length;
+  const weekTotal = weekKeys.length;
+  const weekPct = weekTotal ? Math.round(weekDone / weekTotal * 100) : 0;
+
+  // 이상 누적 진행률 (지나간 주 + 이번주 일부)
+  const dayOfWeek = ((daysSinceStart % 7) + 7) % 7; // 0=Mon... 6=Sun (Mon 시작 가정)
+  const completedWeeks = Math.max(0, cw - 1);
+  let idealCumulative = 0;
+  for (let i = 0; i < completedWeeks; i++) {
+    idealCumulative += getAllTaskKeys(i + 1).length;
+  }
+  // 이번주 비례
+  const weekProgress = (dayOfWeek + 1) / 7;
+  idealCumulative += weekTotal * weekProgress;
+
+  const paceRatio = idealCumulative > 0 ? doneTasksOverall / idealCumulative : 1;
+
+  let cls, icon, title, msg;
+  if (paceRatio >= 0.95) {
+    cls = 'good';
+    icon = '🟢';
+    title = `좋은 페이스 · Week ${cw} 진행 중`;
+    msg = `이번주 ${weekDone}/${weekTotal} (${weekPct}%) 완료 · 누적 ${doneTasksOverall}/${Math.round(idealCumulative)} 이상치 도달`;
+  } else if (paceRatio >= 0.7) {
+    cls = 'warn';
+    icon = '🟡';
+    title = `약간 늦은 페이스 · Week ${cw} 진행 중`;
+    msg = `이번주 ${weekDone}/${weekTotal} (${weekPct}%) · 누적 ${doneTasksOverall}/${Math.round(idealCumulative)} (${Math.round(paceRatio*100)}%) · 이번주 1-2문제만 더 따라잡으면 OK`;
+  } else if (paceRatio >= 0.4) {
+    cls = 'danger';
+    icon = '🔴';
+    title = `페이스 늦음 · Week ${cw}`;
+    msg = `누적 ${doneTasksOverall}/${Math.round(idealCumulative)} (${Math.round(paceRatio*100)}%) · 부담되면 강도 옵션 낮추기 고려 (가벼움 8h/주). 완주가 합격보다 우선.`;
+  } else {
+    cls = 'info';
+    icon = '💪';
+    title = `초기 부스팅 · Week ${cw}`;
+    msg = `이제 시작이라 격차 정상이에요. 이번주 ${weekDone}/${weekTotal} 일단 첫 1문제만 풀어보세요`;
+  }
+
+  alertEl.className = `pace-alert ${cls}`;
+  alertEl.innerHTML = `
+    <div class="pace-icon">${icon}</div>
+    <div class="pace-body">
+      <div class="pace-title">${title}</div>
+      <div class="pace-msg">${msg}</div>
+      <div class="pace-bar"><div class="pace-fill" style="width:${Math.min(100, weekPct)}%; background: currentColor; opacity: 0.5;"></div></div>
+    </div>
+  `;
 }
 
 let currentSelectedWeek = getCurrentWeek();

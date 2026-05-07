@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="미라클 모닝 클럽 - 출석보드 + 잔디 + 풀이공유">
+<title>🌱 출석보드 — 미라클 모닝 클럽</title>
+<style>
+:root {
+  --primary: #0a2540;
+  --accent: #1976d2;
+  --accent-light: #eff6ff;
+  --warm: #f59e0b;
+  --warm-light: #fffbeb;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --red: #ef4444;
+  --bg: #ffffff;
+  --bg-alt: #f9fafb;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-soft: #4a5568;
+  --text-mute: #718096;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg-alt);
+  font-size: 15px;
+  padding-bottom: 60px;
+}
+
+/* HEADER */
+header.nav {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 12px 20px;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.logo { font-weight: 800; font-size: 16px; color: var(--primary); text-decoration: none; }
+.nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.nav-links a {
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); font-weight: 700; }
+
+/* HERO */
+.hero {
+  padding: 40px 20px 30px;
+  text-align: center;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0f7ff 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 28px;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.hero p { color: var(--text-soft); font-size: 14px; }
+
+/* CONTAINER */
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 28px 16px;
+}
+
+h2.section-h {
+  font-size: 18px;
+  color: var(--primary);
+  margin: 24px 0 10px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}
+h3 {
+  color: var(--primary);
+  font-size: 16px;
+  margin: 20px 0 8px;
+}
+
+/* DASHBOARD */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.stat {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-top: 4px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 12px 0;
+}
+
+.callout {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 14px 0;
+  font-size: 13px;
+}
+
+/* CODE */
+pre {
+  background: var(--bg-alt);
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+code {
+  background: var(--bg-alt);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  color: #c7254e;
+}
+
+/* COMMIT GUIDE STEP */
+.step {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.step-body { flex: 1; min-width: 0; }
+.step-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+.step-desc pre { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">🌅 미라클 모닝 클럽</a>
+    <nav class="nav-links">
+      <a href="index.html">가이드</a>
+      <a href="board.html" class="active">🌱 출석보드</a>
+      <a href="checklist.html">📋 체크리스트</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>🌱 출석보드</h1>
+  <p>GitHub 잔디로 함께하는 26주 — 누가 뭐 올렸는지 한눈에</p>
+</div>
+
+<div class="container">
+
+  <div id="activity-loading" style="text-align:center; padding: 30px; color: var(--text-mute); font-size: 13px;">
+    📡 GitHub에서 활동 불러오는 중...
+  </div>
+
+  <div id="activity-content" style="display:none;">
+    <div class="dashboard">
+      <div class="stat">
+        <span class="stat-num" id="member-count">-</span>
+        <div class="stat-label">활동 멤버 (지난 30일)</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="commit-count">-</span>
+        <div class="stat-label">총 commit (지난 30일)</div>
+      </div>
+    </div>
+
+    <h2 class="section-h">🌱 멤버별 26주 잔디</h2>
+    <p style="font-size: 12px; color: var(--text-mute); margin-bottom: 10px;">repo에 commit한 날 = 잔디 칠해짐 · 진할수록 많이 push</p>
+    <div id="member-heatmaps" class="card" style="overflow-x: auto;"></div>
+
+    <h2 class="section-h">🔥 최근 활동</h2>
+    <div id="recent-commits" class="card" style="max-height: 380px; overflow-y: auto;"></div>
+  </div>
+
+  <h2 class="section-h">📝 커밋 가이드 (5분)</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">최초 1회 — repo clone</div>
+      <div class="step-desc">
+        <pre>git clone https://github.com/janghyukjin/miracle-morning-club.git
+cd miracle-morning-club</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">본인 폴더 만들기 (최초 1회)</div>
+      <div class="step-desc">
+        <pre>mkdir -p solutions/[본인-github-username]/week-01</pre>
+        예: <code>solutions/janghyukjin/week-01/</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">매일 — 풀이 파일 생성</div>
+      <div class="step-desc">
+        파일명 규칙: <code>lc-{문제번호}-{kebab-case}.{확장자}</code><br><br>
+        <pre>solutions/janghyukjin/week-01/
+  ├── lc-49-group-anagrams.py
+  ├── lc-49-group-anagrams.md   ← 풀이 노트 (선택)
+  └── lc-347-top-k-frequent.py</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">매일 — commit + push</div>
+      <div class="step-desc">
+        <pre>git add solutions/[본인-username]/
+git commit -m "Week 1 Day 1 - LC 49 + 347"
+git push origin main</pre>
+        → 잔디 칠해짐 ✅
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">commit message 추천 패턴</div>
+      <div class="step-desc">
+        <pre>"Week 1 Day 1 - LC 49 + 347"
+"Week 2 - Sliding Window 5문제"
+"Week 3 - Median of Two Sorted Arrays Hard 풀이"
+"Notes: STAR 답변 1번 작성"</pre>
+        → 나중에 "내가 뭐 했지?" 찾기 쉬움
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    💡 <strong>매일 1 commit이면 OK</strong> — 작은 push라도 잔디 1칸 칠해집니다.
+    풀이가 부끄러우면 README만 push해도 됨.
+  </div>
+
+  <h2 class="section-h">📂 풀이 폴더 구조</h2>
+  <div class="card">
+    <pre>solutions/
+  ├── username1/
+  │   ├── week-01/
+  │   │   ├── lc-49-group-anagrams.md
+  │   │   ├── lc-49-group-anagrams.py
+  │   │   └── lc-347-top-k-frequent.py
+  │   └── week-02/
+  │       └── ...
+  ├── username2/
+  └── ...</pre>
+  </div>
+
+  <h2 class="section-h">🚀 처음 참여하시는 분</h2>
+  <div class="card">
+    <ol style="padding-left: 20px; color: var(--text-soft); font-size: 13.5px; line-height: 1.8;">
+      <li>관리자(@janghyukjin)에게 <strong>GitHub username 보내기</strong> — collaborator 초대 받음</li>
+      <li>위 5단계 따라하기</li>
+      <li>이 페이지 새로고침 → 본인 잔디 표시됨</li>
+    </ol>
+    <p style="margin-top: 12px; font-size: 12px; color: var(--text-mute);">
+      💡 collaborator 없이도 fork 후 본인 repo에서 진행 가능 (다만 통합 보드에는 안 보임)
+    </p>
+  </div>
+
+</div>
+
+<script>
+const REPO = 'janghyukjin/miracle-morning-club';
+const START_DATE = new Date(2026, 4, 8);
+
+function dateKey(d) { return d.toISOString().slice(0, 10); }
+
+async function loadActivity() {
+  try {
+    const since = new Date(START_DATE);
+    since.setDate(since.getDate() - 7);
+    const sinceISO = since.toISOString();
+
+    let allCommits = [];
+    for (let page = 1; page <= 5; page++) {
+      const res = await fetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100&page=${page}`);
+      if (!res.ok) break;
+      const batch = await res.json();
+      if (batch.length === 0) break;
+      allCommits = allCommits.concat(batch);
+      if (batch.length < 100) break;
+    }
+
+    const memberData = {};
+    const commitList = [];
+    allCommits.forEach(c => {
+      const author = c.author?.login || c.commit?.author?.name || 'unknown';
+      const msg = c.commit?.message?.split('\n')[0] || '';
+      const date = c.commit?.author?.date || c.commit?.committer?.date;
+      const url = c.html_url;
+      const avatar = c.author?.avatar_url || '';
+      if (!memberData[author]) memberData[author] = { byDate: {}, total: 0, avatar, lastCommit: date };
+      const dKey = dateKey(new Date(date));
+      memberData[author].byDate[dKey] = (memberData[author].byDate[dKey] || 0) + 1;
+      memberData[author].total += 1;
+      if (new Date(date) > new Date(memberData[author].lastCommit)) memberData[author].lastCommit = date;
+      commitList.push({ author, msg, date, url, avatar });
+    });
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recent30 = commitList.filter(c => new Date(c.date) > thirtyDaysAgo);
+    const activeMembers = new Set(recent30.map(c => c.author));
+
+    document.getElementById('member-count').textContent = activeMembers.size;
+    document.getElementById('commit-count').textContent = recent30.length;
+
+    renderMemberHeatmaps(memberData);
+    renderRecentCommits(commitList);
+
+    document.getElementById('activity-loading').style.display = 'none';
+    document.getElementById('activity-content').style.display = 'block';
+  } catch (err) {
+    console.error(err);
+    document.getElementById('activity-loading').innerHTML = `
+      <p style="color: var(--text-mute); font-size: 13px;">⚠️ GitHub API 호출 실패</p>
+      <p style="color: var(--text-mute); font-size: 12px; margin-top: 6px;">잠시 후 새로고침해주세요</p>
+    `;
+  }
+}
+
+function renderMemberHeatmaps(memberData) {
+  const container = document.getElementById('member-heatmaps');
+  const sorted = Object.entries(memberData).sort((a, b) => b[1].total - a[1].total);
+  if (sorted.length === 0) {
+    container.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">첫 commit을 기다리는 중...</p>';
+    return;
+  }
+  container.innerHTML = sorted.map(([username, data]) => `
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+      ${data.avatar
+        ? `<img src="${data.avatar}" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;">`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">${username[0]?.toUpperCase()||'?'}</div>`
+      }
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:13.5px;color:var(--primary);font-weight:700;">${username}</span>
+          <span style="font-size:11.5px;color:var(--text-mute);">commit ${data.total}회 · ${getActiveDayCount(data.byDate)}일 활동</span>
+        </div>
+        <div style="display:flex;gap:2px;margin-top:6px;overflow-x:auto;padding-bottom:2px;">
+          ${render26WeekHeatmap(data.byDate)}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getActiveDayCount(byDate) {
+  return Object.values(byDate).filter(v => v > 0).length;
+}
+
+function render26WeekHeatmap(byDate) {
+  let html = '';
+  for (let w = 0; w < 26; w++) {
+    html += '<div style="display:flex;flex-direction:column;gap:2px;">';
+    for (let d = 0; d < 7; d++) {
+      const date = new Date(START_DATE);
+      date.setDate(date.getDate() + w * 7 + d);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const key = dateKey(date);
+      const count = byDate[key] || 0;
+      let bg = '#ebedf0';
+      const isFuture = date > today;
+      if (isFuture) bg = '#f5f5f5';
+      else if (count >= 5) bg = '#196127';
+      else if (count >= 3) bg = '#239a3b';
+      else if (count >= 2) bg = '#7bc96f';
+      else if (count >= 1) bg = '#c6e48b';
+      const opacity = isFuture ? 0.4 : 1;
+      html += `<div title="${key}: ${count} commit" style="width:10px;height:10px;border-radius:2px;background:${bg};opacity:${opacity};"></div>`;
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderRecentCommits(commitList) {
+  const list = document.getElementById('recent-commits');
+  const recent = commitList.slice(0, 30);
+  if (recent.length === 0) {
+    list.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">아직 활동이 없어요. 첫 커밋의 주인공이 되어보세요!</p>';
+    return;
+  }
+  list.innerHTML = recent.map(c => {
+    const dt = new Date(c.date);
+    const dateStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+    const avatarImg = c.avatar
+      ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;">`
+      : `<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${c.author[0]?.toUpperCase()||'?'}</div>`;
+    return `
+      <a href="${c.url}" target="_blank" rel="noopener" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;align-items:flex-start;">
+        ${avatarImg}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;color:var(--primary);font-weight:600;">${c.author}</div>
+          <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.msg}</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${dateStr}</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
+loadActivity();
+</script>
+
+</body>
+</html>
