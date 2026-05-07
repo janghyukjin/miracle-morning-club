@@ -754,7 +754,11 @@ footer .download {
         </div>
       </div>
 
-      <h3 style="color: var(--primary); font-size: 16px; margin: 18px 0 8px;">🔥 최근 활동 (잔디 인증)</h3>
+      <h3 style="color: var(--primary); font-size: 16px; margin: 18px 0 8px;">🌱 멤버별 26주 잔디</h3>
+      <p style="font-size: 12px; color: var(--text-mute); margin-bottom: 10px;">repo에 commit한 날 = 잔디 칠해짐 · 진할수록 많이 push</p>
+      <div id="member-heatmaps" class="card" style="overflow-x: auto;"></div>
+
+      <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">🔥 최근 활동</h3>
       <div id="recent-commits" class="card" style="max-height: 380px; overflow-y: auto;"></div>
     </div>
 
@@ -808,62 +812,162 @@ window.addEventListener('scroll', () => {
 
 // ============ GITHUB ACTIVITY (출석보드) ============
 const REPO = 'janghyukjin/miracle-morning-club';
+const START_DATE = new Date(2026, 4, 8); // 5/8
+
+function dateKey(d) { return d.toISOString().slice(0, 10); }
 
 async function loadActivity() {
   try {
-    const since = new Date();
-    since.setDate(since.getDate() - 30);
+    // 26주 전부 가져오기 (시작일 기준)
+    const since = new Date(START_DATE);
+    since.setDate(since.getDate() - 7); // 약간 여유
     const sinceISO = since.toISOString();
 
-    const res = await fetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100`);
-    if (!res.ok) throw new Error('GitHub API 응답 실패');
-    const commits = await res.json();
+    // GitHub API는 페이지당 100개. 26주면 충분
+    let allCommits = [];
+    for (let page = 1; page <= 5; page++) {
+      const res = await fetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100&page=${page}`);
+      if (!res.ok) break;
+      const batch = await res.json();
+      if (batch.length === 0) break;
+      allCommits = allCommits.concat(batch);
+      if (batch.length < 100) break;
+    }
 
-    const members = new Set();
+    // 멤버별 + 날짜별 commit 집계
+    const memberData = {}; // { username: { byDate: {date: count}, total: N, avatar: url, lastCommit: date } }
     const commitList = [];
-    commits.forEach(c => {
+
+    allCommits.forEach(c => {
       const author = c.author?.login || c.commit?.author?.name || 'unknown';
       const msg = c.commit?.message?.split('\n')[0] || '';
       const date = c.commit?.author?.date || c.commit?.committer?.date;
       const url = c.html_url;
       const avatar = c.author?.avatar_url || '';
-      members.add(author);
+
+      if (!memberData[author]) {
+        memberData[author] = { byDate: {}, total: 0, avatar, lastCommit: date };
+      }
+      const dKey = dateKey(new Date(date));
+      memberData[author].byDate[dKey] = (memberData[author].byDate[dKey] || 0) + 1;
+      memberData[author].total += 1;
+      if (new Date(date) > new Date(memberData[author].lastCommit)) {
+        memberData[author].lastCommit = date;
+      }
+
       commitList.push({ author, msg, date, url, avatar });
     });
 
-    document.getElementById('member-count').textContent = members.size;
-    document.getElementById('commit-count').textContent = commits.length;
+    // 지난 30일 카운트
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recent30 = commitList.filter(c => new Date(c.date) > thirtyDaysAgo);
+    const activeMembers = new Set(recent30.map(c => c.author));
 
-    const list = document.getElementById('recent-commits');
-    if (commitList.length === 0) {
-      list.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">아직 활동이 없어요. 첫 커밋의 주인공이 되어보세요!</p>';
-    } else {
-      list.innerHTML = commitList.slice(0, 30).map(c => {
-        const dt = new Date(c.date);
-        const dateStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
-        const avatarImg = c.avatar ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;">` : `<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${c.author[0]?.toUpperCase()||'?'}</div>`;
-        return `
-          <a href="${c.url}" target="_blank" rel="noopener" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;align-items:flex-start;">
-            ${avatarImg}
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;color:var(--primary);font-weight:600;">${c.author}</div>
-              <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.msg}</div>
-              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${dateStr}</div>
-            </div>
-          </a>
-        `;
-      }).join('');
-    }
+    document.getElementById('member-count').textContent = activeMembers.size;
+    document.getElementById('commit-count').textContent = recent30.length;
+
+    // 멤버별 잔디 렌더링 (commit 많은 순)
+    renderMemberHeatmaps(memberData);
+
+    // 최근 활동 피드
+    renderRecentCommits(commitList);
 
     document.getElementById('activity-loading').style.display = 'none';
     document.getElementById('activity-content').style.display = 'block';
   } catch (err) {
+    console.error(err);
     document.getElementById('activity-loading').innerHTML = `
       <p style="color: var(--text-mute); font-size: 13px;">⚠️ GitHub API 호출 실패</p>
       <p style="color: var(--text-mute); font-size: 12px; margin-top: 6px;">잠시 후 새로고침해주세요</p>
     `;
   }
 }
+
+function renderMemberHeatmaps(memberData) {
+  const container = document.getElementById('member-heatmaps');
+  const sorted = Object.entries(memberData).sort((a, b) => b[1].total - a[1].total);
+  if (sorted.length === 0) {
+    container.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">첫 commit을 기다리는 중...</p>';
+    return;
+  }
+
+  container.innerHTML = sorted.map(([username, data]) => {
+    return `
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+        ${data.avatar
+          ? `<img src="${data.avatar}" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;">`
+          : `<div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">${username[0]?.toUpperCase()||'?'}</div>`
+        }
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:13.5px;color:var(--primary);font-weight:700;">${username}</span>
+            <span style="font-size:11.5px;color:var(--text-mute);">commit ${data.total}회 · ${getActiveDayCount(data.byDate)}일 활동</span>
+          </div>
+          <div style="display:flex;gap:2px;margin-top:6px;overflow-x:auto;padding-bottom:2px;">
+            ${render26WeekHeatmap(data.byDate)}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getActiveDayCount(byDate) {
+  return Object.values(byDate).filter(v => v > 0).length;
+}
+
+function render26WeekHeatmap(byDate) {
+  let html = '';
+  for (let w = 0; w < 26; w++) {
+    html += '<div style="display:flex;flex-direction:column;gap:2px;">';
+    for (let d = 0; d < 7; d++) {
+      const date = new Date(START_DATE);
+      date.setDate(date.getDate() + w * 7 + d);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const key = dateKey(date);
+      const count = byDate[key] || 0;
+      let bg = '#ebedf0';
+      let isFuture = date > today;
+      if (isFuture) bg = '#f5f5f5';
+      else if (count >= 5) bg = '#196127';
+      else if (count >= 3) bg = '#239a3b';
+      else if (count >= 2) bg = '#7bc96f';
+      else if (count >= 1) bg = '#c6e48b';
+      const opacity = isFuture ? 0.4 : 1;
+      html += `<div title="${key}: ${count} commit" style="width:10px;height:10px;border-radius:2px;background:${bg};opacity:${opacity};"></div>`;
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function renderRecentCommits(commitList) {
+  const list = document.getElementById('recent-commits');
+  const recent = commitList.slice(0, 30);
+  if (recent.length === 0) {
+    list.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">아직 활동이 없어요. 첫 커밋의 주인공이 되어보세요!</p>';
+    return;
+  }
+  list.innerHTML = recent.map(c => {
+    const dt = new Date(c.date);
+    const dateStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+    const avatarImg = c.avatar
+      ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;">`
+      : `<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${c.author[0]?.toUpperCase()||'?'}</div>`;
+    return `
+      <a href="${c.url}" target="_blank" rel="noopener" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;align-items:flex-start;">
+        ${avatarImg}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;color:var(--primary);font-weight:600;">${c.author}</div>
+          <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.msg}</div>
+          <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${dateStr}</div>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
 loadActivity();
 </script>
 
