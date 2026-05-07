@@ -77,6 +77,15 @@ header.nav {
 }
 .hero p { color: var(--text-soft); font-size: 14px; }
 
+/* ============ USER CARD ============ */
+.user-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
 /* ============ PACE ALERT ============ */
 .pace-alert {
   border-radius: 12px;
@@ -490,6 +499,19 @@ h2.section-h {
 <!-- ============ MAIN ============ -->
 <div class="container">
 
+  <!-- User Identifier -->
+  <div id="user-card" class="user-card">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div id="user-avatar" style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;">?</div>
+      <div style="flex:1;min-width:140px;">
+        <div style="font-size:11px;color:var(--text-mute);">이 체크리스트의 주인</div>
+        <div id="user-name-display" style="font-size:15px;color:var(--primary);font-weight:700;">설정 안 됨</div>
+      </div>
+      <button onclick="setUsername()" style="background:var(--bg-alt);border:1px solid var(--border);color:var(--text-soft);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">변경</button>
+      <a href="board.html" style="background:var(--accent);color:white;padding:6px 12px;border-radius:6px;font-size:12px;text-decoration:none;font-weight:600;">🌱 다른 멤버 보기</a>
+    </div>
+  </div>
+
   <!-- Pace Alert -->
   <div id="pace-alert" class="pace-alert"></div>
 
@@ -870,6 +892,7 @@ function showToast(msg) {
 
 // ============ RENDER ============
 function render() {
+  renderUserCard();
   renderPaceAlert();
   renderDashboard();
   renderProgress();
@@ -879,6 +902,44 @@ function render() {
   renderPersonalGoals();
   renderWeekPicker();
   renderWeekDetail(currentSelectedWeek);
+}
+
+// ============ USER IDENTIFIER ============
+function getUsername() {
+  return localStorage.getItem('mmc_username') || '';
+}
+
+function renderUserCard() {
+  const username = getUsername();
+  const nameEl = document.getElementById('user-name-display');
+  const avatarEl = document.getElementById('user-avatar');
+  if (username) {
+    nameEl.textContent = username;
+    avatarEl.textContent = username[0].toUpperCase();
+    // GitHub avatar 시도
+    avatarEl.style.backgroundImage = `url(https://github.com/${username}.png?size=88)`;
+    avatarEl.style.backgroundSize = 'cover';
+    avatarEl.style.backgroundPosition = 'center';
+    avatarEl.textContent = '';
+  } else {
+    nameEl.textContent = '설정 안 됨 — 클릭해서 GitHub username 입력';
+    avatarEl.textContent = '?';
+    avatarEl.style.backgroundImage = '';
+  }
+}
+
+function setUsername() {
+  const current = getUsername();
+  const next = prompt('GitHub username을 입력하세요 (예: janghyukjin)', current);
+  if (next === null) return;
+  const trimmed = next.trim();
+  if (trimmed) {
+    localStorage.setItem('mmc_username', trimmed);
+  } else {
+    localStorage.removeItem('mmc_username');
+  }
+  render();
+  showToast(trimmed ? `👤 ${trimmed} 님 안녕하세요!` : '🔓 username 제거됨');
 }
 
 // ============ PACE ALERT ============
