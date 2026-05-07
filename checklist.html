@@ -535,11 +535,40 @@ h2.section-h {
     <div class="heatmap" id="heatmap"></div>
   </div>
 
-  <!-- Today's Tasks -->
+  <!-- Today's Recommendation (요일별 1-2문제만) -->
   <div class="today-card">
-    <span class="today-label">오늘 할 일</span>
+    <span class="today-label" id="today-label">오늘 추천</span>
     <h3 id="today-week-title">로딩 중...</h3>
     <div class="today-tasks" id="today-tasks"></div>
+  </div>
+
+  <!-- 이번주 공통 LC (접기) -->
+  <div class="card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px;">
+    <details>
+      <summary style="cursor:pointer;font-weight:700;color:var(--primary);font-size:15px;display:flex;justify-content:space-between;align-items:center;">
+        <span>📚 이번주 공통 LC <span id="week-lc-count" style="font-size:12px;color:var(--text-mute);font-weight:500;"></span></span>
+        <span style="font-size:11px;color:var(--text-mute);font-weight:500;">클럽 표준 · 모두 동일</span>
+      </summary>
+      <div class="today-tasks" id="week-lc-list" style="margin-top:12px;"></div>
+    </details>
+  </div>
+
+  <!-- 내 개인 목표 (사용자 추가/삭제) -->
+  <div class="card" style="background:linear-gradient(to bottom,#eff6ff,white 70%);border:1px solid var(--accent);border-radius:12px;padding:16px 18px;margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <strong style="color:var(--primary);font-size:15px;">✨ 내 개인 목표</strong>
+      <span id="personal-goal-count" style="font-size:11px;color:var(--text-mute);"></span>
+    </div>
+    <p style="font-size:12px;color:var(--text-soft);margin-bottom:10px;">영어 / 운동 / 독서 등 본인만의 목표를 추가하세요. 각자 다 다르게 OK.</p>
+
+    <div class="today-tasks" id="personal-goals-list"></div>
+
+    <div style="display:flex;gap:6px;margin-top:10px;">
+      <input type="text" id="new-goal-input" placeholder="새 목표 (예: 영어 발표 1회)" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;">
+      <button onclick="addPersonalGoal()" style="background:var(--accent);color:white;border:none;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;">+ 추가</button>
+    </div>
+
+    <div id="suggested-goals" style="margin-top:10px;"></div>
   </div>
 
   <!-- Week Picker -->
@@ -807,6 +836,7 @@ function saveState(s) {
 let state = loadState();
 state.tasks = state.tasks || {};      // { "w1-p49": true, "w1-t0": true }
 state.dailyLog = state.dailyLog || {}; // { "2026-05-08": 3 }  (작업 수)
+state.personalGoals = state.personalGoals || {}; // { "w1": [{id, text, done}] }
 
 // ============ HELPERS ============
 function getCurrentWeek() {
@@ -845,6 +875,8 @@ function render() {
   renderProgress();
   renderHeatmap();
   renderToday();
+  renderWeekLC();
+  renderPersonalGoals();
   renderWeekPicker();
   renderWeekDetail(currentSelectedWeek);
 }
@@ -1091,13 +1123,55 @@ function renderToday() {
   document.getElementById('today-greeting').textContent =
     `Week ${cw} · ${w.title} · ${getWeekDates(cw)}`;
 
-  document.getElementById('today-week-title').textContent =
-    `Week ${cw}: ${w.title}`;
+  // 요일 기반 오늘 추천 (시작일이 목요일 = 0)
+  const now = new Date();
+  const daysSinceStart = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
+  const dayOfWeek = ((daysSinceStart % 7) + 7) % 7; // 0=목, 1=금, 2=토, 3=일, 4=월, 5=화, 6=수
+  const dayNames = ['목', '금', '토', '일', '월', '화', '수'];
 
+  const todayLabel = document.getElementById('today-label');
+  const titleEl = document.getElementById('today-week-title');
   const tasksEl = document.getElementById('today-tasks');
+
+  todayLabel.textContent = `오늘 추천 · ${dayNames[dayOfWeek]}요일`;
+  titleEl.textContent = `Week ${cw}: ${w.title}`;
   tasksEl.innerHTML = '';
 
-  w.problems.forEach((p, i) => {
+  // 일요일 = 휴식
+  if (dayOfWeek === 3) {
+    tasksEl.innerHTML = `
+      <div style="text-align:center;padding:24px 12px;background:var(--green-light);border-radius:8px;border:1px solid #a7f3d0;">
+        <div style="font-size:32px;">🌴</div>
+        <p style="margin-top:8px;font-weight:700;color:#065f46;">일요일은 휴식</p>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">번아웃 방지가 핵심</p>
+      </div>
+    `;
+    return;
+  }
+
+  // 요일별 오늘의 LC 인덱스 (목/금/월/화/수 = 1문제, 토 = 2문제)
+  let todayIndices = [];
+  if (dayOfWeek === 0) todayIndices = [0]; // 목 - 첫문제
+  else if (dayOfWeek === 1) todayIndices = [1]; // 금
+  else if (dayOfWeek === 2) todayIndices = [2, 3, 4]; // 토 - 집중일 (3문제)
+  else if (dayOfWeek === 4) todayIndices = [5]; // 월
+  else if (dayOfWeek === 5) todayIndices = [6]; // 화
+  else if (dayOfWeek === 6) todayIndices = []; // 수 - 복습일
+
+  if (dayOfWeek === 6) {
+    tasksEl.innerHTML = `
+      <div style="text-align:center;padding:20px 12px;background:var(--accent-light);border-radius:8px;">
+        <div style="font-size:24px;">🔄</div>
+        <p style="margin-top:6px;font-weight:700;color:var(--accent);">수요일은 복습일</p>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">이번주 풀이 다시 빠르게 + 약점 보강</p>
+      </div>
+    `;
+    return;
+  }
+
+  todayIndices.forEach(i => {
+    const p = w.problems[i];
+    if (!p) return;
     const key = getTaskKey(cw, 'p', i);
     const done = isTaskDone(key);
     const url = lcUrl(p.slug);
@@ -1112,24 +1186,162 @@ function renderToday() {
     `;
     tasksEl.insertAdjacentHTML('beforeend', html);
   });
+}
 
-  w.tasks.forEach((t, i) => {
-    const key = getTaskKey(cw, 't', i);
-    const done = isTaskDone(key);
-    const tag = t.includes('영어') || t.includes('프로젝트') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
-                t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
-                t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
-    const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
-    const html = `
-      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
-        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
-        <span class="task-text">${t}</span>
-        <span class="task-tag ${tag}">${tagText}</span>
+// ============ 이번주 공통 LC (전체) ============
+function renderWeekLC() {
+  const cw = getCurrentWeek();
+  const w = WEEKS[cw - 1];
+  if (!w) return;
+
+  const listEl = document.getElementById('week-lc-list');
+  const countEl = document.getElementById('week-lc-count');
+
+  const total = w.problems.length;
+  const done = w.problems.filter((_, i) => isTaskDone(getTaskKey(cw, 'p', i))).length;
+  countEl.textContent = `(${done}/${total})`;
+
+  listEl.innerHTML = w.problems.map((p, i) => {
+    const key = getTaskKey(cw, 'p', i);
+    const isDone = isTaskDone(key);
+    const url = lcUrl(p.slug);
+    const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
+    return `
+      <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">LC ${p.lc} — ${p.name}</span>
+        ${linkBtn}
+        <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
       </label>
     `;
-    tasksEl.insertAdjacentHTML('beforeend', html);
-  });
+  }).join('');
 }
+
+// ============ 내 개인 목표 (사용자 관리) ============
+function getPersonalGoals(weekNum) {
+  return state.personalGoals[`w${weekNum}`] || [];
+}
+
+function renderPersonalGoals() {
+  const cw = getCurrentWeek();
+  const w = WEEKS[cw - 1];
+  if (!w) return;
+
+  const goals = getPersonalGoals(cw);
+  const listEl = document.getElementById('personal-goals-list');
+  const countEl = document.getElementById('personal-goal-count');
+  const suggestedEl = document.getElementById('suggested-goals');
+
+  const doneCnt = goals.filter(g => g.done).length;
+  countEl.textContent = goals.length > 0 ? `${doneCnt}/${goals.length} 완료` : '';
+
+  if (goals.length === 0) {
+    listEl.innerHTML = '<p style="font-size:12px;color:var(--text-mute);text-align:center;padding:14px;">아직 추가한 목표가 없어요</p>';
+  } else {
+    listEl.innerHTML = goals.map(g => `
+      <label class="task-row ${g.done ? 'done' : ''}" onclick="togglePersonalGoal('${g.id}')">
+        <input type="checkbox" ${g.done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">${escapeHTML(g.text)}</span>
+        <button onclick="event.stopPropagation();deletePersonalGoal('${g.id}')" style="background:none;border:none;color:var(--text-mute);cursor:pointer;font-size:14px;padding:2px 6px;" title="삭제">✕</button>
+      </label>
+    `).join('');
+  }
+
+  // 추천 목표 (이번주 클럽 추천 작업 중 아직 안 추가한 것)
+  const existingTexts = new Set(goals.map(g => g.text));
+  const suggestions = (w.tasks || []).filter(t => !existingTexts.has(t));
+  if (suggestions.length > 0) {
+    suggestedEl.innerHTML = `
+      <div style="font-size:11.5px;color:var(--text-mute);margin-bottom:6px;">💡 이번주 클럽 추천 (클릭해서 추가)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+        ${suggestions.map(t => `
+          <button onclick="addSuggestedGoal('${escapeAttr(t)}')" style="background:white;border:1px dashed var(--border);color:var(--text-soft);padding:5px 10px;border-radius:14px;font-size:11.5px;cursor:pointer;">
+            + ${escapeHTML(t)}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    suggestedEl.innerHTML = '';
+  }
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) {
+  return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function addPersonalGoal() {
+  const input = document.getElementById('new-goal-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const cw = getCurrentWeek();
+  const wKey = `w${cw}`;
+  if (!state.personalGoals[wKey]) state.personalGoals[wKey] = [];
+  state.personalGoals[wKey].push({
+    id: 'g' + Date.now() + Math.random().toString(36).slice(2, 5),
+    text,
+    done: false
+  });
+  saveState(state);
+  input.value = '';
+  render();
+  showToast('🎯 개인 목표 추가됨');
+}
+
+function addSuggestedGoal(text) {
+  const cw = getCurrentWeek();
+  const wKey = `w${cw}`;
+  if (!state.personalGoals[wKey]) state.personalGoals[wKey] = [];
+  state.personalGoals[wKey].push({
+    id: 'g' + Date.now() + Math.random().toString(36).slice(2, 5),
+    text,
+    done: false
+  });
+  saveState(state);
+  render();
+  showToast('🎯 목표 추가됨');
+}
+
+function togglePersonalGoal(id) {
+  const cw = getCurrentWeek();
+  const wKey = `w${cw}`;
+  const goals = state.personalGoals[wKey] || [];
+  const goal = goals.find(g => g.id === id);
+  if (!goal) return;
+  goal.done = !goal.done;
+  // dailyLog 카운트 업데이트
+  const today = todayKey();
+  if (goal.done) {
+    state.dailyLog[today] = (state.dailyLog[today] || 0) + 1;
+  } else {
+    if (state.dailyLog[today]) state.dailyLog[today] = Math.max(0, state.dailyLog[today] - 1);
+  }
+  saveState(state);
+  render();
+  if (goal.done) showToast('✅ 잘했어요!');
+}
+
+function deletePersonalGoal(id) {
+  if (!confirm('이 목표를 삭제할까요?')) return;
+  const cw = getCurrentWeek();
+  const wKey = `w${cw}`;
+  state.personalGoals[wKey] = (state.personalGoals[wKey] || []).filter(g => g.id !== id);
+  saveState(state);
+  render();
+}
+
+// Enter로도 목표 추가
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('new-goal-input');
+  if (input) {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); addPersonalGoal(); }
+    });
+  }
+});
 
 function renderWeekPicker() {
   const picker = document.getElementById('week-picker');
