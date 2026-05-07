@@ -66,5 +66,16 @@
 | 3 | Week 13-20 | Hard + System Design |
 | 4 | Week 21-26 | 인터뷰 준비 + 지원 |
 
+## 🤖 Claude Skill 등록 (선택)
+
+Claude Code 사용자라면 [`SKILL.md`](./SKILL.md)를 본인 환경에 등록 가능:
+
+```bash
+mkdir -p ~/.claude/skills/miracle-morning-club
+cp SKILL.md ~/.claude/skills/miracle-morning-club/
+```
+
+이후 Claude에게 "오늘 뭐 풀어?", "LC 49 풀이 봐줘", "영어 발표 봐줘" 등 물어보면 코치 역할로 도와줍니다.
+
 ## 📜 라이선스
 Personal study repo.

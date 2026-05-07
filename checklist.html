@@ -86,6 +86,89 @@ header.nav {
   margin-bottom: 14px;
 }
 
+/* ============ MEMBERS PREVIEW ============ */
+.members-preview {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.members-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.members-preview-title {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 700;
+}
+.members-preview-link {
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+.member-row + .member-row {
+  border-top: 1px solid var(--border);
+}
+.member-avatar-sm {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  background-size: cover;
+  background-position: center;
+}
+.member-name {
+  font-size: 12.5px;
+  color: var(--primary);
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 0;
+}
+.member-name.you::after {
+  content: ' (나)';
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 11px;
+}
+.member-progress {
+  flex: 1;
+  background: var(--bg-alt);
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.member-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s;
+}
+.member-stat {
+  font-size: 11px;
+  color: var(--text-mute);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ============ PACE ALERT ============ */
 .pace-alert {
   border-radius: 12px;
@@ -512,6 +595,9 @@ h2.section-h {
     </div>
   </div>
 
+  <!-- Members Preview -->
+  <div id="members-preview" class="members-preview"></div>
+
   <!-- Pace Alert -->
   <div id="pace-alert" class="pace-alert"></div>
 
@@ -893,6 +979,7 @@ function showToast(msg) {
 // ============ RENDER ============
 function render() {
   renderUserCard();
+  renderMembersPreview();
   renderPaceAlert();
   renderDashboard();
   renderProgress();
@@ -903,6 +990,78 @@ function render() {
   renderWeekPicker();
   renderWeekDetail(currentSelectedWeek);
 }
+
+// ============ MEMBERS PREVIEW (다른 멤버 진도) ============
+const REPO = 'janghyukjin/miracle-morning-club';
+const MEMBERS = ['janghyukjin', 'seongjae-min', 'jjhooon'];
+let memberCache = null;
+
+async function fetchMemberSolutions(username, weekNum) {
+  // 이번주 풀이 파일 수 fetch
+  try {
+    const wPath = `week-${String(weekNum).padStart(2, '0')}`;
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}/${wPath}`);
+    if (!res.ok) return 0;
+    const files = await res.json();
+    if (!Array.isArray(files)) return 0;
+    const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
+    const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
+    return uniqueLc.size;
+  } catch { return 0; }
+}
+
+async function loadMembersData() {
+  const cw = getCurrentWeek();
+  const data = await Promise.all(MEMBERS.map(async u => ({
+    username: u,
+    weekCount: await fetchMemberSolutions(u, cw)
+  })));
+  memberCache = { week: cw, data };
+  renderMembersPreview();
+}
+
+function renderMembersPreview() {
+  const cw = getCurrentWeek();
+  const target = 7;
+  const el = document.getElementById('members-preview');
+  const me = getUsername();
+
+  if (!memberCache || memberCache.week !== cw) {
+    el.innerHTML = `
+      <div class="members-preview-header">
+        <span class="members-preview-title">👥 이번주 멤버 진도 (Week ${cw})</span>
+        <a href="board.html" class="members-preview-link">자세히 →</a>
+      </div>
+      <p style="font-size:11.5px;color:var(--text-mute);text-align:center;padding:8px;">📡 GitHub에서 불러오는 중...</p>
+    `;
+    return;
+  }
+
+  // 진도 많은 순
+  const sorted = [...memberCache.data].sort((a, b) => b.weekCount - a.weekCount);
+
+  el.innerHTML = `
+    <div class="members-preview-header">
+      <span class="members-preview-title">👥 이번주 멤버 진도 (Week ${cw})</span>
+      <a href="board.html" class="members-preview-link">자세히 →</a>
+    </div>
+    ${sorted.map(m => {
+      const pct = Math.min(100, Math.round((m.weekCount / target) * 100));
+      const isMe = me && me.toLowerCase() === m.username.toLowerCase();
+      return `
+        <div class="member-row">
+          <div class="member-avatar-sm" style="background-image:url(https://github.com/${m.username}.png?size=52);">${m.username[0].toUpperCase()}</div>
+          <span class="member-name${isMe ? ' you' : ''}">${m.username}</span>
+          <div class="member-progress"><div class="member-progress-fill" style="width:${pct}%; background: ${pct >= 70 ? 'var(--green)' : pct >= 40 ? 'var(--warm)' : 'var(--accent)'};"></div></div>
+          <span class="member-stat">${m.weekCount}/${target}</span>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+// 페이지 로드 시 멤버 데이터 fetch
+loadMembersData();
 
 // ============ USER IDENTIFIER ============
 function getUsername() {
