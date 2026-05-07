@@ -487,10 +487,9 @@ footer .download {
     <nav class="nav-links">
       <a href="#guidelines">가이드라인</a>
       <a href="#problems">문제집</a>
-      <a href="#schedule">시간표</a>
       <a href="#phases">로드맵</a>
       <a href="#tomorrow">내일 시작</a>
-      <a href="#tools">도구</a>
+      <a href="#together">함께하기</a>
       <a href="checklist.html" style="color: var(--accent); font-weight: 700;">📋 체크리스트</a>
     </nav>
   </div>
@@ -632,59 +631,6 @@ footer .download {
   </div>
 </section>
 
-<!-- ============ SCHEDULE ============ -->
-<section id="schedule">
-  <div class="section-inner">
-    <h2 class="section-title">주간 시간표</h2>
-    <p class="section-sub">평일 가볍게 + 토요일 집중 + 일요일 휴식</p>
-
-    <div class="schedule-card standard">
-      <h4>🟡 표준 옵션 — 11h/주</h4>
-      <div class="meta">완주 기간: 6-7개월 · 일반 직장인 추천</div>
-
-      <strong style="color: var(--primary); font-size: 14px;">평일 (월-금) 매일 1시간</strong>
-      <div class="schedule-block">21:00 - 21:30  LeetCode 1문제
-21:30 - 22:00  영어 (발표 녹음 or 듣기)</div>
-
-      <div style="margin-top: 16px; padding: 12px 14px; background: rgba(25,118,210,0.08); border-radius: 8px; border-left: 3px solid var(--accent);">
-        <strong style="color: var(--primary); font-size: 13px; display: block; margin-bottom: 8px;">📌 주말 집중일 — 토요일 또는 일요일 중 본인이 선택</strong>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
-          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; background: white; border-radius: 6px; border: 1px solid var(--border); font-size: 13px;">
-            <input type="radio" name="focus-day" value="sat" checked id="day-sat"> 토요일 집중 (일요일 휴식)
-          </label>
-          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; background: white; border-radius: 6px; border: 1px solid var(--border); font-size: 13px;">
-            <input type="radio" name="focus-day" value="sun" id="day-sun"> 일요일 집중 (토요일 휴식)
-          </label>
-        </div>
-      </div>
-
-      <strong id="focus-day-label" style="color: var(--primary); font-size: 14px; margin-top: 14px; display: block;">토요일 — 집중일 (5-6시간)</strong>
-      <div class="schedule-block">09:30 - 11:30  LeetCode 2문제 (Hard 1 + Medium 1)
-11:30 - 12:30  영어 모의 인터뷰 (Pramp)
-   점심
-14:00 - 15:30  System Design 학습
-15:30 - 16:00  주간 복습</div>
-
-      <strong id="rest-day-label" style="color: var(--primary); font-size: 14px; margin-top: 14px; display: block;">일요일 — 휴식 (0-30분)</strong>
-      <p style="font-size: 13px; color: var(--text-soft); margin-top: 4px;">데이트 / 가족 / 여가. 번아웃 방지가 핵심.</p>
-    </div>
-
-    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">강도 선택지</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>옵션</th><th>주간</th><th>완주</th><th>대상</th></tr>
-        <tr><td>가벼움</td><td>8h</td><td>8-9개월</td><td>회사 매우 바쁨</td></tr>
-        <tr style="background:#fef3c7"><td><strong>표준</strong> ★</td><td><strong>11h</strong></td><td><strong>6-7개월</strong></td><td><strong>일반 직장인</strong></td></tr>
-        <tr><td>빡셈</td><td>16h+</td><td>5-6개월</td><td>풀타임 준비</td></tr>
-      </table>
-    </div>
-
-    <div class="callout">
-      <strong>합격에 필요한 건 페이스가 아니라 꾸준함</strong> · 매일 1시간 6개월이 매일 3시간 한 달보다 낫다.
-    </div>
-  </div>
-</section>
-
 <!-- ============ PHASES ============ -->
 <section class="alt" id="phases">
   <div class="section-inner">
@@ -786,36 +732,58 @@ footer .download {
   </div>
 </section>
 
-<!-- ============ TOOLS ============ -->
-<section class="alt" id="tools">
+<!-- ============ TOGETHER ============ -->
+<section class="alt" id="together">
   <div class="section-inner">
-    <h2 class="section-title">도구 / 자원</h2>
-    <p class="section-sub">필수 + 선택적 도구</p>
+    <h2 class="section-title">함께하기</h2>
+    <p class="section-sub">출석보드 + 풀이공유 — GitHub 잔디로 한눈에</p>
 
-    <div class="table-wrap">
-      <table>
-        <tr><th>도구</th><th>가격</th><th>용도</th></tr>
-        <tr><td>NeetCode (neetcode.io)</td><td>무료</td><td>NC150 + 영상 풀이</td></tr>
-        <tr><td>LeetCode Premium</td><td>$35/월</td><td>회사 태그 (Phase 4부터)</td></tr>
-        <tr><td>Pramp</td><td>무료</td><td>영어 모의 인터뷰</td></tr>
-        <tr><td>Notion / Obsidian</td><td>무료</td><td>풀이 노트</td></tr>
-        <tr><td>Otter.ai</td><td>무료</td><td>영어 녹음 + transcription</td></tr>
-        <tr><td>ByteByteGo YouTube</td><td>무료</td><td>System Design 영어</td></tr>
-        <tr><td>Educative.io System Design</td><td>$59/년</td><td>체계적 학습</td></tr>
-        <tr><td>Interview Kickstart</td><td>$5-8K (선택)</td><td>1:1 멘토링</td></tr>
-        <tr><td>Cracking the Coding Interview</td><td>$30 책</td><td>인터뷰 가이드</td></tr>
-        <tr><td>System Design Interview Vol 1</td><td>$30 책</td><td>System Design 입문</td></tr>
-      </table>
+    <div id="activity-loading" style="text-align:center; padding: 30px; color: var(--text-mute); font-size: 13px;">
+      📡 GitHub에서 활동 불러오는 중...
     </div>
 
-    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">스터디 출석 인증 가이드</h3>
+    <div id="activity-content" style="display:none;">
+      <div class="dashboard" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 18px;">
+        <div class="stat">
+          <span class="stat-num" id="member-count">-</span>
+          <div class="stat-label">활동 멤버</div>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="commit-count">-</span>
+          <div class="stat-label">총 커밋 (지난 30일)</div>
+        </div>
+      </div>
+
+      <h3 style="color: var(--primary); font-size: 16px; margin: 18px 0 8px;">🔥 최근 활동 (잔디 인증)</h3>
+      <div id="recent-commits" class="card" style="max-height: 380px; overflow-y: auto;"></div>
+    </div>
+
+    <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">📚 풀이 폴더 구조</h3>
     <div class="card">
-      <ul style="padding-left: 20px; color: var(--text-soft); font-size: 13.5px;">
-        <li><strong>매일</strong>: 풀이 스크린샷 + 시간복잡도 한 줄 요약을 그룹챗 공유</li>
-        <li><strong>토요일</strong>: 모의 인터뷰 후기 + 영어 녹음 1분 공유</li>
-        <li><strong>2주마다</strong>: 페이스 점검 회의 (15분)</li>
-        <li><strong>월 1회</strong>: 모의 onsite 시뮬레이션 (스터디원끼리)</li>
-      </ul>
+      <pre style="background: var(--bg-alt); padding: 10px 14px; border-radius: 6px; font-family: 'SF Mono', Menlo, monospace; font-size: 12.5px; overflow-x: auto;">solutions/
+  ├── username1/
+  │   ├── week-01/
+  │   │   ├── lc-49-group-anagrams.md  (또는 .py / .go)
+  │   │   └── lc-347-top-k-frequent.md
+  │   └── week-02/
+  │       └── ...
+  ├── username2/
+  └── ...</pre>
+      <p style="margin-top: 10px; font-size: 13px; color: var(--text-soft);">
+        각자 본인 username 폴더에 풀이 push → GitHub 잔디 + commit 히스토리에 자동 누적<br>
+        파일명만 통일하면 자동으로 누가 어떤 문제 풀었는지 카운트됨
+      </p>
+    </div>
+
+    <h3 style="color: var(--primary); font-size: 16px; margin: 24px 0 8px;">🚀 시작하기</h3>
+    <div class="card">
+      <ol style="padding-left: 20px; color: var(--text-soft); font-size: 13.5px; line-height: 1.8;">
+        <li>관리자에게 <strong>collaborator 초대 요청</strong> (또는 fork 후 PR)</li>
+        <li>repo clone: <code style="background: var(--bg-alt); padding: 2px 5px; border-radius: 3px; font-size: 12px;">git clone https://github.com/janghyukjin/miracle-morning-club.git</code></li>
+        <li><code style="background: var(--bg-alt); padding: 2px 5px; border-radius: 3px; font-size: 12px;">solutions/[본인username]/</code> 폴더 생성</li>
+        <li>매일 푼 문제 commit + push → 자동 출석</li>
+        <li>이 페이지 새로고침하면 본인 활동이 위 보드에 반영됨</li>
+      </ol>
     </div>
   </div>
 </section>
@@ -824,7 +792,9 @@ footer .download {
 <footer>
   <p>🌅 미라클 모닝 클럽 — 매일 한 걸음씩, 6개월 후 함께</p>
   <p style="margin-top: 6px; font-size: 12px;">시작: 2026.05.08 · 종료 목표: 2026.11.08</p>
-  <a href="../미라클_모닝_클럽_로드맵.pdf" class="download" download>📄 PDF 다운로드</a>
+  <p style="margin-top: 10px; font-size: 12px;">
+    <a href="https://github.com/janghyukjin/miracle-morning-club" target="_blank" style="color: white; opacity: 0.85;">📦 GitHub Repo</a>
+  </p>
 </footer>
 
 <a href="#top" class="fab" id="fab">↑</a>
@@ -836,25 +806,65 @@ window.addEventListener('scroll', () => {
   else fab.classList.remove('show');
 });
 
-// 주말 집중일 토글 (토요일 ↔ 일요일)
-const focusLabel = document.getElementById('focus-day-label');
-const restLabel = document.getElementById('rest-day-label');
-const SAVED_DAY = localStorage.getItem('mmc_focus_day') || 'sat';
-document.getElementById('day-' + SAVED_DAY).checked = true;
-function updateFocusDay(value) {
-  if (value === 'sat') {
-    focusLabel.textContent = '토요일 — 집중일 (5-6시간)';
-    restLabel.textContent = '일요일 — 휴식 (0-30분)';
-  } else {
-    focusLabel.textContent = '일요일 — 집중일 (5-6시간)';
-    restLabel.textContent = '토요일 — 휴식 (0-30분)';
+// ============ GITHUB ACTIVITY (출석보드) ============
+const REPO = 'janghyukjin/miracle-morning-club';
+
+async function loadActivity() {
+  try {
+    const since = new Date();
+    since.setDate(since.getDate() - 30);
+    const sinceISO = since.toISOString();
+
+    const res = await fetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100`);
+    if (!res.ok) throw new Error('GitHub API 응답 실패');
+    const commits = await res.json();
+
+    const members = new Set();
+    const commitList = [];
+    commits.forEach(c => {
+      const author = c.author?.login || c.commit?.author?.name || 'unknown';
+      const msg = c.commit?.message?.split('\n')[0] || '';
+      const date = c.commit?.author?.date || c.commit?.committer?.date;
+      const url = c.html_url;
+      const avatar = c.author?.avatar_url || '';
+      members.add(author);
+      commitList.push({ author, msg, date, url, avatar });
+    });
+
+    document.getElementById('member-count').textContent = members.size;
+    document.getElementById('commit-count').textContent = commits.length;
+
+    const list = document.getElementById('recent-commits');
+    if (commitList.length === 0) {
+      list.innerHTML = '<p style="color: var(--text-mute); font-size: 13px; text-align: center; padding: 20px;">아직 활동이 없어요. 첫 커밋의 주인공이 되어보세요!</p>';
+    } else {
+      list.innerHTML = commitList.slice(0, 30).map(c => {
+        const dt = new Date(c.date);
+        const dateStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours().toString().padStart(2,'0')}:${dt.getMinutes().toString().padStart(2,'0')}`;
+        const avatarImg = c.avatar ? `<img src="${c.avatar}" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;">` : `<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${c.author[0]?.toUpperCase()||'?'}</div>`;
+        return `
+          <a href="${c.url}" target="_blank" rel="noopener" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;align-items:flex-start;">
+            ${avatarImg}
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;color:var(--primary);font-weight:600;">${c.author}</div>
+              <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.msg}</div>
+              <div style="font-size:11px;color:var(--text-mute);margin-top:2px;">${dateStr}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('activity-loading').style.display = 'none';
+    document.getElementById('activity-content').style.display = 'block';
+  } catch (err) {
+    document.getElementById('activity-loading').innerHTML = `
+      <p style="color: var(--text-mute); font-size: 13px;">⚠️ GitHub API 호출 실패</p>
+      <p style="color: var(--text-mute); font-size: 12px; margin-top: 6px;">잠시 후 새로고침해주세요</p>
+    `;
   }
-  localStorage.setItem('mmc_focus_day', value);
 }
-updateFocusDay(SAVED_DAY);
-document.querySelectorAll('input[name="focus-day"]').forEach(r => {
-  r.addEventListener('change', e => updateFocusDay(e.target.value));
-});
+loadActivity();
 </script>
 
 </body>
