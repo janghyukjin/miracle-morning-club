@@ -634,15 +634,6 @@ h2.section-h {
     <div class="phase-progress" id="phase-progress"></div>
   </div>
 
-  <!-- Heatmap -->
-  <div class="heatmap-section">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-      <strong style="font-size: 14px; color: var(--primary);">학습 캘린더 (26주)</strong>
-      <span style="font-size: 11px; color: var(--text-mute);">하루에 작업 많이 할수록 진해짐</span>
-    </div>
-    <div class="heatmap" id="heatmap"></div>
-  </div>
-
   <!-- Today's Recommendation (요일별 1-2문제만) -->
   <div class="today-card">
     <span class="today-label" id="today-label">오늘 추천</span>
@@ -983,7 +974,6 @@ function render() {
   renderPaceAlert();
   renderDashboard();
   renderProgress();
-  renderHeatmap();
   renderToday();
   renderWeekLC();
   renderPersonalGoals();
