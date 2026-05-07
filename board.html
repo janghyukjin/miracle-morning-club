@@ -396,9 +396,9 @@ async function cachedFetch(url, opts = {}) {
 }
 
 function forceRefresh() {
-  // 모든 mmc_cache_ 키 삭제
   const keys = Object.keys(localStorage).filter(k => k.startsWith(CACHE_PREFIX));
   keys.forEach(k => localStorage.removeItem(k));
+  solutionsTreeCache = null;
   document.getElementById('activity-loading').innerHTML = '📡 GitHub에서 다시 불러오는 중...';
   document.getElementById('activity-loading').style.display = 'block';
   document.getElementById('activity-content').style.display = 'none';
@@ -473,33 +473,48 @@ async function loadActivity() {
   }
 }
 
+// Git Trees API로 repo 전체 파일 트리 한 번에 fetch
+let solutionsTreeCache = null;
+async function fetchSolutionsTree() {
+  if (solutionsTreeCache) return solutionsTreeCache;
+  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/git/trees/main?recursive=1`);
+  if (!r.ok) return null;
+  const tree = r.data?.tree || [];
+  // solutions/{user}/week-XX/lc-N-... 형식만 필터
+  const byMember = {};
+  for (const item of tree) {
+    if (item.type !== 'blob') continue;
+    const m = item.path.match(/^solutions\/([^/]+)\/(week-\d+)\/lc-(\d+)/i);
+    if (!m) continue;
+    const [, username, week, lcNum] = m;
+    if (!byMember[username]) byMember[username] = { weeks: {}, allLcNumbers: new Set() };
+    if (!byMember[username].weeks[week]) byMember[username].weeks[week] = new Set();
+    byMember[username].weeks[week].add(lcNum);
+    byMember[username].allLcNumbers.add(lcNum);
+  }
+  solutionsTreeCache = byMember;
+  return byMember;
+}
+
 async function fetchSolutions(username) {
-  // 멤버의 풀이 폴더 fetch → { weeks: {weekName: [lc-numbers...]}, totalUnique: N, currentWeekCount: N }
-  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}`);
-  if (!r.ok) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
-  const items = r.data;
-  if (!Array.isArray(items)) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
+  const tree = await fetchSolutionsTree();
+  if (!tree || !tree[username]) {
+    return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
+  }
+  const memberData = tree[username];
   const weeks = {};
-  const allLcNumbers = new Set();
-
-  const weekDirs = items.filter(i => i.type === 'dir' && /^week-\d+$/i.test(i.name));
-  await Promise.all(weekDirs.map(async dir => {
-    const wr = await cachedFetch(dir.url);
-    if (!wr.ok) return;
-    const files = wr.data;
-    if (!Array.isArray(files)) return;
-    const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
-    const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
-    weeks[dir.name] = uniqueLc.size;
-    uniqueLc.forEach(n => allLcNumbers.add(n));
-  }));
-
-  // 이번주 풀이
+  for (const [week, lcSet] of Object.entries(memberData.weeks)) {
+    weeks[week] = lcSet.size;
+  }
   const cw = getCurrentWeek();
   const currentWeekKey = `week-${String(cw).padStart(2, '0')}`;
   const currentWeekCount = weeks[currentWeekKey] || 0;
-
-  return { weeks, totalUnique: allLcNumbers.size, currentWeekCount, allLcNumbers };
+  return {
+    weeks,
+    totalUnique: memberData.allLcNumbers.size,
+    currentWeekCount,
+    allLcNumbers: memberData.allLcNumbers
+  };
 }
 
 function getCurrentWeek() {

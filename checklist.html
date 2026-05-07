@@ -1009,16 +1009,31 @@ async function cachedFetch(url) {
   } catch { return { ok: false }; }
 }
 
+// Git Trees API로 한방에 모든 멤버 풀이 가져오기 (1회 호출)
+let solutionsTreeCache = null;
+async function fetchSolutionsTree() {
+  if (solutionsTreeCache) return solutionsTreeCache;
+  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/git/trees/main?recursive=1`);
+  if (!r.ok) return {};
+  const tree = r.data?.tree || [];
+  const byMember = {};
+  for (const item of tree) {
+    if (item.type !== 'blob') continue;
+    const m = item.path.match(/^solutions\/([^/]+)\/(week-\d+)\/lc-(\d+)/i);
+    if (!m) continue;
+    const [, username, week, lcNum] = m;
+    if (!byMember[username]) byMember[username] = {};
+    if (!byMember[username][week]) byMember[username][week] = new Set();
+    byMember[username][week].add(lcNum);
+  }
+  solutionsTreeCache = byMember;
+  return byMember;
+}
+
 async function fetchMemberSolutions(username, weekNum) {
-  // 이번주 풀이 파일 수 fetch
-  const wPath = `week-${String(weekNum).padStart(2, '0')}`;
-  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}/${wPath}`);
-  if (!r.ok) return 0;
-  const files = r.data;
-  if (!Array.isArray(files)) return 0;
-  const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
-  const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
-  return uniqueLc.size;
+  const tree = await fetchSolutionsTree();
+  const wKey = `week-${String(weekNum).padStart(2, '0')}`;
+  return tree[username]?.[wKey]?.size || 0;
 }
 
 async function loadMembersData() {
