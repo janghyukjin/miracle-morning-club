@@ -218,6 +218,11 @@ code {
 
 <div class="container">
 
+  <div style="display:flex;justify-content:flex-end;margin-bottom:8px;gap:8px;">
+    <span id="rate-status" style="font-size:11px;color:var(--text-mute);align-self:center;"></span>
+    <button onclick="forceRefresh()" style="background:var(--bg-alt);border:1px solid var(--border);color:var(--text-soft);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;">🔄 새로고침</button>
+  </div>
+
   <div id="activity-loading" style="text-align:center; padding: 30px; color: var(--text-mute); font-size: 13px;">
     📡 GitHub에서 활동 불러오는 중...
   </div>
@@ -349,31 +354,55 @@ const CACHE_PREFIX = 'mmc_cache_';
 function dateKey(d) { return d.toISOString().slice(0, 10); }
 
 // ============ CACHED FETCH ============
-async function cachedFetch(url) {
+async function cachedFetch(url, opts = {}) {
   const cacheKey = CACHE_PREFIX + url;
+  if (!opts.bypass) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+      if (cached && Date.now() - cached.t < CACHE_TTL) {
+        return { ok: true, data: cached.data, cached: true };
+      }
+    } catch {}
+  }
   try {
-    const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
-    if (cached && Date.now() - cached.t < CACHE_TTL) {
-      return { ok: true, data: cached.data, cached: true };
+    // cache busting + no-cache로 브라우저 HTTP 캐시 우회
+    const bustUrl = url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
+    const res = await fetch(bustUrl, { cache: 'no-cache' });
+    // rate limit info 표시
+    const remaining = res.headers.get('x-ratelimit-remaining');
+    if (remaining !== null) {
+      const el = document.getElementById('rate-status');
+      if (el) el.textContent = `API ${remaining}/60`;
     }
-  } catch {}
-  try {
-    const res = await fetch(url);
     if (res.status === 403) {
-      // Rate limit 도달 — 만료된 캐시라도 사용
       const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
       if (cached) return { ok: true, data: cached.data, cached: true, stale: true };
       return { ok: false, rateLimited: true };
     }
     if (!res.ok) return { ok: false };
     const data = await res.json();
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), data }));
-    } catch {} // 용량 초과 등 무시
+    // 빈 배열은 캐시하지 않음 (rate limit으로 잘못 캐싱된 빈 데이터 방지)
+    if (Array.isArray(data) && data.length === 0 && url.includes('commits')) {
+      // commits만 빈 배열일 때 캐시 X (이상한 상태일 가능성)
+    } else {
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), data }));
+      } catch {}
+    }
     return { ok: true, data, cached: false };
   } catch {
     return { ok: false };
   }
+}
+
+function forceRefresh() {
+  // 모든 mmc_cache_ 키 삭제
+  const keys = Object.keys(localStorage).filter(k => k.startsWith(CACHE_PREFIX));
+  keys.forEach(k => localStorage.removeItem(k));
+  document.getElementById('activity-loading').innerHTML = '📡 GitHub에서 다시 불러오는 중...';
+  document.getElementById('activity-loading').style.display = 'block';
+  document.getElementById('activity-content').style.display = 'none';
+  loadActivity();
 }
 
 async function loadActivity() {
