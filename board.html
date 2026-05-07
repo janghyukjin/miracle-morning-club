@@ -226,11 +226,11 @@ code {
     <div class="dashboard">
       <div class="stat">
         <span class="stat-num" id="member-count">-</span>
-        <div class="stat-label">활동 멤버 (지난 30일)</div>
+        <div class="stat-label">클럽 멤버</div>
       </div>
       <div class="stat">
-        <span class="stat-num" id="commit-count">-</span>
-        <div class="stat-label">총 commit (지난 30일)</div>
+        <span class="stat-num" id="solutions-count">-</span>
+        <div class="stat-label">총 풀이 (모든 멤버 합)</div>
       </div>
     </div>
 
@@ -378,15 +378,18 @@ async function loadActivity() {
       commitList.push({ author, msg, date, url, avatar });
     });
 
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const recent30 = commitList.filter(c => new Date(c.date) > thirtyDaysAgo);
-    const activeMembers = new Set(recent30.map(c => c.author));
+    document.getElementById('member-count').textContent = Object.keys(memberData).length;
 
-    document.getElementById('member-count').textContent = activeMembers.size;
-    document.getElementById('commit-count').textContent = recent30.length;
+    // 멤버 카드 렌더링 (이 안에서 풀이 수 fetch)
+    await renderMemberCards(memberData);
 
-    renderMemberCards(memberData);
+    // 모든 멤버 풀이 합산 → 대시보드 통계 업데이트
+    const allSolutions = await Promise.all(
+      Object.keys(memberData).map(u => fetchSolutions(u))
+    );
+    const totalSolutions = allSolutions.reduce((sum, s) => sum + s.totalUnique, 0);
+    document.getElementById('solutions-count').textContent = totalSolutions;
+
     renderRecentCommits(commitList);
 
     document.getElementById('activity-loading').style.display = 'none';
@@ -400,77 +403,125 @@ async function loadActivity() {
   }
 }
 
-async function fetchSolutionsCount(username) {
+async function fetchSolutions(username) {
+  // 멤버의 풀이 폴더 fetch → { weeks: {weekName: [lc-numbers...]}, totalUnique: N, currentWeekCount: N }
   try {
     const res = await fetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}`);
-    if (!res.ok) return { weeks: {}, total: 0 };
+    if (!res.ok) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
     const items = await res.json();
     const weeks = {};
-    let total = 0;
-    for (const item of items) {
-      if (item.type === 'dir' && item.name.startsWith('week-')) {
-        const wRes = await fetch(item.url);
-        if (wRes.ok) {
-          const files = await wRes.json();
-          // .md, .py, .go 등 풀이 파일만 카운트 (LC 풀이는 lc-N-...)
-          const solutionFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
-          const uniqueProblems = new Set(solutionFiles.map(f => f.name.match(/^(lc-\d+)/i)?.[1]?.toLowerCase()).filter(Boolean));
-          weeks[item.name] = uniqueProblems.size;
-          total += uniqueProblems.size;
-        }
-      }
-    }
-    return { weeks, total };
-  } catch { return { weeks: {}, total: 0 }; }
+    const allLcNumbers = new Set();
+
+    const weekDirs = items.filter(i => i.type === 'dir' && /^week-\d+$/i.test(i.name));
+    await Promise.all(weekDirs.map(async dir => {
+      const wRes = await fetch(dir.url);
+      if (!wRes.ok) return;
+      const files = await wRes.json();
+      const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
+      const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
+      weeks[dir.name] = uniqueLc.size;
+      uniqueLc.forEach(n => allLcNumbers.add(n));
+    }));
+
+    // 이번주 풀이
+    const cw = getCurrentWeek();
+    const currentWeekKey = `week-${String(cw).padStart(2, '0')}`;
+    const currentWeekCount = weeks[currentWeekKey] || 0;
+
+    return { weeks, totalUnique: allLcNumbers.size, currentWeekCount, allLcNumbers };
+  } catch {
+    return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
+  }
+}
+
+function getCurrentWeek() {
+  const now = new Date();
+  const days = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
+  return Math.max(1, Math.min(26, Math.floor(days / 7) + 1));
 }
 
 async function renderMemberCards(memberData) {
   const container = document.getElementById('member-cards');
-  const sorted = Object.entries(memberData).sort((a, b) => b[1].total - a[1].total);
-  if (sorted.length === 0) {
+  const usernames = Object.keys(memberData);
+  if (usernames.length === 0) {
     container.innerHTML = '<div class="card" style="text-align: center; padding: 20px; color: var(--text-mute); font-size: 13px;">첫 commit을 기다리는 중...</div>';
     return;
   }
 
-  // 먼저 잔디만 즉시 렌더 (풀이 카운트는 비동기 로딩)
-  container.innerHTML = sorted.map(([username, data], idx) => `
-    <div class="card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:0;margin-bottom:14px;overflow:hidden;">
-      <div style="background:linear-gradient(135deg,#f0f7ff 0%,#fef3c7 100%);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
-        ${data.avatar
-          ? `<img src="${data.avatar}" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.1);">`
-          : `<div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.1);">${username[0]?.toUpperCase()||'?'}</div>`
-        }
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
-            <span style="font-size:15px;color:var(--primary);font-weight:800;">${username}</span>
-            ${idx === 0 ? '<span style="font-size:11px;background:var(--warm);color:white;padding:2px 8px;border-radius:10px;font-weight:700;">🥇 1위</span>' : ''}
-            ${idx === 1 ? '<span style="font-size:11px;background:#cbd5e0;color:#1a202c;padding:2px 8px;border-radius:10px;font-weight:700;">🥈 2위</span>' : ''}
-            ${idx === 2 ? '<span style="font-size:11px;background:#d97706;color:white;padding:2px 8px;border-radius:10px;font-weight:700;">🥉 3위</span>' : ''}
-          </div>
-          <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">
-            🔥 commit ${data.total}회 · 📅 ${getActiveDayCount(data.byDate)}일 활동 · <span id="solcnt-${username}">📚 풀이 로딩...</span>
-          </div>
-        </div>
-        <a href="https://github.com/${REPO}/tree/main/solutions/${username}" target="_blank" rel="noopener" style="background:white;color:var(--accent);padding:6px 10px;border-radius:6px;text-decoration:none;font-size:11.5px;font-weight:700;border:1px solid var(--border);">📂 폴더</a>
-      </div>
-      <div style="padding:12px 16px;">
-        <div style="font-size:11px;color:var(--text-mute);margin-bottom:6px;">🌱 26주 잔디</div>
-        <div style="display:flex;gap:2px;overflow-x:auto;padding-bottom:2px;">
-          ${render26WeekHeatmap(data.byDate)}
-        </div>
-      </div>
-    </div>
-  `).join('');
+  container.innerHTML = '<div class="card" style="text-align: center; padding: 20px; color: var(--text-mute); font-size: 13px;">📚 풀이 데이터 불러오는 중...</div>';
 
-  // 풀이 카운트 비동기 로딩
-  for (const [username] of sorted) {
-    fetchSolutionsCount(username).then(({ total }) => {
-      const el = document.getElementById(`solcnt-${username}`);
-      if (el) {
-        el.textContent = `📚 풀이 ${total}문제`;
-      }
-    });
-  }
+  // 모든 멤버 풀이 데이터 fetch
+  const memberSolutions = await Promise.all(
+    usernames.map(async u => ({ username: u, data: memberData[u], solutions: await fetchSolutions(u) }))
+  );
+
+  // 풀이 문제 수 기준 정렬 (실제 진도 = 핵심 지표)
+  memberSolutions.sort((a, b) => {
+    if (b.solutions.totalUnique !== a.solutions.totalUnique) return b.solutions.totalUnique - a.solutions.totalUnique;
+    if (b.solutions.currentWeekCount !== a.solutions.currentWeekCount) return b.solutions.currentWeekCount - a.solutions.currentWeekCount;
+    return getActiveDayCount(b.data.byDate) - getActiveDayCount(a.data.byDate);
+  });
+
+  const cw = getCurrentWeek();
+  const weekTarget = 7; // 주간 목표 LC 수
+
+  container.innerHTML = memberSolutions.map(({ username, data, solutions }, idx) => {
+    const weekProgress = Math.min(100, Math.round((solutions.currentWeekCount / weekTarget) * 100));
+    const totalProgress = Math.min(100, Math.round((solutions.totalUnique / 180) * 100));
+
+    return `
+      <div class="card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:0;margin-bottom:14px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#f0f7ff 0%,#fef3c7 100%);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
+          ${data.avatar
+            ? `<img src="${data.avatar}" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.1);">`
+            : `<div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.1);">${username[0]?.toUpperCase()||'?'}</div>`
+          }
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+              <span style="font-size:15px;color:var(--primary);font-weight:800;">${username}</span>
+              ${idx === 0 && solutions.totalUnique > 0 ? '<span style="font-size:11px;background:var(--warm);color:white;padding:2px 8px;border-radius:10px;font-weight:700;">🥇 1위</span>' : ''}
+              ${idx === 1 && solutions.totalUnique > 0 ? '<span style="font-size:11px;background:#cbd5e0;color:#1a202c;padding:2px 8px;border-radius:10px;font-weight:700;">🥈 2위</span>' : ''}
+              ${idx === 2 && solutions.totalUnique > 0 ? '<span style="font-size:11px;background:#d97706;color:white;padding:2px 8px;border-radius:10px;font-weight:700;">🥉 3위</span>' : ''}
+            </div>
+            <div style="font-size:11.5px;color:var(--text-mute);margin-top:2px;">
+              📚 총 ${solutions.totalUnique}문제 · 📅 ${getActiveDayCount(data.byDate)}일 활동
+            </div>
+          </div>
+          <a href="https://github.com/${REPO}/tree/main/solutions/${username}" target="_blank" rel="noopener" style="background:white;color:var(--accent);padding:6px 10px;border-radius:6px;text-decoration:none;font-size:11.5px;font-weight:700;border:1px solid var(--border);">📂 폴더</a>
+        </div>
+
+        <div style="padding:14px 16px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <div style="font-size:11px;color:var(--text-mute);margin-bottom:4px;">이번주 (Week ${cw})</div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:18px;font-weight:800;color:${weekProgress >= 70 ? 'var(--green)' : weekProgress >= 40 ? 'var(--warm)' : 'var(--text-soft)'};">${solutions.currentWeekCount}</span>
+                <span style="font-size:12px;color:var(--text-mute);">/ ${weekTarget}</span>
+              </div>
+              <div style="background:var(--bg-alt);height:5px;border-radius:3px;margin-top:4px;overflow:hidden;">
+                <div style="background:${weekProgress >= 70 ? 'var(--green)' : weekProgress >= 40 ? 'var(--warm)' : 'var(--accent)'};height:100%;width:${weekProgress}%;transition:width 0.4s;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text-mute);margin-bottom:4px;">전체 진도 (목표 180)</div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:18px;font-weight:800;color:var(--primary);">${solutions.totalUnique}</span>
+                <span style="font-size:12px;color:var(--text-mute);">/ 180</span>
+              </div>
+              <div style="background:var(--bg-alt);height:5px;border-radius:3px;margin-top:4px;overflow:hidden;">
+                <div style="background:var(--accent);height:100%;width:${totalProgress}%;transition:width 0.4s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:11px;color:var(--text-mute);margin-bottom:6px;">🌱 26주 잔디</div>
+          <div style="display:flex;gap:2px;overflow-x:auto;padding-bottom:2px;">
+            ${render26WeekHeatmap(data.byDate)}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function getActiveDayCount(byDate) {
