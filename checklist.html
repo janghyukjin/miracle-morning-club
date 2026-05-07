@@ -984,20 +984,41 @@ function render() {
 // ============ MEMBERS PREVIEW (다른 멤버 진도) ============
 const REPO = 'janghyukjin/miracle-morning-club';
 const MEMBERS = ['janghyukjin', 'seongjae-min', 'jjhooon'];
+const CACHE_TTL = 5 * 60 * 1000; // 5분
+const CACHE_PREFIX = 'mmc_cache_';
 let memberCache = null;
+
+async function cachedFetch(url) {
+  const key = CACHE_PREFIX + url;
+  try {
+    const c = JSON.parse(localStorage.getItem(key) || 'null');
+    if (c && Date.now() - c.t < CACHE_TTL) return { ok: true, data: c.data };
+  } catch {}
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      if (res.status === 403) {
+        const c = JSON.parse(localStorage.getItem(key) || 'null');
+        if (c) return { ok: true, data: c.data };
+      }
+      return { ok: false };
+    }
+    const data = await res.json();
+    try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), data })); } catch {}
+    return { ok: true, data };
+  } catch { return { ok: false }; }
+}
 
 async function fetchMemberSolutions(username, weekNum) {
   // 이번주 풀이 파일 수 fetch
-  try {
-    const wPath = `week-${String(weekNum).padStart(2, '0')}`;
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}/${wPath}`);
-    if (!res.ok) return 0;
-    const files = await res.json();
-    if (!Array.isArray(files)) return 0;
-    const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
-    const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
-    return uniqueLc.size;
-  } catch { return 0; }
+  const wPath = `week-${String(weekNum).padStart(2, '0')}`;
+  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}/${wPath}`);
+  if (!r.ok) return 0;
+  const files = r.data;
+  if (!Array.isArray(files)) return 0;
+  const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
+  const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
+  return uniqueLc.size;
 }
 
 async function loadMembersData() {

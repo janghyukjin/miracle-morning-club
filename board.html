@@ -343,8 +343,38 @@ git push origin main</pre>
 <script>
 const REPO = 'janghyukjin/miracle-morning-club';
 const START_DATE = new Date(2026, 4, 8);
+const CACHE_TTL = 5 * 60 * 1000; // 5분
+const CACHE_PREFIX = 'mmc_cache_';
 
 function dateKey(d) { return d.toISOString().slice(0, 10); }
+
+// ============ CACHED FETCH ============
+async function cachedFetch(url) {
+  const cacheKey = CACHE_PREFIX + url;
+  try {
+    const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    if (cached && Date.now() - cached.t < CACHE_TTL) {
+      return { ok: true, data: cached.data, cached: true };
+    }
+  } catch {}
+  try {
+    const res = await fetch(url);
+    if (res.status === 403) {
+      // Rate limit 도달 — 만료된 캐시라도 사용
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+      if (cached) return { ok: true, data: cached.data, cached: true, stale: true };
+      return { ok: false, rateLimited: true };
+    }
+    if (!res.ok) return { ok: false };
+    const data = await res.json();
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), data }));
+    } catch {} // 용량 초과 등 무시
+    return { ok: true, data, cached: false };
+  } catch {
+    return { ok: false };
+  }
+}
 
 async function loadActivity() {
   try {
@@ -353,10 +383,21 @@ async function loadActivity() {
     const sinceISO = since.toISOString();
 
     let allCommits = [];
+    let usedStaleCache = false;
     for (let page = 1; page <= 5; page++) {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100&page=${page}`);
-      if (!res.ok) break;
-      const batch = await res.json();
+      const r = await cachedFetch(`https://api.github.com/repos/${REPO}/commits?since=${sinceISO}&per_page=100&page=${page}`);
+      if (!r.ok) {
+        if (r.rateLimited) {
+          document.getElementById('activity-loading').innerHTML = `
+            <p style="color: var(--warm); font-size: 13px;">⏳ GitHub API rate limit 도달</p>
+            <p style="color: var(--text-mute); font-size: 12px; margin-top: 6px;">시간당 60 요청 제한. 약 1시간 후 자동 복구됩니다.</p>
+          `;
+          return;
+        }
+        break;
+      }
+      if (r.stale) usedStaleCache = true;
+      const batch = r.data;
       if (batch.length === 0) break;
       allCommits = allCommits.concat(batch);
       if (batch.length < 100) break;
@@ -405,33 +446,31 @@ async function loadActivity() {
 
 async function fetchSolutions(username) {
   // 멤버의 풀이 폴더 fetch → { weeks: {weekName: [lc-numbers...]}, totalUnique: N, currentWeekCount: N }
-  try {
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}`);
-    if (!res.ok) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
-    const items = await res.json();
-    const weeks = {};
-    const allLcNumbers = new Set();
+  const r = await cachedFetch(`https://api.github.com/repos/${REPO}/contents/solutions/${username}`);
+  if (!r.ok) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
+  const items = r.data;
+  if (!Array.isArray(items)) return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
+  const weeks = {};
+  const allLcNumbers = new Set();
 
-    const weekDirs = items.filter(i => i.type === 'dir' && /^week-\d+$/i.test(i.name));
-    await Promise.all(weekDirs.map(async dir => {
-      const wRes = await fetch(dir.url);
-      if (!wRes.ok) return;
-      const files = await wRes.json();
-      const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
-      const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
-      weeks[dir.name] = uniqueLc.size;
-      uniqueLc.forEach(n => allLcNumbers.add(n));
-    }));
+  const weekDirs = items.filter(i => i.type === 'dir' && /^week-\d+$/i.test(i.name));
+  await Promise.all(weekDirs.map(async dir => {
+    const wr = await cachedFetch(dir.url);
+    if (!wr.ok) return;
+    const files = wr.data;
+    if (!Array.isArray(files)) return;
+    const lcFiles = files.filter(f => f.type === 'file' && /^lc-\d+/i.test(f.name));
+    const uniqueLc = new Set(lcFiles.map(f => f.name.match(/^lc-(\d+)/i)?.[1]).filter(Boolean));
+    weeks[dir.name] = uniqueLc.size;
+    uniqueLc.forEach(n => allLcNumbers.add(n));
+  }));
 
-    // 이번주 풀이
-    const cw = getCurrentWeek();
-    const currentWeekKey = `week-${String(cw).padStart(2, '0')}`;
-    const currentWeekCount = weeks[currentWeekKey] || 0;
+  // 이번주 풀이
+  const cw = getCurrentWeek();
+  const currentWeekKey = `week-${String(cw).padStart(2, '0')}`;
+  const currentWeekCount = weeks[currentWeekKey] || 0;
 
-    return { weeks, totalUnique: allLcNumbers.size, currentWeekCount, allLcNumbers };
-  } catch {
-    return { weeks: {}, totalUnique: 0, currentWeekCount: 0, allLcNumbers: new Set() };
-  }
+  return { weeks, totalUnique: allLcNumbers.size, currentWeekCount, allLcNumbers };
 }
 
 function getCurrentWeek() {
@@ -580,6 +619,15 @@ function renderRecentCommits(commitList) {
 }
 
 loadActivity();
+
+// 탭 다시 활성화될 때 캐시 만료됐으면 새로고침
+let lastLoadTime = Date.now();
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && Date.now() - lastLoadTime > CACHE_TTL) {
+    lastLoadTime = Date.now();
+    loadActivity();
+  }
+});
 </script>
 
 </body>
