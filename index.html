@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="미라클 모닝 클럽 - 6개월 알고리즘 + 영어 마스터 로드맵">
+<title>🌅 미라클 모닝 클럽</title>
+<style>
+:root {
+  --primary: #0a2540;
+  --accent: #1976d2;
+  --accent-light: #eff6ff;
+  --warm: #f59e0b;
+  --warm-light: #fffbeb;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --bg: #ffffff;
+  --bg-alt: #f9fafb;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-soft: #4a5568;
+  --text-mute: #718096;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 15px;
+}
+
+/* ============ HEADER / NAV ============ */
+header.nav {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 12px 20px;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-links { display: none; gap: 22px; }
+.nav-links a {
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+.nav-links a:hover { color: var(--accent); }
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+}
+
+/* ============ HERO ============ */
+.hero {
+  padding: 80px 20px 60px;
+  text-align: center;
+  background: linear-gradient(135deg, #f0f7ff 0%, #fef3c7 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(25,118,210,0.08) 0%, transparent 60%),
+              radial-gradient(circle at 80% 70%, rgba(245,158,11,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-emoji {
+  font-size: 60px;
+  margin-bottom: 12px;
+  display: block;
+  position: relative;
+}
+.hero h1 {
+  font-size: 36px;
+  color: var(--primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+.hero .tagline {
+  font-size: 17px;
+  color: var(--text-soft);
+  margin-bottom: 28px;
+  position: relative;
+}
+.hero-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+.chip {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+@media (min-width: 768px) {
+  .hero { padding: 120px 20px 80px; }
+  .hero-emoji { font-size: 80px; }
+  .hero h1 { font-size: 52px; }
+  .hero .tagline { font-size: 19px; }
+}
+
+/* ============ CONTAINER ============ */
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+.container-narrow { max-width: 720px; }
+
+section { padding: 50px 20px; }
+section.alt { background: var(--bg-alt); }
+
+.section-inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+h2.section-title {
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 14px;
+}
+h2.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 5px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.section-sub {
+  color: var(--text-soft);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+/* ============ STATS ============ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+@media (min-width: 768px) {
+  .stats { grid-template-columns: repeat(4, 1fr); }
+}
+.stat {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-top: 4px;
+}
+
+/* ============ CARDS ============ */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin: 14px 0;
+}
+.card h3 {
+  color: var(--primary);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.card-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13.5px;
+  margin: 4px 0;
+}
+.card-row .day {
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 50px;
+}
+
+.guideline-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+@media (min-width: 768px) {
+  .guideline-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.guideline {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+.guideline strong { color: var(--primary); display: block; margin-bottom: 4px; font-size: 14px; }
+.guideline p { color: var(--text-soft); font-size: 13px; }
+
+/* ============ TIMELINE ============ */
+.phase-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+@media (min-width: 768px) {
+  .phase-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.phase {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.phase::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent);
+}
+.phase.p2::before { background: var(--warm); }
+.phase.p3::before { background: var(--green); }
+.phase.p4::before { background: #8b5cf6; }
+.phase-num {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.phase.p2 .phase-num { background: var(--warm); }
+.phase.p3 .phase-num { background: var(--green); }
+.phase.p4 .phase-num { background: #8b5cf6; }
+.phase h3 {
+  color: var(--primary);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.phase .phase-period {
+  color: var(--text-mute);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.phase ul {
+  padding-left: 18px;
+  color: var(--text-soft);
+  font-size: 13.5px;
+}
+.phase ul li { margin: 4px 0; }
+
+/* ============ TABLE ============ */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin: 16px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  background: var(--primary);
+  color: white;
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+td {
+  border-top: 1px solid var(--border);
+  padding: 10px 12px;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: var(--bg-alt); }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 4px;
+}
+.badge-easy { background: #d1fae5; color: #065f46; }
+.badge-med { background: #fef3c7; color: #92400e; }
+.badge-hard { background: #fee2e2; color: #991b1b; }
+.badge-info { background: #dbeafe; color: #1e40af; }
+.star { color: var(--warm); font-weight: 700; }
+
+/* ============ CALLOUTS ============ */
+.callout {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin: 16px 0;
+  font-size: 13.5px;
+}
+.callout-warn { background: var(--warm-light); border-left-color: var(--warm); }
+.callout-success { background: var(--green-light); border-left-color: var(--green); }
+.callout strong { color: var(--primary); }
+
+/* ============ DAY SCHEDULE ============ */
+.schedule-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin: 14px 0;
+  position: relative;
+}
+.schedule-card.standard {
+  border-color: var(--warm);
+  background: linear-gradient(to bottom, #fffbeb 0%, white 60%);
+}
+.schedule-card.standard::after {
+  content: "⭐ 추천";
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: var(--warm);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+.schedule-card h4 {
+  color: var(--primary);
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+.schedule-card .meta {
+  color: var(--text-mute);
+  font-size: 12.5px;
+  margin-bottom: 12px;
+}
+.schedule-block {
+  background: var(--bg-alt);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  white-space: pre;
+  overflow-x: auto;
+  color: #24292e;
+}
+
+/* ============ PROBLEMS ============ */
+.problem-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+.problem-card .problem-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.problem-card .problem-link {
+  font-size: 12px;
+  color: var(--accent);
+  word-break: break-all;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+}
+.problem-card ul {
+  padding-left: 20px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--primary);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+footer p { font-size: 13px; opacity: 0.85; }
+footer .download {
+  display: inline-block;
+  margin-top: 16px;
+  background: white;
+  color: var(--primary);
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ============ FAB (back to top) ============ */
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 90;
+}
+.fab.show { opacity: 1; pointer-events: auto; }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">🌅 미라클 모닝 클럽</a>
+    <nav class="nav-links">
+      <a href="#guidelines">가이드라인</a>
+      <a href="#problems">문제집</a>
+      <a href="#schedule">시간표</a>
+      <a href="#phases">로드맵</a>
+      <a href="#tomorrow">내일 시작</a>
+      <a href="#tools">도구</a>
+      <a href="checklist.html" style="color: var(--accent); font-weight: 700;">📋 체크리스트</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <span class="hero-emoji">🌅</span>
+  <h1>미라클 모닝 클럽</h1>
+  <p class="tagline">6개월 알고리즘 + 영어 마스터 로드맵</p>
+  <div class="hero-meta">
+    <span class="chip">📅 2026.05.08 ~ 2026.11.08</span>
+    <span class="chip">⏱️ 주 11시간</span>
+    <span class="chip">📚 NeetCode 150</span>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="alt">
+  <div class="section-inner">
+    <h2 class="section-title">한눈에 보기</h2>
+    <p class="section-sub">26주 동안 함께 가는 학습 목표</p>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">26주</span>
+        <span class="stat-label">총 학습 기간</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">11h</span>
+        <span class="stat-label">주간 학습 시간</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">180+</span>
+        <span class="stat-label">총 풀이 문제</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">25+</span>
+        <span class="stat-label">모의 인터뷰</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUIDELINES ============ -->
+<section id="guidelines">
+  <div class="section-inner">
+    <h2 class="section-title">클럽 운영 가이드라인</h2>
+    <p class="section-sub">학원 가이드라인 수준의 깔끔한 기준</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>항목</th><th>기준</th></tr>
+        <tr><td>학습 기간</td><td>26주 (6개월)</td></tr>
+        <tr><td>주간 시간</td><td>평일 1h × 5 + 토요일 5h + 일요일 휴식 = <strong>11h</strong></td></tr>
+        <tr><td>주간 LC 문제</td><td>7문제 (Easy 0 / Medium 5-6 / Hard 1-2)</td></tr>
+        <tr><td>모의 인터뷰</td><td>주 1회 (Week 4부터)</td></tr>
+        <tr><td>커리큘럼</td><td>NeetCode 150 + 회사 빈출 50</td></tr>
+        <tr><td>최종 목표</td><td>LC Medium 150+ / Hard 30+ / 영어 IH</td></tr>
+        <tr><td>출석 기준</td><td>주 5일 이상 학습 인증 (그룹챗 공유)</td></tr>
+      </table>
+    </div>
+
+    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">3가지 원칙</h3>
+    <div class="guideline-grid">
+      <div class="guideline">
+        <strong>① 주 7문제 못 풀어도 OK</strong>
+        <p>어려운 문제 1개에 2-3시간 쓰는 것도 정상. 양보다 이해.</p>
+      </div>
+      <div class="guideline">
+        <strong>② 일요일 무조건 휴식</strong>
+        <p>번아웃 방지가 합격보다 우선. 데이트, 가족, 여가 자유.</p>
+      </div>
+      <div class="guideline">
+        <strong>③ 2주마다 페이스 점검</strong>
+        <p>너무 빡세면 강도 낮추고, 여유 있으면 늘리기.</p>
+      </div>
+      <div class="guideline">
+        <strong>④ 6개월에 못 끝내도 OK</strong>
+        <p>7-8개월에 끝내고 합격이 4개월에 번아웃보다 낫다.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>완주 통계 참고</strong> · 직장 다니며 빅테크 합격한 사례 평균 준비 기간 6-9개월,
+      주간 학습 10-15h가 가장 흔함. 21h+ 페이스는 풀타임 준비자(퇴사) 또는 학생 비중.
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEMS ============ -->
+<section class="alt" id="problems">
+  <div class="section-inner">
+    <h2 class="section-title">LeetCode 문제집 선택</h2>
+    <p class="section-sub">여러 컬렉션이 있지만, NeetCode 150이 메인</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>컬렉션</th><th>문제 수</th><th>추천</th></tr>
+        <tr><td>Blind 75</td><td>75</td><td>핵심 패턴 빠른 워밍업</td></tr>
+        <tr style="background:#fef3c7"><td><strong>NeetCode 150</strong> <span class="star">★</span></td><td><strong>150</strong></td><td><strong>메인 커리큘럼</strong></td></tr>
+        <tr><td>LC Top Interview 150</td><td>150</td><td>NC150 대안 (70% 겹침)</td></tr>
+        <tr><td>NeetCode 250</td><td>250</td><td>NC150 후 보강용</td></tr>
+        <tr><td>회사 태그 (Premium)</td><td>회사별</td><td>최근 6개월 빈출</td></tr>
+      </table>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>추천 학습 순서</strong><br>
+      Week 1-20: NeetCode 150 완주 (모든 패턴 1회 이상)<br>
+      Week 17-26: LC Premium 회사 태그 50-100문제 추가<br>
+      Week 21-26: 약점 영역 NeetCode 250에서 보강
+    </div>
+
+    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">NeetCode 150 카테고리 분포</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>카테고리</th><th>문제 수</th><th>중요도</th></tr>
+        <tr><td>Arrays &amp; Hashing</td><td>9</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Two Pointers</td><td>5</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Sliding Window</td><td>6</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Stack</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Binary Search</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Linked List</td><td>11</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Trees</td><td>15</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Tries</td><td>3</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Heap / Priority Queue</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Backtracking</td><td>9</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Graphs</td><td>13</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Advanced Graphs</td><td>6</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>1-D DP</td><td>12</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>2-D DP</td><td>11</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Greedy</td><td>8</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Intervals</td><td>6</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Math &amp; Geometry</td><td>8</td><td><span class="star">★★</span></td></tr>
+        <tr><td>Bit Manipulation</td><td>7</td><td><span class="star">★★</span></td></tr>
+        <tr style="background:var(--primary); color:white;"><td style="color:white"><strong>합계</strong></td><td style="color:white"><strong>150</strong></td><td>-</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCHEDULE ============ -->
+<section id="schedule">
+  <div class="section-inner">
+    <h2 class="section-title">주간 시간표</h2>
+    <p class="section-sub">평일 가볍게 + 토요일 집중 + 일요일 휴식</p>
+
+    <div class="schedule-card standard">
+      <h4>🟡 표준 옵션 — 11h/주</h4>
+      <div class="meta">완주 기간: 6-7개월 · 일반 직장인 추천</div>
+
+      <strong style="color: var(--primary); font-size: 14px;">평일 (월-금) 매일 1시간</strong>
+      <div class="schedule-block">21:00 - 21:30  LeetCode 1문제
+21:30 - 22:00  영어 (발표 녹음 or 듣기)</div>
+
+      <div style="margin-top: 16px; padding: 12px 14px; background: rgba(25,118,210,0.08); border-radius: 8px; border-left: 3px solid var(--accent);">
+        <strong style="color: var(--primary); font-size: 13px; display: block; margin-bottom: 8px;">📌 주말 집중일 — 토요일 또는 일요일 중 본인이 선택</strong>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; background: white; border-radius: 6px; border: 1px solid var(--border); font-size: 13px;">
+            <input type="radio" name="focus-day" value="sat" checked id="day-sat"> 토요일 집중 (일요일 휴식)
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; background: white; border-radius: 6px; border: 1px solid var(--border); font-size: 13px;">
+            <input type="radio" name="focus-day" value="sun" id="day-sun"> 일요일 집중 (토요일 휴식)
+          </label>
+        </div>
+      </div>
+
+      <strong id="focus-day-label" style="color: var(--primary); font-size: 14px; margin-top: 14px; display: block;">토요일 — 집중일 (5-6시간)</strong>
+      <div class="schedule-block">09:30 - 11:30  LeetCode 2문제 (Hard 1 + Medium 1)
+11:30 - 12:30  영어 모의 인터뷰 (Pramp)
+   점심
+14:00 - 15:30  System Design 학습
+15:30 - 16:00  주간 복습</div>
+
+      <strong id="rest-day-label" style="color: var(--primary); font-size: 14px; margin-top: 14px; display: block;">일요일 — 휴식 (0-30분)</strong>
+      <p style="font-size: 13px; color: var(--text-soft); margin-top: 4px;">데이트 / 가족 / 여가. 번아웃 방지가 핵심.</p>
+    </div>
+
+    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">강도 선택지</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>옵션</th><th>주간</th><th>완주</th><th>대상</th></tr>
+        <tr><td>가벼움</td><td>8h</td><td>8-9개월</td><td>회사 매우 바쁨</td></tr>
+        <tr style="background:#fef3c7"><td><strong>표준</strong> ★</td><td><strong>11h</strong></td><td><strong>6-7개월</strong></td><td><strong>일반 직장인</strong></td></tr>
+        <tr><td>빡셈</td><td>16h+</td><td>5-6개월</td><td>풀타임 준비</td></tr>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>합격에 필요한 건 페이스가 아니라 꾸준함</strong> · 매일 1시간 6개월이 매일 3시간 한 달보다 낫다.
+    </div>
+  </div>
+</section>
+
+<!-- ============ PHASES ============ -->
+<section class="alt" id="phases">
+  <div class="section-inner">
+    <h2 class="section-title">26주 로드맵</h2>
+    <p class="section-sub">4단계 Phase로 구성</p>
+
+    <div class="phase-grid">
+      <div class="phase">
+        <span class="phase-num">PHASE 1</span>
+        <h3>기반 다지기</h3>
+        <div class="phase-period">Week 1-4 · 5/8 ~ 6/4</div>
+        <ul>
+          <li>Arrays &amp; Hashing 마스터</li>
+          <li>Sliding Window 완전 정복</li>
+          <li>Binary Search + Stack</li>
+          <li>Linked List + 첫 모의 인터뷰</li>
+          <li>본인 프로젝트 5분 영어 스크립트</li>
+        </ul>
+      </div>
+
+      <div class="phase p2">
+        <span class="phase-num">PHASE 2</span>
+        <h3>패턴 마스터</h3>
+        <div class="phase-period">Week 5-12 · 6/5 ~ 7/30</div>
+        <ul>
+          <li>Trees &amp; Tries</li>
+          <li>Heap + Backtracking</li>
+          <li>Graphs (가장 중요)</li>
+          <li>Advanced Graphs + 1D DP</li>
+          <li>STAR 답변 영어 5개 작성</li>
+        </ul>
+      </div>
+
+      <div class="phase p3">
+        <span class="phase-num">PHASE 3</span>
+        <h3>Hard + System Design</h3>
+        <div class="phase-period">Week 13-20 · 7/31 ~ 9/24</div>
+        <ul>
+          <li>1D DP 마스터</li>
+          <li>2D DP</li>
+          <li>Greedy + Intervals + Math</li>
+          <li>빅테크 빈출 Hard 6 + Design 문제</li>
+          <li>본인 프로젝트 30분 영어 발표 완성</li>
+        </ul>
+      </div>
+
+      <div class="phase p4">
+        <span class="phase-num">PHASE 4</span>
+        <h3>인터뷰 준비 + 지원</h3>
+        <div class="phase-period">Week 21-26 · 9/25 ~ 11/8</div>
+        <ul>
+          <li>회사 태그 100문제 집중</li>
+          <li>모의 onsite 시뮬레이션 주 1회</li>
+          <li>3-5개사 동시 지원</li>
+          <li>인터뷰 진행 + 라운드별 복기</li>
+          <li>오퍼 협상</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOMORROW ============ -->
+<section id="tomorrow">
+  <div class="section-inner">
+    <h2 class="section-title">내일 (5/8) 시작 문제</h2>
+    <p class="section-sub">첫날부터 막막하지 않게</p>
+
+    <div class="problem-card">
+      <div class="problem-title">① LC 49 — Group Anagrams <span class="badge badge-med">Medium</span></div>
+      <div class="problem-link">https://leetcode.com/problems/group-anagrams/</div>
+      <ul>
+        <li>패턴: HashMap + 정렬 키 또는 카운트 키</li>
+        <li>풀이 가이드:
+          <ol style="margin-top:6px;">
+            <li>각 string을 sorted(string) 또는 char count tuple로 키화</li>
+            <li>Map[key][]string 으로 group</li>
+            <li>두 가지 풀이 비교 (정렬 vs 카운트)</li>
+          </ol>
+        </li>
+      </ul>
+    </div>
+
+    <div class="problem-card">
+      <div class="problem-title">② LC 347 — Top K Frequent Elements <span class="badge badge-med">Medium</span></div>
+      <div class="problem-link">https://leetcode.com/problems/top-k-frequent-elements/</div>
+      <ul>
+        <li>패턴: HashMap + Heap 또는 Bucket Sort</li>
+        <li>풀이 A — Heap: O(n log k)</li>
+        <li>풀이 B — Bucket Sort: O(n)</li>
+        <li>두 풀이 모두 작성하고 비교</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>풀이 후 자가 점검 5개</strong><br>
+      ① 시간복잡도 정확히 분석했는가? ② 공간복잡도 정확히 분석했는가? ③ Edge case 처리했는가? ④ 본인 주력 언어 관용 표현 썼는가? ⑤ 영어로 풀이 30초 설명할 수 있는가?
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOLS ============ -->
+<section class="alt" id="tools">
+  <div class="section-inner">
+    <h2 class="section-title">도구 / 자원</h2>
+    <p class="section-sub">필수 + 선택적 도구</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>도구</th><th>가격</th><th>용도</th></tr>
+        <tr><td>NeetCode (neetcode.io)</td><td>무료</td><td>NC150 + 영상 풀이</td></tr>
+        <tr><td>LeetCode Premium</td><td>$35/월</td><td>회사 태그 (Phase 4부터)</td></tr>
+        <tr><td>Pramp</td><td>무료</td><td>영어 모의 인터뷰</td></tr>
+        <tr><td>Notion / Obsidian</td><td>무료</td><td>풀이 노트</td></tr>
+        <tr><td>Otter.ai</td><td>무료</td><td>영어 녹음 + transcription</td></tr>
+        <tr><td>ByteByteGo YouTube</td><td>무료</td><td>System Design 영어</td></tr>
+        <tr><td>Educative.io System Design</td><td>$59/년</td><td>체계적 학습</td></tr>
+        <tr><td>Interview Kickstart</td><td>$5-8K (선택)</td><td>1:1 멘토링</td></tr>
+        <tr><td>Cracking the Coding Interview</td><td>$30 책</td><td>인터뷰 가이드</td></tr>
+        <tr><td>System Design Interview Vol 1</td><td>$30 책</td><td>System Design 입문</td></tr>
+      </table>
+    </div>
+
+    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">스터디 출석 인증 가이드</h3>
+    <div class="card">
+      <ul style="padding-left: 20px; color: var(--text-soft); font-size: 13.5px;">
+        <li><strong>매일</strong>: 풀이 스크린샷 + 시간복잡도 한 줄 요약을 그룹챗 공유</li>
+        <li><strong>토요일</strong>: 모의 인터뷰 후기 + 영어 녹음 1분 공유</li>
+        <li><strong>2주마다</strong>: 페이스 점검 회의 (15분)</li>
+        <li><strong>월 1회</strong>: 모의 onsite 시뮬레이션 (스터디원끼리)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <p>🌅 미라클 모닝 클럽 — 매일 한 걸음씩, 6개월 후 함께</p>
+  <p style="margin-top: 6px; font-size: 12px;">시작: 2026.05.08 · 종료 목표: 2026.11.08</p>
+  <a href="../미라클_모닝_클럽_로드맵.pdf" class="download" download>📄 PDF 다운로드</a>
+</footer>
+
+<a href="#top" class="fab" id="fab">↑</a>
+
+<script>
+const fab = document.getElementById('fab');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 500) fab.classList.add('show');
+  else fab.classList.remove('show');
+});
+
+// 주말 집중일 토글 (토요일 ↔ 일요일)
+const focusLabel = document.getElementById('focus-day-label');
+const restLabel = document.getElementById('rest-day-label');
+const SAVED_DAY = localStorage.getItem('mmc_focus_day') || 'sat';
+document.getElementById('day-' + SAVED_DAY).checked = true;
+function updateFocusDay(value) {
+  if (value === 'sat') {
+    focusLabel.textContent = '토요일 — 집중일 (5-6시간)';
+    restLabel.textContent = '일요일 — 휴식 (0-30분)';
+  } else {
+    focusLabel.textContent = '일요일 — 집중일 (5-6시간)';
+    restLabel.textContent = '토요일 — 휴식 (0-30분)';
+  }
+  localStorage.setItem('mmc_focus_day', value);
+}
+updateFocusDay(SAVED_DAY);
+document.querySelectorAll('input[name="focus-day"]').forEach(r => {
+  r.addEventListener('change', e => updateFocusDay(e.target.value));
+});
+</script>
+
+</body>
+</html>

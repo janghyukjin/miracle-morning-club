@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 미라클 모닝 클럽 — 체크리스트</title>
+<style>
+:root {
+  --primary: #0a2540;
+  --accent: #1976d2;
+  --accent-light: #eff6ff;
+  --warm: #f59e0b;
+  --warm-light: #fffbeb;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --red: #ef4444;
+  --bg: #ffffff;
+  --bg-alt: #f9fafb;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-soft: #4a5568;
+  --text-mute: #718096;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg-alt);
+  font-size: 15px;
+  padding-bottom: 80px;
+}
+
+/* ============ HEADER ============ */
+header.nav {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 12px 20px;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--primary);
+  text-decoration: none;
+}
+.nav-back {
+  font-size: 14px;
+  color: var(--text-soft);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ============ HERO ============ */
+.hero {
+  padding: 30px 20px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #f0f7ff 0%, #fef3c7 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 26px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.hero p { color: var(--text-soft); font-size: 14px; }
+
+/* ============ DASHBOARD ============ */
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (min-width: 600px) {
+  .dashboard { grid-template-columns: repeat(4, 1fr); }
+}
+.dash-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.dash-num {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+  display: block;
+  line-height: 1.2;
+}
+.dash-label {
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-top: 2px;
+}
+.dash-card.streak .dash-num { color: var(--warm); }
+.dash-card.streak::before { content: "🔥 "; }
+.dash-card.solved .dash-num { color: var(--green); }
+
+/* ============ PROGRESS BAR ============ */
+.progress-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.progress-title {
+  font-size: 14px;
+  color: var(--text-soft);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.progress-title strong { color: var(--primary); font-size: 15px; }
+.progress-bar {
+  background: var(--bg-alt);
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-fill {
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s;
+}
+.phase-progress {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+@media (min-width: 600px) {
+  .phase-progress { grid-template-columns: repeat(4, 1fr); }
+}
+.phase-mini {
+  background: var(--bg-alt);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.phase-mini-label {
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-bottom: 4px;
+}
+.phase-mini-bar {
+  background: var(--border);
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.phase-mini-fill {
+  background: var(--accent);
+  height: 100%;
+  transition: width 0.4s;
+}
+.phase-mini-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 4px;
+}
+
+/* ============ TODAY ============ */
+.today-card {
+  background: linear-gradient(135deg, #fffbeb 0%, white 70%);
+  border: 2px solid var(--warm);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+.today-label {
+  font-size: 12px;
+  color: var(--warm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.today-card h3 {
+  font-size: 17px;
+  color: var(--primary);
+  margin: 4px 0 10px;
+}
+.today-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.task-row:hover { background: #fafafa; }
+.task-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+.task-row.done {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+.task-row.done .task-text {
+  text-decoration: line-through;
+  color: var(--text-mute);
+}
+.task-text { flex: 1; }
+.task-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  background: var(--bg-alt);
+  color: var(--text-soft);
+}
+.task-tag.lc { background: #dbeafe; color: #1e40af; }
+.task-tag.en { background: #fef3c7; color: #92400e; }
+.task-tag.sd { background: #ede9fe; color: #5b21b6; }
+.task-tag.mock { background: #fee2e2; color: #991b1b; }
+.lc-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  background: var(--accent-light);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+.lc-link:hover {
+  background: var(--accent);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ============ WEEK PICKER ============ */
+.week-picker {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+  scrollbar-width: thin;
+}
+.week-pill {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-soft);
+  transition: all 0.15s;
+}
+.week-pill.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.week-pill.done {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: #065f46;
+}
+.week-pill.current {
+  background: var(--warm-light);
+  border-color: var(--warm);
+  color: #92400e;
+}
+
+/* ============ WEEK DETAIL ============ */
+.week-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.week-card h3 {
+  font-size: 16px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.week-card .week-meta {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-bottom: 14px;
+}
+
+/* ============ ACTIONS ============ */
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text-soft);
+}
+.btn:hover { background: var(--bg-alt); }
+.btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+.btn-primary:hover { background: #1a3a5c; background-color: #1a3a5c; }
+.btn-danger { background: var(--red); color: white; border-color: var(--red); }
+
+/* ============ CALENDAR HEATMAP ============ */
+.heatmap-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+}
+.heatmap {
+  display: flex;
+  gap: 3px;
+  padding-top: 10px;
+}
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.heatmap-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: #ebedf0;
+}
+.heatmap-cell.l1 { background: #c6e48b; }
+.heatmap-cell.l2 { background: #7bc96f; }
+.heatmap-cell.l3 { background: #239a3b; }
+.heatmap-cell.l4 { background: #196127; }
+.heatmap-cell.future { background: #f5f5f5; opacity: 0.4; }
+
+/* ============ TOAST ============ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 200;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+h2.section-h {
+  font-size: 18px;
+  color: var(--primary);
+  margin: 24px 0 10px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">🌅 미라클 모닝 클럽</a>
+    <a href="index.html" class="nav-back">← 홈으로</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <h1>📋 학습 체크리스트</h1>
+  <p id="today-greeting">오늘도 한 걸음씩</p>
+</div>
+
+<!-- ============ MAIN ============ -->
+<div class="container">
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="dash-card streak">
+      <span class="dash-num" id="streak-count">0</span>
+      <div class="dash-label">연속 학습일</div>
+    </div>
+    <div class="dash-card solved">
+      <span class="dash-num" id="total-solved">0</span>
+      <div class="dash-label">푼 문제</div>
+    </div>
+    <div class="dash-card">
+      <span class="dash-num" id="total-tasks">0</span>
+      <div class="dash-label">완료 작업</div>
+    </div>
+    <div class="dash-card">
+      <span class="dash-num" id="days-active">0</span>
+      <div class="dash-label">학습한 날</div>
+    </div>
+  </div>
+
+  <!-- Overall Progress -->
+  <div class="progress-section">
+    <div class="progress-title">
+      <strong>전체 진행률</strong>
+      <span id="overall-pct">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="overall-fill" style="width: 0%"></div>
+    </div>
+
+    <div class="phase-progress" id="phase-progress"></div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="heatmap-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+      <strong style="font-size: 14px; color: var(--primary);">학습 캘린더 (26주)</strong>
+      <span style="font-size: 11px; color: var(--text-mute);">하루에 작업 많이 할수록 진해짐</span>
+    </div>
+    <div class="heatmap" id="heatmap"></div>
+  </div>
+
+  <!-- Today's Tasks -->
+  <div class="today-card">
+    <span class="today-label">오늘 할 일</span>
+    <h3 id="today-week-title">로딩 중...</h3>
+    <div class="today-tasks" id="today-tasks"></div>
+  </div>
+
+  <!-- Week Picker -->
+  <h2 class="section-h">주차별 진도</h2>
+  <div class="week-picker" id="week-picker"></div>
+
+  <!-- Week Detail -->
+  <div id="week-detail"></div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="exportData()">📥 데이터 내보내기 (JSON)</button>
+    <button class="btn" onclick="importData()">📤 데이터 가져오기</button>
+    <button class="btn btn-danger" onclick="resetAll()">⚠️ 전체 초기화</button>
+  </div>
+
+  <p style="margin-top: 20px; padding: 14px; background: var(--accent-light); border-radius: 8px; font-size: 12px; color: var(--text-soft);">
+    💾 <strong>데이터 저장 방식</strong>: 브라우저 localStorage. 같은 브라우저/기기에서만 유지됩니다.
+    다른 기기에서 보려면 데이터 내보내기 → 가져오기 사용. 클라우드 동기화는 향후 지원 예정.
+  </p>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ DATA ============
+const PHASES = [
+  { num: 1, name: "기반 다지기", weeks: [1,2,3,4], color: "#1976d2" },
+  { num: 2, name: "패턴 마스터", weeks: [5,6,7,8,9,10,11,12], color: "#f59e0b" },
+  { num: 3, name: "Hard + System Design", weeks: [13,14,15,16,17,18,19,20], color: "#10b981" },
+  { num: 4, name: "인터뷰 준비 + 지원", weeks: [21,22,23,24,25,26], color: "#8b5cf6" }
+];
+
+const START_DATE = new Date(2026, 4, 8); // 2026-05-08
+
+const WEEKS = [
+  { n: 1, title: "Arrays & Hashing", topic: "주력 패턴 입문", problems: [
+    { lc: "49", name: "Group Anagrams", diff: "M", slug: "group-anagrams" },
+    { lc: "347", name: "Top K Frequent Elements", diff: "M", slug: "top-k-frequent-elements" },
+    { lc: "238", name: "Product of Array Except Self", diff: "M", slug: "product-of-array-except-self" },
+    { lc: "271", name: "Encode and Decode Strings", diff: "M", slug: "encode-and-decode-strings" },
+    { lc: "128", name: "Longest Consecutive Sequence", diff: "M", slug: "longest-consecutive-sequence" },
+    { lc: "11", name: "Container With Most Water", diff: "M", slug: "container-with-most-water" },
+    { lc: "42", name: "Trapping Rain Water", diff: "H", slug: "trapping-rain-water" }
+  ], tasks: ["mlx-operator 5분 영어 스크립트 작성", "주간 복습"] },
+
+  { n: 2, title: "Sliding Window", topic: "약점 영역 1/4", problems: [
+    { lc: "3", name: "Longest Substring Without Repeating Characters", diff: "M", slug: "longest-substring-without-repeating-characters" },
+    { lc: "424", name: "Longest Repeating Character Replacement", diff: "M", slug: "longest-repeating-character-replacement" },
+    { lc: "567", name: "Permutation in String", diff: "M", slug: "permutation-in-string" },
+    { lc: "76", name: "Minimum Window Substring", diff: "H", slug: "minimum-window-substring" },
+    { lc: "239", name: "Sliding Window Maximum", diff: "H", slug: "sliding-window-maximum" },
+    { lc: "155", name: "Min Stack", diff: "M", slug: "min-stack" },
+    { lc: "22", name: "Generate Parentheses", diff: "M", slug: "generate-parentheses" }
+  ], tasks: ["면접 표현 50개 익히기", "주간 복습"] },
+
+  { n: 3, title: "Binary Search + Stack", topic: "어려운 패턴", problems: [
+    { lc: "704", name: "Binary Search", diff: "E", slug: "binary-search" },
+    { lc: "74", name: "Search a 2D Matrix", diff: "M", slug: "search-a-2d-matrix" },
+    { lc: "875", name: "Koko Eating Bananas", diff: "M", slug: "koko-eating-bananas" },
+    { lc: "153", name: "Find Minimum in Rotated Sorted Array", diff: "M", slug: "find-minimum-in-rotated-sorted-array" },
+    { lc: "33", name: "Search in Rotated Sorted Array", diff: "M", slug: "search-in-rotated-sorted-array" },
+    { lc: "4", name: "Median of Two Sorted Arrays", diff: "H", slug: "median-of-two-sorted-arrays" },
+    { lc: "853", name: "Car Fleet", diff: "M", slug: "car-fleet" },
+    { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" }
+  ], tasks: ["mlx-operator 15분 영어 스크립트 시작", "ByteByteGo 영상 시청"] },
+
+  { n: 4, title: "Linked List + 첫 모의 인터뷰", topic: "Phase 1 마무리", problems: [
+    { lc: "143", name: "Reorder List", diff: "M", slug: "reorder-list" },
+    { lc: "138", name: "Copy List with Random Pointer", diff: "M", slug: "copy-list-with-random-pointer" },
+    { lc: "2", name: "Add Two Numbers", diff: "M", slug: "add-two-numbers" },
+    { lc: "287", name: "Find the Duplicate Number", diff: "M", slug: "find-the-duplicate-number" },
+    { lc: "146", name: "LRU Cache", diff: "M", slug: "lru-cache" },
+    { lc: "23", name: "Merge k Sorted Lists", diff: "H", slug: "merge-k-sorted-lists" },
+    { lc: "25", name: "Reverse Nodes in k-Group", diff: "H", slug: "reverse-nodes-in-k-group" }
+  ], tasks: ["Pramp 첫 모의 인터뷰", "mlx-operator 15분 영어 발표 완성"] },
+
+  { n: 5, title: "Trees 기초", topic: "Tree 패턴 1/2", problems: [
+    { lc: "226", name: "Invert Binary Tree", diff: "E", slug: "invert-binary-tree" },
+    { lc: "543", name: "Diameter of Binary Tree", diff: "E", slug: "diameter-of-binary-tree" },
+    { lc: "110", name: "Balanced Binary Tree", diff: "E", slug: "balanced-binary-tree" },
+    { lc: "100", name: "Same Tree", diff: "E", slug: "same-tree" },
+    { lc: "572", name: "Subtree of Another Tree", diff: "E", slug: "subtree-of-another-tree" },
+    { lc: "235", name: "Lowest Common Ancestor of a BST", diff: "M", slug: "lowest-common-ancestor-of-a-binary-search-tree" },
+    { lc: "102", name: "Binary Tree Level Order Traversal", diff: "M", slug: "binary-tree-level-order-traversal" }
+  ], tasks: ["STAR 답변 1번 (어려운 기술 문제)"] },
+
+  { n: 6, title: "Trees 심화 + Tries", topic: "Tree 패턴 2/2", problems: [
+    { lc: "199", name: "Binary Tree Right Side View", diff: "M", slug: "binary-tree-right-side-view" },
+    { lc: "1448", name: "Count Good Nodes in Binary Tree", diff: "M", slug: "count-good-nodes-in-binary-tree" },
+    { lc: "230", name: "Kth Smallest Element in a BST", diff: "M", slug: "kth-smallest-element-in-a-bst" },
+    { lc: "124", name: "Binary Tree Maximum Path Sum", diff: "H", slug: "binary-tree-maximum-path-sum" },
+    { lc: "297", name: "Serialize and Deserialize Binary Tree", diff: "H", slug: "serialize-and-deserialize-binary-tree" },
+    { lc: "208", name: "Implement Trie (Prefix Tree)", diff: "M", slug: "implement-trie-prefix-tree" },
+    { lc: "212", name: "Word Search II", diff: "H", slug: "word-search-ii" }
+  ], tasks: ["STAR 답변 2번 (갈등 해결)"] },
+
+  { n: 7, title: "Heap / Priority Queue", topic: "약점 영역 2/4", problems: [
+    { lc: "703", name: "Kth Largest Element in a Stream", diff: "E", slug: "kth-largest-element-in-a-stream" },
+    { lc: "1046", name: "Last Stone Weight", diff: "E", slug: "last-stone-weight" },
+    { lc: "973", name: "K Closest Points to Origin", diff: "M", slug: "k-closest-points-to-origin" },
+    { lc: "621", name: "Task Scheduler", diff: "M", slug: "task-scheduler" },
+    { lc: "295", name: "Find Median from Data Stream", diff: "H", slug: "find-median-from-data-stream" }
+  ], tasks: ["STAR 답변 3번 (리더십)", "Pramp 모의 1회"] },
+
+  { n: 8, title: "Backtracking", topic: "재귀/탐색 마스터", problems: [
+    { lc: "39", name: "Combination Sum", diff: "M", slug: "combination-sum" },
+    { lc: "46", name: "Permutations", diff: "M", slug: "permutations" },
+    { lc: "79", name: "Word Search", diff: "M", slug: "word-search" },
+    { lc: "131", name: "Palindrome Partitioning", diff: "M", slug: "palindrome-partitioning" },
+    { lc: "17", name: "Letter Combinations of a Phone Number", diff: "M", slug: "letter-combinations-of-a-phone-number" },
+    { lc: "51", name: "N-Queens", diff: "H", slug: "n-queens" }
+  ], tasks: ["STAR 답변 4번 (실패 경험)"] },
+
+  { n: 9, title: "Graphs (BFS/DFS)", topic: "약점 영역 3/4 ⚠️", problems: [
+    { lc: "200", name: "Number of Islands", diff: "M", slug: "number-of-islands" },
+    { lc: "695", name: "Max Area of Island", diff: "M", slug: "max-area-of-island" },
+    { lc: "133", name: "Clone Graph", diff: "M", slug: "clone-graph" },
+    { lc: "994", name: "Rotting Oranges", diff: "M", slug: "rotting-oranges" },
+    { lc: "207", name: "Course Schedule", diff: "M", slug: "course-schedule" },
+    { lc: "210", name: "Course Schedule II", diff: "M", slug: "course-schedule-ii" },
+    { lc: "417", name: "Pacific Atlantic Water Flow", diff: "M", slug: "pacific-atlantic-water-flow" }
+  ], tasks: ["STAR 답변 5번 (영향력)", "System Design: Rate Limiter 시나리오"] },
+
+  { n: 10, title: "Graphs Hard", topic: "약점 영역 마무리", problems: [
+    { lc: "130", name: "Surrounded Regions", diff: "M", slug: "surrounded-regions" },
+    { lc: "127", name: "Word Ladder", diff: "H", slug: "word-ladder" },
+    { lc: "329", name: "Longest Increasing Path in a Matrix", diff: "H", slug: "longest-increasing-path-in-a-matrix" },
+    { lc: "286", name: "Walls and Gates", diff: "M", slug: "walls-and-gates" },
+    { lc: "261", name: "Graph Valid Tree", diff: "M", slug: "graph-valid-tree" },
+    { lc: "323", name: "Number of Connected Components in an Undirected Graph", diff: "M", slug: "number-of-connected-components-in-an-undirected-graph" }
+  ], tasks: ["Rate Limiter 영어 발표 녹음"] },
+
+  { n: 11, title: "Advanced Graphs", topic: "Dijkstra/MST", problems: [
+    { lc: "743", name: "Network Delay Time (Dijkstra)", diff: "M", slug: "network-delay-time" },
+    { lc: "332", name: "Reconstruct Itinerary", diff: "H", slug: "reconstruct-itinerary" },
+    { lc: "1584", name: "Min Cost to Connect All Points (MST)", diff: "M", slug: "min-cost-to-connect-all-points" },
+    { lc: "787", name: "Cheapest Flights Within K Stops", diff: "M", slug: "cheapest-flights-within-k-stops" },
+    { lc: "778", name: "Swim in Rising Water", diff: "H", slug: "swim-in-rising-water" }
+  ], tasks: ["System Design: Distributed Cache 시나리오"] },
+
+  { n: 12, title: "1D DP 시작", topic: "DP 입문", problems: [
+    { lc: "213", name: "House Robber II", diff: "M", slug: "house-robber-ii" },
+    { lc: "5", name: "Longest Palindromic Substring", diff: "M", slug: "longest-palindromic-substring" },
+    { lc: "91", name: "Decode Ways", diff: "M", slug: "decode-ways" },
+    { lc: "322", name: "Coin Change", diff: "M", slug: "coin-change" },
+    { lc: "152", name: "Maximum Product Subarray", diff: "M", slug: "maximum-product-subarray" },
+    { lc: "139", name: "Word Break", diff: "M", slug: "word-break" },
+    { lc: "300", name: "Longest Increasing Subsequence", diff: "M", slug: "longest-increasing-subsequence" }
+  ], tasks: ["URL Shortener 시나리오"] },
+
+  { n: 13, title: "1D DP 마스터", topic: "DP 심화 1/2", problems: [
+    { lc: "416", name: "Partition Equal Subset Sum", diff: "M", slug: "partition-equal-subset-sum" },
+    { lc: "32", name: "Longest Valid Parentheses", diff: "H", slug: "longest-valid-parentheses" },
+    { lc: "64", name: "Minimum Path Sum", diff: "M", slug: "minimum-path-sum" },
+    { lc: "120", name: "Triangle", diff: "M", slug: "triangle" },
+    { lc: "198", name: "House Robber 복습", diff: "M", slug: "house-robber" }
+  ], tasks: ["mlx-operator 30분 영어 발표 작성"] },
+
+  { n: 14, title: "1D DP 마무리", topic: "DP 추가 패턴", problems: [
+    { lc: "877", name: "Stone Game", diff: "M", slug: "stone-game" },
+    { lc: "1027", name: "Longest Arithmetic Subsequence", diff: "M", slug: "longest-arithmetic-subsequence" },
+    { lc: "740", name: "Delete and Earn", diff: "M", slug: "delete-and-earn" },
+    { lc: "542", name: "01 Matrix", diff: "M", slug: "01-matrix" }
+  ], tasks: ["mlx-operator 30분 영어 발표 녹음"] },
+
+  { n: 15, title: "2D DP 1/2", topic: "약점 영역 4/4", problems: [
+    { lc: "62", name: "Unique Paths", diff: "M", slug: "unique-paths" },
+    { lc: "1143", name: "Longest Common Subsequence", diff: "M", slug: "longest-common-subsequence" },
+    { lc: "309", name: "Best Time to Buy/Sell Stock with Cooldown", diff: "M", slug: "best-time-to-buy-and-sell-stock-with-cooldown" },
+    { lc: "518", name: "Coin Change II", diff: "M", slug: "coin-change-ii" },
+    { lc: "494", name: "Target Sum", diff: "M", slug: "target-sum" }
+  ], tasks: ["Distributed Inference 시나리오"] },
+
+  { n: 16, title: "2D DP 2/2 (Hard)", topic: "Hard DP", problems: [
+    { lc: "72", name: "Edit Distance", diff: "H", slug: "edit-distance" },
+    { lc: "312", name: "Burst Balloons", diff: "H", slug: "burst-balloons" },
+    { lc: "115", name: "Distinct Subsequences", diff: "H", slug: "distinct-subsequences" },
+    { lc: "97", name: "Interleaving String", diff: "M", slug: "interleaving-string" }
+  ], tasks: ["Pramp 주 2회 시작"] },
+
+  { n: 17, title: "Greedy + Intervals", topic: "면접 빈출", problems: [
+    { lc: "55", name: "Jump Game", diff: "M", slug: "jump-game" },
+    { lc: "45", name: "Jump Game II", diff: "M", slug: "jump-game-ii" },
+    { lc: "134", name: "Gas Station", diff: "M", slug: "gas-station" },
+    { lc: "846", name: "Hand of Straights", diff: "M", slug: "hand-of-straights" },
+    { lc: "1899", name: "Merge Triplets to Form Target", diff: "M", slug: "merge-triplets-to-form-target-triplet" },
+    { lc: "57", name: "Insert Interval", diff: "M", slug: "insert-interval" },
+    { lc: "56", name: "Merge Intervals", diff: "M", slug: "merge-intervals" }
+  ], tasks: ["영문 이력서 정제 시작"] },
+
+  { n: 18, title: "Intervals + Math", topic: "기타 패턴", problems: [
+    { lc: "435", name: "Non-overlapping Intervals", diff: "M", slug: "non-overlapping-intervals" },
+    { lc: "252", name: "Meeting Rooms", diff: "E", slug: "meeting-rooms" },
+    { lc: "253", name: "Meeting Rooms II", diff: "M", slug: "meeting-rooms-ii" },
+    { lc: "1851", name: "Minimum Interval to Include Each Query", diff: "H", slug: "minimum-interval-to-include-each-query" },
+    { lc: "763", name: "Partition Labels", diff: "M", slug: "partition-labels" },
+    { lc: "678", name: "Valid Parenthesis String", diff: "M", slug: "valid-parenthesis-string" }
+  ], tasks: ["LinkedIn 영문화"] },
+
+  { n: 19, title: "빅테크 빈출 Hard", topic: "Hard 집중", problems: [
+    { lc: "329", name: "Longest Increasing Path Matrix (복습)", diff: "H", slug: "longest-increasing-path-in-a-matrix" },
+    { lc: "588", name: "Design In-Memory File System", diff: "H", slug: "design-in-memory-file-system" },
+    { lc: "212", name: "Word Search II (복습)", diff: "H", slug: "word-search-ii" },
+    { lc: "2115", name: "Find All Possible Recipes", diff: "M", slug: "find-all-possible-recipes-from-given-supplies" },
+    { lc: "84", name: "Largest Rectangle (복습)", diff: "H", slug: "largest-rectangle-in-histogram" },
+    { lc: "1235", name: "Maximum Profit in Job Scheduling", diff: "H", slug: "maximum-profit-in-job-scheduling" }
+  ], tasks: ["모의 onsite 시뮬레이션 1회"] },
+
+  { n: 20, title: "Design 문제", topic: "Design 패턴", problems: [
+    { lc: "146", name: "LRU Cache (복습)", diff: "M", slug: "lru-cache" },
+    { lc: "460", name: "LFU Cache", diff: "H", slug: "lfu-cache" },
+    { lc: "295", name: "Find Median from Data Stream", diff: "H", slug: "find-median-from-data-stream" },
+    { lc: "380", name: "Insert Delete GetRandom O(1)", diff: "M", slug: "insert-delete-getrandom-o1" },
+    { lc: "355", name: "Design Twitter", diff: "M", slug: "design-twitter" }
+  ], tasks: ["모의 onsite 시뮬레이션 1회"] },
+
+  { n: 21, title: "회사 태그 1/2", topic: "회사별 빈출 50/100", problems: [
+    { lc: "TAG", name: "회사 태그 문제 1-7 (LC Premium)", diff: "M", slug: null },
+    { lc: "TAG", name: "회사 태그 문제 8-14", diff: "M", slug: null }
+  ], tasks: ["JD 키워드 매핑 영어 답변", "모의 onsite 시뮬레이션"] },
+
+  { n: 22, title: "회사 태그 2/2", topic: "회사별 빈출 50/100", problems: [
+    { lc: "TAG", name: "회사 태그 문제 15-21", diff: "M", slug: null },
+    { lc: "TAG", name: "회사 태그 문제 22-28 (Hard 집중)", diff: "H", slug: null }
+  ], tasks: ["모의 onsite 시뮬레이션", "최종 이력서 점검"] },
+
+  { n: 23, title: "지원 시작", topic: "3-5개사 지원", problems: [
+    { lc: "REVIEW", name: "이번주는 약점 영역 복습", diff: "M", slug: null }
+  ], tasks: ["회사 1 지원", "회사 2 지원", "회사 3 지원"] },
+
+  { n: 24, title: "인터뷰 진행", topic: "라운드 진행", problems: [
+    { lc: "REVIEW", name: "어려웠던 문제 재풀이", diff: "M", slug: null }
+  ], tasks: ["인터뷰 라운드 진행", "라운드별 즉시 복기"] },
+
+  { n: 25, title: "약점 보강", topic: "Last-mile 보강", problems: [
+    { lc: "REVIEW", name: "Heap / Graph / 2D DP 약점 보강", diff: "M", slug: null }
+  ], tasks: ["인터뷰 진행", "약점 보강"] },
+
+  { n: 26, title: "오퍼 협상 + 마무리", topic: "🎉 완주", problems: [
+    { lc: "FINAL", name: "최종 인터뷰 마무리", diff: "M", slug: null }
+  ], tasks: ["오퍼 협상", "다음 단계 계획"] }
+];
+
+function lcUrl(slug) {
+  return slug ? `https://leetcode.com/problems/${slug}/` : null;
+}
+
+// ============ STATE MANAGEMENT ============
+const STORAGE_KEY = 'mmc_progress_v1';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  } catch { return {}; }
+}
+
+function saveState(s) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+}
+
+let state = loadState();
+state.tasks = state.tasks || {};      // { "w1-p49": true, "w1-t0": true }
+state.dailyLog = state.dailyLog || {}; // { "2026-05-08": 3 }  (작업 수)
+
+// ============ HELPERS ============
+function getCurrentWeek() {
+  const now = new Date();
+  const days = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
+  const week = Math.floor(days / 7) + 1;
+  return Math.max(1, Math.min(26, week));
+}
+
+function getWeekDates(weekNum) {
+  const start = new Date(START_DATE);
+  start.setDate(start.getDate() + (weekNum - 1) * 7);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
+  return `${fmt(start)} ~ ${fmt(end)}`;
+}
+
+function dateKey(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+function todayKey() { return dateKey(new Date()); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ============ RENDER ============
+function render() {
+  renderDashboard();
+  renderProgress();
+  renderHeatmap();
+  renderToday();
+  renderWeekPicker();
+  renderWeekDetail(currentSelectedWeek);
+}
+
+let currentSelectedWeek = getCurrentWeek();
+
+function getTaskKey(weekNum, type, idx) {
+  return `w${weekNum}-${type}${idx}`;
+}
+
+function getAllTaskKeys(weekNum) {
+  const w = WEEKS[weekNum - 1];
+  if (!w) return [];
+  const keys = [];
+  w.problems.forEach((_, i) => keys.push(getTaskKey(weekNum, 'p', i)));
+  w.tasks.forEach((_, i) => keys.push(getTaskKey(weekNum, 't', i)));
+  return keys;
+}
+
+function isTaskDone(key) {
+  return !!state.tasks[key];
+}
+
+function toggleTask(key) {
+  const wasDone = state.tasks[key];
+  if (wasDone) {
+    delete state.tasks[key];
+    // 일별 카운트 감소
+    const today = todayKey();
+    if (state.dailyLog[today]) state.dailyLog[today] = Math.max(0, state.dailyLog[today] - 1);
+  } else {
+    state.tasks[key] = true;
+    const today = todayKey();
+    state.dailyLog[today] = (state.dailyLog[today] || 0) + 1;
+  }
+  saveState(state);
+  render();
+  if (!wasDone) showToast('✅ 완료! 잘했어요');
+}
+
+function getTotalTasks() {
+  let total = 0;
+  WEEKS.forEach(w => {
+    total += w.problems.length + w.tasks.length;
+  });
+  return total;
+}
+
+function getDoneTasks() {
+  return Object.keys(state.tasks).length;
+}
+
+function getSolvedProblems() {
+  return Object.keys(state.tasks).filter(k => k.includes('-p')).length;
+}
+
+function getStreak() {
+  const today = new Date();
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = dateKey(d);
+    if (state.dailyLog[key] && state.dailyLog[key] > 0) {
+      streak++;
+    } else {
+      // 오늘 안 했어도 streak 유지 (자정 넘기 전까지)
+      if (i === 0) continue;
+      break;
+    }
+  }
+  return streak;
+}
+
+function getActiveDays() {
+  return Object.keys(state.dailyLog).filter(k => state.dailyLog[k] > 0).length;
+}
+
+function renderDashboard() {
+  document.getElementById('streak-count').textContent = getStreak();
+  document.getElementById('total-solved').textContent = getSolvedProblems();
+  document.getElementById('total-tasks').textContent = getDoneTasks();
+  document.getElementById('days-active').textContent = getActiveDays();
+}
+
+function renderProgress() {
+  const total = getTotalTasks();
+  const done = getDoneTasks();
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('overall-pct').textContent = `${pct}% (${done}/${total})`;
+  document.getElementById('overall-fill').style.width = `${pct}%`;
+
+  const phaseEl = document.getElementById('phase-progress');
+  phaseEl.innerHTML = '';
+  PHASES.forEach(p => {
+    let total = 0, done = 0;
+    p.weeks.forEach(wn => {
+      const w = WEEKS[wn - 1];
+      if (!w) return;
+      const all = w.problems.length + w.tasks.length;
+      total += all;
+      const keys = getAllTaskKeys(wn);
+      done += keys.filter(k => isTaskDone(k)).length;
+    });
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const html = `
+      <div class="phase-mini">
+        <div class="phase-mini-label">Phase ${p.num}: ${p.name}</div>
+        <div class="phase-mini-bar"><div class="phase-mini-fill" style="width: ${pct}%; background: ${p.color}"></div></div>
+        <div class="phase-mini-pct">${pct}%</div>
+      </div>
+    `;
+    phaseEl.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+function renderHeatmap() {
+  const container = document.getElementById('heatmap');
+  container.innerHTML = '';
+  const today = new Date();
+  // 26주 × 7일
+  for (let w = 0; w < 26; w++) {
+    const weekDiv = document.createElement('div');
+    weekDiv.className = 'heatmap-week';
+    for (let d = 0; d < 7; d++) {
+      const date = new Date(START_DATE);
+      date.setDate(date.getDate() + w * 7 + d);
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell';
+      const key = dateKey(date);
+      const count = state.dailyLog[key] || 0;
+      if (date > today) {
+        cell.classList.add('future');
+      } else if (count > 0) {
+        if (count >= 5) cell.classList.add('l4');
+        else if (count >= 3) cell.classList.add('l3');
+        else if (count >= 2) cell.classList.add('l2');
+        else cell.classList.add('l1');
+      }
+      cell.title = `${key}: ${count}개 작업`;
+      weekDiv.appendChild(cell);
+    }
+    container.appendChild(weekDiv);
+  }
+}
+
+function renderToday() {
+  const cw = getCurrentWeek();
+  const w = WEEKS[cw - 1];
+  if (!w) return;
+
+  document.getElementById('today-greeting').textContent =
+    `Week ${cw} · ${w.title} · ${getWeekDates(cw)}`;
+
+  document.getElementById('today-week-title').textContent =
+    `Week ${cw}: ${w.title}`;
+
+  const tasksEl = document.getElementById('today-tasks');
+  tasksEl.innerHTML = '';
+
+  w.problems.forEach((p, i) => {
+    const key = getTaskKey(cw, 'p', i);
+    const done = isTaskDone(key);
+    const url = lcUrl(p.slug);
+    const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
+    const html = `
+      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">LC ${p.lc} — ${p.name}</span>
+        ${linkBtn}
+        <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
+      </label>
+    `;
+    tasksEl.insertAdjacentHTML('beforeend', html);
+  });
+
+  w.tasks.forEach((t, i) => {
+    const key = getTaskKey(cw, 't', i);
+    const done = isTaskDone(key);
+    const tag = t.includes('영어') || t.includes('mlx') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
+                t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
+                t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
+    const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
+    const html = `
+      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">${t}</span>
+        <span class="task-tag ${tag}">${tagText}</span>
+      </label>
+    `;
+    tasksEl.insertAdjacentHTML('beforeend', html);
+  });
+}
+
+function renderWeekPicker() {
+  const picker = document.getElementById('week-picker');
+  picker.innerHTML = '';
+  const cw = getCurrentWeek();
+  WEEKS.forEach(w => {
+    const keys = getAllTaskKeys(w.n);
+    const allDone = keys.length > 0 && keys.every(k => isTaskDone(k));
+    let cls = 'week-pill';
+    if (w.n === currentSelectedWeek) cls += ' active';
+    else if (w.n === cw) cls += ' current';
+    else if (allDone) cls += ' done';
+    const pill = document.createElement('button');
+    pill.className = cls;
+    pill.textContent = `W${w.n}`;
+    pill.title = w.title;
+    pill.onclick = () => { currentSelectedWeek = w.n; render(); };
+    picker.appendChild(pill);
+  });
+}
+
+function renderWeekDetail(weekNum) {
+  const w = WEEKS[weekNum - 1];
+  if (!w) return;
+  const detail = document.getElementById('week-detail');
+  let problemsHTML = '';
+  w.problems.forEach((p, i) => {
+    const key = getTaskKey(weekNum, 'p', i);
+    const done = isTaskDone(key);
+    const url = lcUrl(p.slug);
+    const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
+    problemsHTML += `
+      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">LC ${p.lc} — ${p.name}</span>
+        ${linkBtn}
+        <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
+      </label>
+    `;
+  });
+  let tasksHTML = '';
+  w.tasks.forEach((t, i) => {
+    const key = getTaskKey(weekNum, 't', i);
+    const done = isTaskDone(key);
+    const tag = t.includes('영어') || t.includes('mlx') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
+                t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
+                t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
+    const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
+    tasksHTML += `
+      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <span class="task-text">${t}</span>
+        <span class="task-tag ${tag}">${tagText}</span>
+      </label>
+    `;
+  });
+  const keys = getAllTaskKeys(weekNum);
+  const done = keys.filter(k => isTaskDone(k)).length;
+  const pct = keys.length ? Math.round(done / keys.length * 100) : 0;
+  detail.innerHTML = `
+    <div class="week-card">
+      <h3>Week ${w.n}: ${w.title}</h3>
+      <div class="week-meta">${w.topic} · ${getWeekDates(w.n)} · ${done}/${keys.length} 완료 (${pct}%)</div>
+      <div style="margin-bottom: 10px;">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="today-tasks">
+        ${problemsHTML}
+        ${tasksHTML}
+      </div>
+    </div>
+  `;
+}
+
+// ============ EXPORT / IMPORT / RESET ============
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mmc_progress_${todayKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 데이터를 내보냈어요');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (confirm('현재 데이터를 가져온 데이터로 덮어쓸까요?')) {
+          state = imported;
+          state.tasks = state.tasks || {};
+          state.dailyLog = state.dailyLog || {};
+          saveState(state);
+          render();
+          showToast('📤 데이터를 가져왔어요');
+        }
+      } catch {
+        alert('잘못된 파일이에요. JSON 파일을 선택해주세요.');
+      }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+function resetAll() {
+  if (!confirm('정말로 모든 진도를 초기화할까요?\n복구할 수 없습니다.')) return;
+  if (!confirm('마지막 확인. 정말 삭제할까요?')) return;
+  state = { tasks: {}, dailyLog: {} };
+  saveState(state);
+  render();
+  showToast('🔄 초기화 완료');
+}
+
+// ============ INIT ============
+render();
+</script>
+
+</body>
+</html>
