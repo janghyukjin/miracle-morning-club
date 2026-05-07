@@ -485,10 +485,7 @@ footer .download {
   <div class="nav-inner">
     <a href="#top" class="logo">🌅 미라클 모닝 클럽</a>
     <nav class="nav-links">
-      <a href="#guidelines">가이드라인</a>
-      <a href="#problems">문제집</a>
-      <a href="#phases">로드맵</a>
-      <a href="#tomorrow">내일 시작</a>
+      <a href="guide.html">📖 가이드</a>
       <a href="board.html" style="color: var(--accent); font-weight: 700;">🌱 출석보드</a>
       <a href="checklist.html" style="color: var(--accent); font-weight: 700;">📋 체크리스트</a>
     </nav>
@@ -507,247 +504,42 @@ footer .download {
   </div>
 </section>
 
-<!-- ============ STATS ============ -->
+<!-- ============ TODAY (DYNAMIC) ============ -->
+<section id="today-section" style="padding: 30px 20px;">
+  <div class="section-inner">
+    <h2 class="section-title" id="today-title">오늘 풀 문제</h2>
+    <p class="section-sub" id="today-sub">시작일 기준 자동 표시</p>
+    <div id="today-problems"></div>
+  </div>
+</section>
+
+<!-- ============ NAV CARDS ============ -->
 <section class="alt">
   <div class="section-inner">
-    <h2 class="section-title">한눈에 보기</h2>
-    <p class="section-sub">26주 동안 함께 가는 학습 목표</p>
-    <div class="stats">
-      <div class="stat">
-        <span class="stat-num">26주</span>
-        <span class="stat-label">총 학습 기간</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">11h</span>
-        <span class="stat-label">주간 학습 시간</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">180+</span>
-        <span class="stat-label">총 풀이 문제</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">25+</span>
-        <span class="stat-label">모의 인터뷰</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ GUIDELINES ============ -->
-<section id="guidelines">
-  <div class="section-inner">
-    <h2 class="section-title">클럽 운영 가이드라인</h2>
-    <p class="section-sub">학원 가이드라인 수준의 깔끔한 기준</p>
-
-    <div class="table-wrap">
-      <table>
-        <tr><th>항목</th><th>기준</th></tr>
-        <tr><td>학습 기간</td><td>26주 (6개월)</td></tr>
-        <tr><td>주간 시간</td><td>평일 1h × 5 + 토요일 5h + 일요일 휴식 = <strong>11h</strong></td></tr>
-        <tr><td>주간 LC 문제</td><td>7문제 (Easy 0 / Medium 5-6 / Hard 1-2)</td></tr>
-        <tr><td>모의 인터뷰</td><td>주 1회 (Week 4부터)</td></tr>
-        <tr><td>커리큘럼</td><td>NeetCode 150 + 회사 빈출 50</td></tr>
-        <tr><td>최종 목표</td><td>LC Medium 150+ / Hard 30+ / 영어 IH</td></tr>
-        <tr><td>출석 기준</td><td>주 5일 이상 학습 인증 (그룹챗 공유)</td></tr>
-      </table>
-    </div>
-
-    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">3가지 원칙</h3>
-    <div class="guideline-grid">
-      <div class="guideline">
-        <strong>① 주 7문제 못 풀어도 OK</strong>
-        <p>어려운 문제 1개에 2-3시간 쓰는 것도 정상. 양보다 이해.</p>
-      </div>
-      <div class="guideline">
-        <strong>② 일요일 무조건 휴식</strong>
-        <p>번아웃 방지가 합격보다 우선. 데이트, 가족, 여가 자유.</p>
-      </div>
-      <div class="guideline">
-        <strong>③ 2주마다 페이스 점검</strong>
-        <p>너무 빡세면 강도 낮추고, 여유 있으면 늘리기.</p>
-      </div>
-      <div class="guideline">
-        <strong>④ 6개월에 못 끝내도 OK</strong>
-        <p>7-8개월에 끝내고 합격이 4개월에 번아웃보다 낫다.</p>
-      </div>
-    </div>
-
-    <div class="callout">
-      <strong>완주 통계 참고</strong> · 직장 다니며 빅테크 합격한 사례 평균 준비 기간 6-9개월,
-      주간 학습 10-15h가 가장 흔함. 21h+ 페이스는 풀타임 준비자(퇴사) 또는 학생 비중.
-    </div>
-  </div>
-</section>
-
-<!-- ============ PROBLEMS ============ -->
-<section class="alt" id="problems">
-  <div class="section-inner">
-    <h2 class="section-title">LeetCode 문제집 선택</h2>
-    <p class="section-sub">여러 컬렉션이 있지만, NeetCode 150이 메인</p>
-
-    <div class="table-wrap">
-      <table>
-        <tr><th>컬렉션</th><th>문제 수</th><th>추천</th></tr>
-        <tr><td>Blind 75</td><td>75</td><td>핵심 패턴 빠른 워밍업</td></tr>
-        <tr style="background:#fef3c7"><td><strong>NeetCode 150</strong> <span class="star">★</span></td><td><strong>150</strong></td><td><strong>메인 커리큘럼</strong></td></tr>
-        <tr><td>LC Top Interview 150</td><td>150</td><td>NC150 대안 (70% 겹침)</td></tr>
-        <tr><td>NeetCode 250</td><td>250</td><td>NC150 후 보강용</td></tr>
-        <tr><td>회사 태그 (Premium)</td><td>회사별</td><td>최근 6개월 빈출</td></tr>
-      </table>
-    </div>
-
-    <div class="callout callout-success">
-      <strong>추천 학습 순서</strong><br>
-      Week 1-20: NeetCode 150 완주 (모든 패턴 1회 이상)<br>
-      Week 17-26: LC Premium 회사 태그 50-100문제 추가<br>
-      Week 21-26: 약점 영역 NeetCode 250에서 보강
-    </div>
-
-    <h3 style="margin-top: 28px; color: var(--primary); font-size: 18px;">NeetCode 150 카테고리 분포</h3>
-    <div class="table-wrap">
-      <table>
-        <tr><th>카테고리</th><th>문제 수</th><th>중요도</th></tr>
-        <tr><td>Arrays &amp; Hashing</td><td>9</td><td><span class="star">★★★★★</span></td></tr>
-        <tr><td>Two Pointers</td><td>5</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Sliding Window</td><td>6</td><td><span class="star">★★★★★</span></td></tr>
-        <tr><td>Stack</td><td>7</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Binary Search</td><td>7</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Linked List</td><td>11</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Trees</td><td>15</td><td><span class="star">★★★★★</span></td></tr>
-        <tr><td>Tries</td><td>3</td><td><span class="star">★★★</span></td></tr>
-        <tr><td>Heap / Priority Queue</td><td>7</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Backtracking</td><td>9</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Graphs</td><td>13</td><td><span class="star">★★★★★</span></td></tr>
-        <tr><td>Advanced Graphs</td><td>6</td><td><span class="star">★★★</span></td></tr>
-        <tr><td>1-D DP</td><td>12</td><td><span class="star">★★★★★</span></td></tr>
-        <tr><td>2-D DP</td><td>11</td><td><span class="star">★★★★</span></td></tr>
-        <tr><td>Greedy</td><td>8</td><td><span class="star">★★★</span></td></tr>
-        <tr><td>Intervals</td><td>6</td><td><span class="star">★★★</span></td></tr>
-        <tr><td>Math &amp; Geometry</td><td>8</td><td><span class="star">★★</span></td></tr>
-        <tr><td>Bit Manipulation</td><td>7</td><td><span class="star">★★</span></td></tr>
-        <tr style="background:var(--primary); color:white;"><td style="color:white"><strong>합계</strong></td><td style="color:white"><strong>150</strong></td><td>-</td></tr>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PHASES ============ -->
-<section class="alt" id="phases">
-  <div class="section-inner">
-    <h2 class="section-title">26주 로드맵</h2>
-    <p class="section-sub">4단계 Phase로 구성</p>
-
-    <div class="phase-grid">
-      <div class="phase">
-        <span class="phase-num">PHASE 1</span>
-        <h3>기반 다지기</h3>
-        <div class="phase-period">Week 1-4 · 5/8 ~ 6/4</div>
-        <ul>
-          <li>Arrays &amp; Hashing 마스터</li>
-          <li>Sliding Window 완전 정복</li>
-          <li>Binary Search + Stack</li>
-          <li>Linked List + 첫 모의 인터뷰</li>
-          <li>본인 프로젝트 5분 영어 스크립트</li>
-        </ul>
-      </div>
-
-      <div class="phase p2">
-        <span class="phase-num">PHASE 2</span>
-        <h3>패턴 마스터</h3>
-        <div class="phase-period">Week 5-12 · 6/5 ~ 7/30</div>
-        <ul>
-          <li>Trees &amp; Tries</li>
-          <li>Heap + Backtracking</li>
-          <li>Graphs (가장 중요)</li>
-          <li>Advanced Graphs + 1D DP</li>
-          <li>STAR 답변 영어 5개 작성</li>
-        </ul>
-      </div>
-
-      <div class="phase p3">
-        <span class="phase-num">PHASE 3</span>
-        <h3>Hard + System Design</h3>
-        <div class="phase-period">Week 13-20 · 7/31 ~ 9/24</div>
-        <ul>
-          <li>1D DP 마스터</li>
-          <li>2D DP</li>
-          <li>Greedy + Intervals + Math</li>
-          <li>빅테크 빈출 Hard 6 + Design 문제</li>
-          <li>본인 프로젝트 30분 영어 발표 완성</li>
-        </ul>
-      </div>
-
-      <div class="phase p4">
-        <span class="phase-num">PHASE 4</span>
-        <h3>인터뷰 준비 + 지원</h3>
-        <div class="phase-period">Week 21-26 · 9/25 ~ 11/8</div>
-        <ul>
-          <li>회사 태그 100문제 집중</li>
-          <li>모의 onsite 시뮬레이션 주 1회</li>
-          <li>3-5개사 동시 지원</li>
-          <li>인터뷰 진행 + 라운드별 복기</li>
-          <li>오퍼 협상</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TOMORROW ============ -->
-<section id="tomorrow">
-  <div class="section-inner">
-    <h2 class="section-title">내일 (5/8) 시작 문제</h2>
-    <p class="section-sub">첫날부터 막막하지 않게</p>
-
-    <div class="problem-card">
-      <div class="problem-title">① LC 49 — Group Anagrams <span class="badge badge-med">Medium</span></div>
-      <div class="problem-link">https://leetcode.com/problems/group-anagrams/</div>
-      <ul>
-        <li>패턴: HashMap + 정렬 키 또는 카운트 키</li>
-        <li>풀이 가이드:
-          <ol style="margin-top:6px;">
-            <li>각 string을 sorted(string) 또는 char count tuple로 키화</li>
-            <li>Map[key][]string 으로 group</li>
-            <li>두 가지 풀이 비교 (정렬 vs 카운트)</li>
-          </ol>
-        </li>
-      </ul>
-    </div>
-
-    <div class="problem-card">
-      <div class="problem-title">② LC 347 — Top K Frequent Elements <span class="badge badge-med">Medium</span></div>
-      <div class="problem-link">https://leetcode.com/problems/top-k-frequent-elements/</div>
-      <ul>
-        <li>패턴: HashMap + Heap 또는 Bucket Sort</li>
-        <li>풀이 A — Heap: O(n log k)</li>
-        <li>풀이 B — Bucket Sort: O(n)</li>
-        <li>두 풀이 모두 작성하고 비교</li>
-      </ul>
-    </div>
-
-    <div class="callout callout-success">
-      <strong>풀이 후 자가 점검 5개</strong><br>
-      ① 시간복잡도 정확히 분석했는가? ② 공간복잡도 정확히 분석했는가? ③ Edge case 처리했는가? ④ 본인 주력 언어 관용 표현 썼는가? ⑤ 영어로 풀이 30초 설명할 수 있는가?
-    </div>
-  </div>
-</section>
-
-<!-- ============ LINKS TO OTHER PAGES ============ -->
-<section class="alt">
-  <div class="section-inner">
-    <h2 class="section-title">스터디 도구</h2>
-    <p class="section-sub">두 페이지로 진도 관리</p>
-
-    <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px;">
-      <a href="board.html" style="display:block;background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <div style="font-size:24px;margin-bottom:6px;">🌱</div>
-        <div style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:4px;">출석보드</div>
-        <div style="font-size:13px;color:var(--text-soft);">멤버별 26주 잔디 · 최근 활동 · 커밋 가이드</div>
+    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+      <a href="board.html" style="display:flex;align-items:center;gap:14px;background:white;border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:32px;flex-shrink:0;">🌱</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">출석보드</div>
+          <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;">멤버별 26주 잔디 · 최근 활동 · 커밋 가이드</div>
+        </div>
+        <div style="font-size:18px;color:var(--text-mute);">→</div>
       </a>
-      <a href="checklist.html" style="display:block;background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <div style="font-size:24px;margin-bottom:6px;">📋</div>
-        <div style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:4px;">개인 체크리스트</div>
-        <div style="font-size:13px;color:var(--text-soft);">개인 진도 트래킹 · 페이스 알림 · 26주 캘린더</div>
+      <a href="checklist.html" style="display:flex;align-items:center;gap:14px;background:white;border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:32px;flex-shrink:0;">📋</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">개인 체크리스트</div>
+          <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;">진도 트래킹 · 페이스 알림 · 26주 캘린더</div>
+        </div>
+        <div style="font-size:18px;color:var(--text-mute);">→</div>
+      </a>
+      <a href="guide.html" style="display:flex;align-items:center;gap:14px;background:white;border:1px solid var(--border);border-radius:12px;padding:16px 20px;text-decoration:none;color:inherit;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:32px;flex-shrink:0;">📖</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">가이드</div>
+          <div style="font-size:12.5px;color:var(--text-soft);margin-top:2px;">운영 원칙 · 문제집 · 26주 로드맵 (한번 읽기)</div>
+        </div>
+        <div style="font-size:18px;color:var(--text-mute);">→</div>
       </a>
     </div>
   </div>
@@ -755,10 +547,10 @@ footer .download {
 
 <!-- ============ FOOTER ============ -->
 <footer>
-  <p>🌅 미라클 모닝 클럽 — 매일 한 걸음씩, 6개월 후 함께</p>
-  <p style="margin-top: 6px; font-size: 12px;">시작: 2026.05.08 · 종료 목표: 2026.11.08</p>
+  <p>🌅 미라클 모닝 클럽 — 매일 한 걸음씩</p>
+  <p style="margin-top: 6px; font-size: 12px;">2026.05.08 ~ 2026.11.08</p>
   <p style="margin-top: 10px; font-size: 12px;">
-    <a href="https://github.com/janghyukjin/miracle-morning-club" target="_blank" style="color: white; opacity: 0.85;">📦 GitHub Repo</a>
+    <a href="https://github.com/janghyukjin/miracle-morning-club" target="_blank" style="color: white; opacity: 0.85;">📦 GitHub</a>
   </p>
 </footer>
 
@@ -770,6 +562,148 @@ window.addEventListener('scroll', () => {
   if (window.scrollY > 500) fab.classList.add('show');
   else fab.classList.remove('show');
 });
+
+// ============ 오늘 풀 문제 (동적) ============
+const START_DATE = new Date(2026, 4, 8); // 2026-05-08
+
+const WEEK_PROBLEMS = {
+  1: { title: "Arrays & Hashing", problems: [
+    { lc: "49", name: "Group Anagrams", diff: "M", slug: "group-anagrams" },
+    { lc: "347", name: "Top K Frequent Elements", diff: "M", slug: "top-k-frequent-elements" },
+    { lc: "238", name: "Product of Array Except Self", diff: "M", slug: "product-of-array-except-self" },
+    { lc: "271", name: "Encode and Decode Strings", diff: "M", slug: "encode-and-decode-strings" },
+    { lc: "128", name: "Longest Consecutive Sequence", diff: "M", slug: "longest-consecutive-sequence" },
+    { lc: "11", name: "Container With Most Water", diff: "M", slug: "container-with-most-water" },
+    { lc: "42", name: "Trapping Rain Water", diff: "H", slug: "trapping-rain-water" }
+  ]},
+  2: { title: "Sliding Window", problems: [
+    { lc: "3", name: "Longest Substring Without Repeating", diff: "M", slug: "longest-substring-without-repeating-characters" },
+    { lc: "424", name: "Longest Repeating Char Replacement", diff: "M", slug: "longest-repeating-character-replacement" },
+    { lc: "567", name: "Permutation in String", diff: "M", slug: "permutation-in-string" },
+    { lc: "76", name: "Minimum Window Substring", diff: "H", slug: "minimum-window-substring" },
+    { lc: "239", name: "Sliding Window Maximum", diff: "H", slug: "sliding-window-maximum" },
+    { lc: "155", name: "Min Stack", diff: "M", slug: "min-stack" },
+    { lc: "22", name: "Generate Parentheses", diff: "M", slug: "generate-parentheses" }
+  ]},
+  3: { title: "Binary Search + Stack", problems: [
+    { lc: "704", name: "Binary Search", diff: "E", slug: "binary-search" },
+    { lc: "74", name: "Search a 2D Matrix", diff: "M", slug: "search-a-2d-matrix" },
+    { lc: "875", name: "Koko Eating Bananas", diff: "M", slug: "koko-eating-bananas" },
+    { lc: "153", name: "Find Min in Rotated Sorted Array", diff: "M", slug: "find-minimum-in-rotated-sorted-array" },
+    { lc: "33", name: "Search in Rotated Sorted Array", diff: "M", slug: "search-in-rotated-sorted-array" },
+    { lc: "4", name: "Median of Two Sorted Arrays", diff: "H", slug: "median-of-two-sorted-arrays" },
+    { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" }
+  ]},
+  4: { title: "Linked List", problems: [
+    { lc: "143", name: "Reorder List", diff: "M", slug: "reorder-list" },
+    { lc: "138", name: "Copy List with Random Pointer", diff: "M", slug: "copy-list-with-random-pointer" },
+    { lc: "2", name: "Add Two Numbers", diff: "M", slug: "add-two-numbers" },
+    { lc: "287", name: "Find the Duplicate Number", diff: "M", slug: "find-the-duplicate-number" },
+    { lc: "146", name: "LRU Cache", diff: "M", slug: "lru-cache" },
+    { lc: "23", name: "Merge k Sorted Lists", diff: "H", slug: "merge-k-sorted-lists" },
+    { lc: "25", name: "Reverse Nodes in k-Group", diff: "H", slug: "reverse-nodes-in-k-group" }
+  ]}
+};
+
+function renderToday() {
+  const titleEl = document.getElementById('today-title');
+  const subEl = document.getElementById('today-sub');
+  const listEl = document.getElementById('today-problems');
+
+  const now = new Date();
+  const daysSinceStart = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
+
+  // 시작 전
+  if (daysSinceStart < 0) {
+    const daysLeft = Math.abs(daysSinceStart);
+    const tomorrow = daysLeft === 1;
+    titleEl.textContent = tomorrow ? '내일 (5/8) 시작 문제' : `${daysLeft}일 뒤 시작 문제`;
+    subEl.textContent = tomorrow ? '첫날부터 막막하지 않게' : `시작일 (5/8) 첫 주 미리보기`;
+    listEl.innerHTML = renderProblemsHTML(WEEK_PROBLEMS[1].problems.slice(0, 2), 'Week 1 첫 2문제');
+    return;
+  }
+
+  // 26주 종료 후
+  const currentWeek = Math.floor(daysSinceStart / 7) + 1;
+  if (currentWeek > 26) {
+    titleEl.textContent = '🎉 26주 완주!';
+    subEl.textContent = '이제 인터뷰 진행 + 오퍼 협상';
+    listEl.innerHTML = '<div class="card"><p>로드맵 끝났어요. 잘하셨어요! 💪</p></div>';
+    return;
+  }
+
+  // Week 4 이후는 일반 안내
+  const weekData = WEEK_PROBLEMS[currentWeek];
+  if (!weekData) {
+    titleEl.textContent = `Week ${currentWeek} 진행 중`;
+    subEl.textContent = '이번주 문제는 체크리스트 페이지에서 확인';
+    listEl.innerHTML = `
+      <div class="card" style="text-align:center;padding:24px;">
+        <a href="checklist.html" style="display:inline-block;background:var(--accent);color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;">📋 체크리스트에서 보기</a>
+      </div>
+    `;
+    return;
+  }
+
+  // 오늘이 이번주 며칠째인지 (월=1, 화=2 ...)
+  const dayOfWeek = ((daysSinceStart % 7) + 7) % 7; // 0..6 (시작일이 목이니 0=목)
+  const dayNames = ['목', '금', '토', '일', '월', '화', '수'];
+  titleEl.textContent = `오늘 풀 문제 · Week ${currentWeek} ${dayNames[dayOfWeek]}요일`;
+  subEl.textContent = weekData.title;
+
+  // 오늘의 1-2문제 추천 (요일 기준)
+  // 평일 1문제, 토 2-3문제, 일 휴식
+  const todayIdx = Math.min(dayOfWeek, weekData.problems.length - 1);
+  const todayProblems = dayOfWeek === 3 // 일요일
+    ? []
+    : dayOfWeek === 2 // 토요일
+      ? weekData.problems.slice(Math.min(5, weekData.problems.length - 2), weekData.problems.length)
+      : [weekData.problems[todayIdx]];
+
+  if (todayProblems.length === 0) {
+    listEl.innerHTML = `
+      <div class="card" style="text-align:center;padding:24px;background:var(--green-light);border-color:var(--green);">
+        <div style="font-size:32px;">🌴</div>
+        <p style="margin-top:8px;font-weight:700;color:#065f46;">일요일은 휴식</p>
+        <p style="font-size:13px;color:var(--text-soft);margin-top:4px;">데이트 / 가족 / 여가 자유. 번아웃 방지가 핵심.</p>
+      </div>
+    `;
+  } else {
+    listEl.innerHTML = renderProblemsHTML(todayProblems, `${dayNames[dayOfWeek]}요일 · ${weekData.title}`);
+  }
+
+  // 이번주 전체 보기 토글
+  listEl.innerHTML += `
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;padding:8px 0;">📅 이번주 전체 보기 (${weekData.problems.length}문제)</summary>
+      <div style="margin-top:8px;">${renderProblemsHTML(weekData.problems, '')}</div>
+    </details>
+  `;
+}
+
+function renderProblemsHTML(problems, header) {
+  if (problems.length === 0) return '';
+  return problems.map(p => {
+    const url = `https://leetcode.com/problems/${p.slug}/`;
+    const diffClass = p.diff === 'H' ? 'badge-hard' : p.diff === 'M' ? 'badge-med' : 'badge-easy';
+    const diffText = p.diff === 'H' ? 'Hard' : p.diff === 'M' ? 'Medium' : 'Easy';
+    return `
+      <a href="${url}" target="_blank" rel="noopener" class="problem-card" style="display:block;text-decoration:none;color:inherit;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.08)';this.style.borderColor='var(--accent)'" onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='var(--border)'">
+        <div class="problem-title">
+          LC ${p.lc} — ${p.name}
+          <span class="badge ${diffClass}">${diffText}</span>
+        </div>
+        <div class="problem-link" style="display:flex;align-items:center;gap:6px;">
+          <span style="color:var(--accent);">↗</span>
+          <span>${url}</span>
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
+renderToday();
+
 /* GitHub activity 스크립트는 board.html로 이동
 async function loadActivity() {
   try {

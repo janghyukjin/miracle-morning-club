@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="미라클 모닝 클럽 - 가이드">
+<title>📖 가이드 — 미라클 모닝 클럽</title>
+<style>
+:root {
+  --primary: #0a2540;
+  --accent: #1976d2;
+  --accent-light: #eff6ff;
+  --warm: #f59e0b;
+  --warm-light: #fffbeb;
+  --green: #10b981;
+  --green-light: #ecfdf5;
+  --bg: #ffffff;
+  --bg-alt: #f9fafb;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-soft: #4a5568;
+  --text-mute: #718096;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--bg);
+  font-size: 15px;
+}
+header.nav {
+  position: sticky; top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 12px 20px;
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.logo { font-weight: 800; font-size: 16px; color: var(--primary); text-decoration: none; }
+.nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.nav-links a {
+  color: var(--text-soft); text-decoration: none;
+  font-size: 13px; font-weight: 500;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); font-weight: 700; }
+
+.hero {
+  padding: 40px 20px 30px;
+  text-align: center;
+  background: linear-gradient(135deg, #f0f7ff 0%, #fef3c7 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 { font-size: 28px; color: var(--primary); margin-bottom: 6px; }
+.hero p { color: var(--text-soft); font-size: 14px; }
+
+section { padding: 40px 20px; }
+section.alt { background: var(--bg-alt); }
+.section-inner { max-width: 880px; margin: 0 auto; }
+
+h2.section-title {
+  font-size: 22px; color: var(--primary);
+  margin-bottom: 8px; position: relative; padding-left: 14px;
+}
+h2.section-title::before {
+  content: ""; position: absolute; left: 0; top: 4px; bottom: 4px;
+  width: 5px; border-radius: 3px; background: var(--accent);
+}
+.section-sub { color: var(--text-soft); margin-bottom: 20px; font-size: 14px; }
+
+.table-wrap {
+  overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin: 12px 0;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: var(--primary); color: white; text-align: left; padding: 10px 12px; font-weight: 600; }
+td { border-top: 1px solid var(--border); padding: 10px 12px; vertical-align: top; }
+tr:nth-child(even) td { background: var(--bg-alt); }
+
+.callout {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 12px 16px; border-radius: 0 8px 8px 0;
+  margin: 14px 0; font-size: 13px;
+}
+.callout-success { background: var(--green-light); border-left-color: var(--green); }
+.star { color: var(--warm); font-weight: 700; }
+
+.phase-grid {
+  display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 18px;
+}
+@media (min-width: 768px) { .phase-grid { grid-template-columns: repeat(2, 1fr); } }
+.phase {
+  background: white; border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; position: relative; overflow: hidden;
+}
+.phase::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent);
+}
+.phase.p2::before { background: var(--warm); }
+.phase.p3::before { background: var(--green); }
+.phase.p4::before { background: #8b5cf6; }
+.phase-num {
+  display: inline-block; background: var(--accent); color: white;
+  font-size: 11px; font-weight: 700; padding: 3px 9px;
+  border-radius: 4px; margin-bottom: 6px;
+}
+.phase.p2 .phase-num { background: var(--warm); }
+.phase.p3 .phase-num { background: var(--green); }
+.phase.p4 .phase-num { background: #8b5cf6; }
+.phase h3 { color: var(--primary); font-size: 17px; margin-bottom: 4px; }
+.phase .phase-period { color: var(--text-mute); font-size: 12px; margin-bottom: 8px; }
+.phase ul { padding-left: 18px; color: var(--text-soft); font-size: 13px; }
+.phase ul li { margin: 3px 0; }
+
+.back-link {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 10px 20px;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">🌅 미라클 모닝 클럽</a>
+    <nav class="nav-links">
+      <a href="index.html">홈</a>
+      <a href="guide.html" class="active">📖 가이드</a>
+      <a href="board.html">🌱 출석보드</a>
+      <a href="checklist.html">📋 체크리스트</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>📖 가이드</h1>
+  <p>한번 읽고 → 다음부턴 안 봐도 됨</p>
+</div>
+
+<section>
+  <div class="section-inner">
+    <h2 class="section-title">운영 가이드라인</h2>
+    <p class="section-sub">학원 가이드라인 수준 기준</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>항목</th><th>기준</th></tr>
+        <tr><td>학습 기간</td><td>26주 (6개월)</td></tr>
+        <tr><td>주간 시간</td><td>평일 1h × 5 + 토요일 5h + 일요일 휴식 = <strong>11h</strong></td></tr>
+        <tr><td>주간 LC 문제</td><td>7문제 (Easy 0 / Medium 5-6 / Hard 1-2)</td></tr>
+        <tr><td>모의 인터뷰</td><td>주 1회 (Week 4부터)</td></tr>
+        <tr><td>커리큘럼</td><td>NeetCode 150 + 회사 빈출 50</td></tr>
+        <tr><td>최종 목표</td><td>LC Medium 150+ / Hard 30+ / 영어 IH</td></tr>
+        <tr><td>출석 기준</td><td>repo에 commit (잔디 인증)</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="section-inner">
+    <h2 class="section-title">LeetCode 문제집</h2>
+    <p class="section-sub">NeetCode 150이 메인</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>컬렉션</th><th>문제 수</th><th>추천</th></tr>
+        <tr><td>Blind 75</td><td>75</td><td>핵심 패턴 빠른 워밍업</td></tr>
+        <tr style="background:#fef3c7"><td><strong>NeetCode 150</strong> <span class="star">★</span></td><td><strong>150</strong></td><td><strong>메인 커리큘럼</strong></td></tr>
+        <tr><td>LC Top Interview 150</td><td>150</td><td>NC150 대안</td></tr>
+        <tr><td>NeetCode 250</td><td>250</td><td>NC150 후 보강용</td></tr>
+        <tr><td>회사 태그 (Premium)</td><td>회사별</td><td>Phase 4부터 추가</td></tr>
+      </table>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>학습 순서</strong> · Week 1-20 NeetCode 150 완주 → Week 17-26 회사 태그 50-100개 추가
+    </div>
+
+    <h3 style="margin-top: 24px; color: var(--primary); font-size: 16px;">NeetCode 150 카테고리</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>카테고리</th><th>수</th><th>중요도</th></tr>
+        <tr><td>Arrays &amp; Hashing</td><td>9</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Two Pointers</td><td>5</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Sliding Window</td><td>6</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Stack</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Binary Search</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Linked List</td><td>11</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Trees</td><td>15</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Tries</td><td>3</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Heap / Priority Queue</td><td>7</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Backtracking</td><td>9</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Graphs</td><td>13</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>Advanced Graphs</td><td>6</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>1-D DP</td><td>12</td><td><span class="star">★★★★★</span></td></tr>
+        <tr><td>2-D DP</td><td>11</td><td><span class="star">★★★★</span></td></tr>
+        <tr><td>Greedy</td><td>8</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Intervals</td><td>6</td><td><span class="star">★★★</span></td></tr>
+        <tr><td>Math &amp; Geometry</td><td>8</td><td><span class="star">★★</span></td></tr>
+        <tr><td>Bit Manipulation</td><td>7</td><td><span class="star">★★</span></td></tr>
+        <tr style="background:var(--primary); color:white;"><td style="color:white"><strong>합계</strong></td><td style="color:white"><strong>150</strong></td><td>-</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <h2 class="section-title">26주 로드맵</h2>
+    <p class="section-sub">4단계 Phase</p>
+
+    <div class="phase-grid">
+      <div class="phase">
+        <span class="phase-num">PHASE 1</span>
+        <h3>기반 다지기</h3>
+        <div class="phase-period">Week 1-4 · 5/8 ~ 6/4</div>
+        <ul>
+          <li>Arrays &amp; Hashing</li>
+          <li>Sliding Window</li>
+          <li>Binary Search + Stack</li>
+          <li>Linked List + 첫 모의 인터뷰</li>
+          <li>본인 프로젝트 5분 영어 스크립트</li>
+        </ul>
+      </div>
+
+      <div class="phase p2">
+        <span class="phase-num">PHASE 2</span>
+        <h3>패턴 마스터</h3>
+        <div class="phase-period">Week 5-12 · 6/5 ~ 7/30</div>
+        <ul>
+          <li>Trees &amp; Tries</li>
+          <li>Heap + Backtracking</li>
+          <li>Graphs (가장 중요)</li>
+          <li>Advanced Graphs + 1D DP</li>
+          <li>STAR 답변 영어 5개</li>
+        </ul>
+      </div>
+
+      <div class="phase p3">
+        <span class="phase-num">PHASE 3</span>
+        <h3>Hard + System Design</h3>
+        <div class="phase-period">Week 13-20 · 7/31 ~ 9/24</div>
+        <ul>
+          <li>1D DP / 2D DP</li>
+          <li>Greedy + Intervals + Math</li>
+          <li>빅테크 빈출 Hard 6개</li>
+          <li>Design 문제 5개</li>
+          <li>본인 프로젝트 30분 영어 발표</li>
+        </ul>
+      </div>
+
+      <div class="phase p4">
+        <span class="phase-num">PHASE 4</span>
+        <h3>인터뷰 준비 + 지원</h3>
+        <div class="phase-period">Week 21-26 · 9/25 ~ 11/8</div>
+        <ul>
+          <li>회사 태그 100문제 집중</li>
+          <li>모의 onsite 시뮬레이션 주 1회</li>
+          <li>3-5개사 동시 지원</li>
+          <li>인터뷰 진행 + 라운드별 복기</li>
+          <li>오퍼 협상</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top: 24px;">
+      <a href="index.html" class="back-link">← 홈으로</a>
+    </p>
+  </div>
+</section>
+
+</body>
+</html>
