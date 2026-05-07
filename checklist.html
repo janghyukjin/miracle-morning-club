@@ -520,7 +520,7 @@ const WEEKS = [
     { lc: "128", name: "Longest Consecutive Sequence", diff: "M", slug: "longest-consecutive-sequence" },
     { lc: "11", name: "Container With Most Water", diff: "M", slug: "container-with-most-water" },
     { lc: "42", name: "Trapping Rain Water", diff: "H", slug: "trapping-rain-water" }
-  ], tasks: ["mlx-operator 5분 영어 스크립트 작성", "주간 복습"] },
+  ], tasks: ["본인 핵심 프로젝트 5분 영어 스크립트 작성", "주간 복습"] },
 
   { n: 2, title: "Sliding Window", topic: "약점 영역 1/4", problems: [
     { lc: "3", name: "Longest Substring Without Repeating Characters", diff: "M", slug: "longest-substring-without-repeating-characters" },
@@ -541,7 +541,7 @@ const WEEKS = [
     { lc: "4", name: "Median of Two Sorted Arrays", diff: "H", slug: "median-of-two-sorted-arrays" },
     { lc: "853", name: "Car Fleet", diff: "M", slug: "car-fleet" },
     { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" }
-  ], tasks: ["mlx-operator 15분 영어 스크립트 시작", "ByteByteGo 영상 시청"] },
+  ], tasks: ["본인 프로젝트 15분 영어 스크립트 시작", "ByteByteGo 영상 시청"] },
 
   { n: 4, title: "Linked List + 첫 모의 인터뷰", topic: "Phase 1 마무리", problems: [
     { lc: "143", name: "Reorder List", diff: "M", slug: "reorder-list" },
@@ -551,7 +551,7 @@ const WEEKS = [
     { lc: "146", name: "LRU Cache", diff: "M", slug: "lru-cache" },
     { lc: "23", name: "Merge k Sorted Lists", diff: "H", slug: "merge-k-sorted-lists" },
     { lc: "25", name: "Reverse Nodes in k-Group", diff: "H", slug: "reverse-nodes-in-k-group" }
-  ], tasks: ["Pramp 첫 모의 인터뷰", "mlx-operator 15분 영어 발표 완성"] },
+  ], tasks: ["Pramp 첫 모의 인터뷰", "본인 프로젝트 15분 영어 발표 완성"] },
 
   { n: 5, title: "Trees 기초", topic: "Tree 패턴 1/2", problems: [
     { lc: "226", name: "Invert Binary Tree", diff: "E", slug: "invert-binary-tree" },
@@ -633,14 +633,14 @@ const WEEKS = [
     { lc: "64", name: "Minimum Path Sum", diff: "M", slug: "minimum-path-sum" },
     { lc: "120", name: "Triangle", diff: "M", slug: "triangle" },
     { lc: "198", name: "House Robber 복습", diff: "M", slug: "house-robber" }
-  ], tasks: ["mlx-operator 30분 영어 발표 작성"] },
+  ], tasks: ["본인 프로젝트 30분 영어 발표 작성"] },
 
   { n: 14, title: "1D DP 마무리", topic: "DP 추가 패턴", problems: [
     { lc: "877", name: "Stone Game", diff: "M", slug: "stone-game" },
     { lc: "1027", name: "Longest Arithmetic Subsequence", diff: "M", slug: "longest-arithmetic-subsequence" },
     { lc: "740", name: "Delete and Earn", diff: "M", slug: "delete-and-earn" },
     { lc: "542", name: "01 Matrix", diff: "M", slug: "01-matrix" }
-  ], tasks: ["mlx-operator 30분 영어 발표 녹음"] },
+  ], tasks: ["본인 프로젝트 30분 영어 발표 녹음"] },
 
   { n: 15, title: "2D DP 1/2", topic: "약점 영역 4/4", problems: [
     { lc: "62", name: "Unique Paths", diff: "M", slug: "unique-paths" },
@@ -956,7 +956,7 @@ function renderToday() {
   w.tasks.forEach((t, i) => {
     const key = getTaskKey(cw, 't', i);
     const done = isTaskDone(key);
-    const tag = t.includes('영어') || t.includes('mlx') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
+    const tag = t.includes('영어') || t.includes('프로젝트') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
                 t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
                 t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
     const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
@@ -1014,7 +1014,7 @@ function renderWeekDetail(weekNum) {
   w.tasks.forEach((t, i) => {
     const key = getTaskKey(weekNum, 't', i);
     const done = isTaskDone(key);
-    const tag = t.includes('영어') || t.includes('mlx') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
+    const tag = t.includes('영어') || t.includes('프로젝트') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
                 t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
                 t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
     const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
