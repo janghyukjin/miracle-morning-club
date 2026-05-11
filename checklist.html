@@ -879,6 +879,28 @@ async function loadMyRepoSolved() {
   if (!me) return;
   const tree = await fetchSolutionsTree();
   myRepoSolved = tree[me] || {};
+
+  // 신규 detect된 항목을 state.tasks로 동기화 → 카운터/스트릭 정상 작동
+  let newlySynced = 0;
+  for (const weekKey in myRepoSolved) {
+    const weekNum = parseInt(weekKey.replace("week-", ""), 10);
+    const w = WEEKS[weekNum - 1];
+    if (!w) continue;
+    w.problems.forEach((p, idx) => {
+      const taskKey = getTaskKey(weekNum, "p", idx);
+      if (myRepoSolved[weekKey].has(p.lc) && !state.tasks[taskKey]) {
+        state.tasks[taskKey] = true;
+        newlySynced++;
+      }
+    });
+  }
+  if (newlySynced > 0) {
+    // 새로 발견된 풀이 = 오늘 활동으로 카운트 (streak/활동일 보정)
+    const today = todayKey();
+    state.dailyLog[today] = (state.dailyLog[today] || 0) + newlySynced;
+    saveState(state);
+  }
+
   render(); // 데이터 도착 후 체크박스 새로고침
 }
 
@@ -1075,11 +1097,29 @@ function getTotalTasks() {
 }
 
 function getDoneTasks() {
-  return Object.keys(state.tasks).length;
+  // localStorage + repo 자동 체크 둘 다 카운트
+  let count = 0;
+  WEEKS.forEach((w, i) => {
+    const weekNum = i + 1;
+    w.problems.forEach((_, idx) => {
+      if (isTaskDone(getTaskKey(weekNum, 'p', idx))) count++;
+    });
+    w.tasks.forEach((_, idx) => {
+      if (isTaskDone(getTaskKey(weekNum, 't', idx))) count++;
+    });
+  });
+  return count;
 }
 
 function getSolvedProblems() {
-  return Object.keys(state.tasks).filter(k => k.includes('-p')).length;
+  let count = 0;
+  WEEKS.forEach((w, i) => {
+    const weekNum = i + 1;
+    w.problems.forEach((_, idx) => {
+      if (isTaskDone(getTaskKey(weekNum, 'p', idx))) count++;
+    });
+  });
+  return count;
 }
 
 function getStreak() {
