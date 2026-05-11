@@ -870,6 +870,28 @@ function renderMembersPreview() {
 // 페이지 로드 시 멤버 데이터 fetch
 loadMembersData();
 
+// ============ 본인 풀이 자동 체크 (Commit-based) ============
+// myRepoSolved[weekKey] = Set('49', '347', ...) — repo에 push된 LC 번호
+let myRepoSolved = {};
+
+async function loadMyRepoSolved() {
+  const me = getUsername();
+  if (!me) return;
+  const tree = await fetchSolutionsTree();
+  myRepoSolved = tree[me] || {};
+  render(); // 데이터 도착 후 체크박스 새로고침
+}
+
+function isLCSolvedInRepo(weekNum, problemIdx) {
+  const weekKey = `week-${String(weekNum).padStart(2, '0')}`;
+  const lcSet = myRepoSolved[weekKey];
+  if (!lcSet) return false;
+  const lc = WEEKS[weekNum - 1]?.problems[problemIdx]?.lc;
+  return !!(lc && lcSet.has(lc));
+}
+
+loadMyRepoSolved();
+
 // ============ USER IDENTIFIER ============
 function getUsername() {
   return localStorage.getItem('mmc_username') || '';
@@ -1012,7 +1034,19 @@ function getAllTaskKeys(weekNum) {
 }
 
 function isTaskDone(key) {
-  return !!state.tasks[key];
+  if (state.tasks[key]) return true;
+  // 풀이 파일이 repo에 push되면 자동 체크
+  const m = key.match(/^w(\d+)-p(\d+)$/);
+  if (m) return isLCSolvedInRepo(parseInt(m[1]), parseInt(m[2]));
+  return false;
+}
+
+// repo에서 자동 체크된 항목인지 (localStorage 아님)
+function isAutoChecked(key) {
+  if (state.tasks[key]) return false;
+  const m = key.match(/^w(\d+)-p(\d+)$/);
+  if (m) return isLCSolvedInRepo(parseInt(m[1]), parseInt(m[2]));
+  return false;
 }
 
 function toggleTask(key) {
