@@ -634,22 +634,12 @@ h2.section-h {
     <div class="phase-progress" id="phase-progress"></div>
   </div>
 
-  <!-- Today's Recommendation (요일별 1-2문제만) -->
+  <!-- 이번 주 목표 (한 주 분량 한꺼번에) -->
   <div class="today-card">
-    <span class="today-label" id="today-label">오늘 추천</span>
+    <span class="today-label" id="today-label">이번 주 목표</span>
     <h3 id="today-week-title">로딩 중...</h3>
+    <p style="font-size:12px;color:var(--text-soft);margin-top:4px;margin-bottom:10px;">시간 날 때마다 자유롭게 풀고 체크하세요. 요일 분배는 본인 페이스대로.</p>
     <div class="today-tasks" id="today-tasks"></div>
-  </div>
-
-  <!-- 이번주 공통 LC (접기) -->
-  <div class="card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px;">
-    <details>
-      <summary style="cursor:pointer;font-weight:700;color:var(--primary);font-size:15px;display:flex;justify-content:space-between;align-items:center;">
-        <span>📚 이번주 공통 LC <span id="week-lc-count" style="font-size:12px;color:var(--text-mute);font-weight:500;"></span></span>
-        <span style="font-size:11px;color:var(--text-mute);font-weight:500;">클럽 표준 · 모두 동일</span>
-      </summary>
-      <div class="today-tasks" id="week-lc-list" style="margin-top:12px;"></div>
-    </details>
   </div>
 
   <!-- 내 개인 목표 (사용자 추가/삭제) -->
@@ -975,7 +965,6 @@ function render() {
   renderDashboard();
   renderProgress();
   renderToday();
-  renderWeekLC();
   renderPersonalGoals();
   renderWeekPicker();
   renderWeekDetail(currentSelectedWeek);
@@ -1369,62 +1358,28 @@ function renderToday() {
   document.getElementById('today-greeting').textContent =
     `Week ${cw} · ${w.title} · ${getWeekDates(cw)}`;
 
-  // 요일 기반 오늘 추천 (시작일이 목요일 = 0)
-  const now = new Date();
-  const daysSinceStart = Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24));
-  const dayOfWeek = ((daysSinceStart % 7) + 7) % 7; // 0=목, 1=금, 2=토, 3=일, 4=월, 5=화, 6=수
-  const dayNames = ['목', '금', '토', '일', '월', '화', '수'];
-
   const todayLabel = document.getElementById('today-label');
   const titleEl = document.getElementById('today-week-title');
   const tasksEl = document.getElementById('today-tasks');
 
-  todayLabel.textContent = `오늘 추천 · ${dayNames[dayOfWeek]}요일`;
+  // 이번주 진행률
+  const total = w.problems.length;
+  const done = w.problems.filter((_, i) => isTaskDone(getTaskKey(cw, 'p', i))).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  todayLabel.textContent = `이번 주 목표 · ${done}/${total} 완료 (${pct}%)`;
   titleEl.textContent = `Week ${cw}: ${w.title}`;
   tasksEl.innerHTML = '';
 
-  // 일요일 = 휴식
-  if (dayOfWeek === 3) {
-    tasksEl.innerHTML = `
-      <div style="text-align:center;padding:24px 12px;background:var(--green-light);border-radius:8px;border:1px solid #a7f3d0;">
-        <div style="font-size:32px;">🌴</div>
-        <p style="margin-top:8px;font-weight:700;color:#065f46;">일요일은 휴식</p>
-        <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">번아웃 방지가 핵심</p>
-      </div>
-    `;
-    return;
-  }
-
-  // 요일별 오늘의 LC 인덱스 (목/금/월/화/수 = 1문제, 토 = 2문제)
-  let todayIndices = [];
-  if (dayOfWeek === 0) todayIndices = [0]; // 목 - 첫문제
-  else if (dayOfWeek === 1) todayIndices = [1]; // 금
-  else if (dayOfWeek === 2) todayIndices = [2, 3, 4]; // 토 - 집중일 (3문제)
-  else if (dayOfWeek === 4) todayIndices = [5]; // 월
-  else if (dayOfWeek === 5) todayIndices = [6]; // 화
-  else if (dayOfWeek === 6) todayIndices = []; // 수 - 복습일
-
-  if (dayOfWeek === 6) {
-    tasksEl.innerHTML = `
-      <div style="text-align:center;padding:20px 12px;background:var(--accent-light);border-radius:8px;">
-        <div style="font-size:24px;">🔄</div>
-        <p style="margin-top:6px;font-weight:700;color:var(--accent);">수요일은 복습일</p>
-        <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">이번주 풀이 다시 빠르게 + 약점 보강</p>
-      </div>
-    `;
-    return;
-  }
-
-  todayIndices.forEach(i => {
-    const p = w.problems[i];
-    if (!p) return;
+  // 이번주 모든 LC 문제 한꺼번에 표시
+  w.problems.forEach((p, i) => {
     const key = getTaskKey(cw, 'p', i);
-    const done = isTaskDone(key);
+    const isDone = isTaskDone(key);
     const url = lcUrl(p.slug);
     const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
     const html = `
-      <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
-        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+      <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
         <span class="task-text">LC ${p.lc} — ${p.name}</span>
         ${linkBtn}
         <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
