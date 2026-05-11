@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 """
-LeetCode 풀이 파일에 Claude AI 면접 분석 노트를 자동 append.
+LeetCode 풀이 파일에 정적 면접 노트(data/lc-notes.json) 자동 append.
 
 - solutions/**/lc-*.py 같은 파일 찾기
+- 파일명에서 LC 번호 추출 → data/lc-notes.json에서 노트 조회
 - 이미 노트 있는 파일은 건너뜀 (idempotent)
-- Anthropic API 호출 → 풀이 평가 + 최적해 + Follow-up + Pitfalls
-- 파일 끝에 코드 주석으로 append
+- 코드 주석으로 파일 끝에 append
+
+API 호출 없음. 무료. NeetCode 150 Phase 1 (Week 1-4) 커버.
 """
 
+import json
 import os
 import re
 import sys
 import glob
+from pathlib import Path
 
-from anthropic import Anthropic
-
-MODEL = "claude-sonnet-4-6"
-MARKER_START = "===== Interview Notes (AI-generated) ====="
+MARKER_START = "===== Interview Notes ====="
 MARKER_END = "===== End Interview Notes ====="
+NOTES_DB_PATH = "data/lc-notes.json"
 
 # 파일 확장자 → 주석 prefix
 COMMENT_STYLES = {
@@ -33,94 +35,69 @@ COMMENT_STYLES = {
     ".swift": "//",
 }
 
-SYSTEM_PROMPT = """당신은 한국 소프트웨어 엔지니어가 FAANG급 코딩 인터뷰를 준비하도록 돕는 코칭 전문가입니다.
 
-제출된 LeetCode 풀이를 분석하여 다음 4섹션을 한국어로 제공하세요:
-
-[풀이 평가]
-- 시간/공간 복잡도
-- 접근 방법 평가 (간결하게)
-
-[최적해]
-- 더 빠른 풀이가 있으면 코드와 함께 제시 (들여쓰기 깔끔하게)
-- 이미 최적이면 "이미 최적입니다" 한 줄
-
-[Follow-up 질문 3개]
-- 면접관이 물을 만한 후속 질문 정확히 3개
-
-[Pitfalls]
-- 흔한 실수 / 엣지 케이스 2-3개
-
-규칙:
-- 평문 한국어. 마크다운 헤더(#) X, 코드 펜스(```) X
-- 코드는 들여쓰기로 표현. 본문은 자유롭게
-- 전체 길이 400~700자
-- 각 섹션은 [] 헤더로 구분
-- 본인 풀이가 이미 최적이면 솔직히 인정 (억지로 다른 방법 제시 X)"""
+def load_notes_db():
+    """data/lc-notes.json 로드."""
+    try:
+        with open(NOTES_DB_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"✗ Notes DB not found: {NOTES_DB_PATH}", file=sys.stderr)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"✗ Notes DB JSON parse error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
-def extract_lc_meta(filepath):
-    """파일명에서 LC 번호 + slug 추출."""
+def extract_lc_number(filepath):
+    """파일명에서 LC 번호 추출. 'lc-49-group-anagrams.py' → '49'."""
     fname = os.path.basename(filepath)
-    m = re.match(r"^lc-(\w+)-(.+)\.(\w+)$", fname)
-    if not m:
-        return None
-    return {
-        "number": m.group(1),
-        "slug": m.group(2),
-        "name": m.group(2).replace("-", " ").title(),
-        "ext": "." + m.group(3),
-    }
+    m = re.match(r"^lc-(\w+)-.+\.\w+$", fname)
+    return m.group(1) if m else None
 
 
 def has_marker(content, comment_prefix):
-    """이미 노트 있는지 확인 (idempotent)."""
+    """이미 노트 있는지 (idempotent)."""
     return f"{comment_prefix} {MARKER_START}" in content
 
 
-def find_unmarked_files():
-    """노트 없는 풀이 파일 모두 찾기."""
-    files = []
-    for ext, comment in COMMENT_STYLES.items():
-        for path in glob.glob(f"solutions/**/lc-*{ext}", recursive=True):
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    content = f.read()
-                if not has_marker(content, comment):
-                    files.append(path)
-            except OSError as e:
-                print(f"  ⚠ Could not read {path}: {e}", file=sys.stderr)
-    return files
+def format_note(note_data):
+    """노트 dict → 사람이 읽기 좋은 텍스트."""
+    lines = []
+    lines.append(f"[{note_data['title']}] {note_data.get('difficulty', '')} · {note_data.get('pattern', '')}")
+
+    if note_data.get("constraints"):
+        lines.append(f"제약: {note_data['constraints']}")
+
+    lines.append("")
+    lines.append("[접근법]")
+    for i, ap in enumerate(note_data.get("approaches", []), 1):
+        lines.append(f"  {i}. {ap['name']} — {ap['complexity']}")
+        if ap.get("note"):
+            lines.append(f"     {ap['note']}")
+
+    if note_data.get("followups"):
+        lines.append("")
+        lines.append("[Follow-up 질문 (면접 단골)]")
+        for q in note_data["followups"]:
+            lines.append(f"  - {q}")
+
+    if note_data.get("pitfalls"):
+        lines.append("")
+        lines.append("[Pitfalls / 흔한 실수]")
+        for p in note_data["pitfalls"]:
+            lines.append(f"  - {p}")
+
+    if note_data.get("optimal_code"):
+        lines.append("")
+        lines.append("[최적해 (참고)]")
+        for code_line in note_data["optimal_code"].split("\n"):
+            lines.append(f"  {code_line}")
+
+    return "\n".join(lines)
 
 
-def analyze_solution(client, code, lc_meta):
-    """Claude API 호출하여 풀이 분석."""
-    user_msg = f"""LeetCode {lc_meta['number']} — {lc_meta['name']}
-URL: https://leetcode.com/problems/{lc_meta['slug']}/
-
-내 풀이:
-```
-{code}
-```
-
-위 풀이를 분석해주세요."""
-
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1500,
-        system=[
-            {
-                "type": "text",
-                "text": SYSTEM_PROMPT,
-                "cache_control": {"type": "ephemeral"},
-            }
-        ],
-        messages=[{"role": "user", "content": user_msg}],
-    )
-    return response.content[0].text.strip()
-
-
-def append_notes(filepath, notes, comment_prefix):
+def append_notes(filepath, note_text, comment_prefix):
     """노트를 코드 주석으로 wrap해서 파일 끝에 append."""
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
@@ -129,7 +106,7 @@ def append_notes(filepath, notes, comment_prefix):
         return False
 
     lines = [f"{comment_prefix} {MARKER_START}"]
-    for line in notes.split("\n"):
+    for line in note_text.split("\n"):
         if line.strip():
             lines.append(f"{comment_prefix} {line}")
         else:
@@ -146,48 +123,45 @@ def append_notes(filepath, notes, comment_prefix):
 
 
 def main():
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print(
-            "✗ ANTHROPIC_API_KEY not set. "
-            "Add it at Settings → Secrets and variables → Actions.",
-            file=sys.stderr,
-        )
-        sys.exit(0)  # 워크플로 실패시키지 않음
-
-    client = Anthropic(api_key=api_key)
-    unmarked = find_unmarked_files()
-
-    if not unmarked:
-        print("✓ All solution files already have notes. Nothing to do.")
-        return
-
-    print(f"📝 Found {len(unmarked)} file(s) needing notes\n")
+    notes_db = load_notes_db()
+    print(f"📚 Loaded notes DB ({len(notes_db) - 1} problems)\n")
 
     success = 0
-    for filepath in unmarked:
-        lc_meta = extract_lc_meta(filepath)
-        if not lc_meta:
-            print(f"  ⚠ Skipping (invalid filename): {filepath}")
-            continue
+    skipped = 0
+    no_note = 0
 
-        comment = COMMENT_STYLES.get(lc_meta["ext"])
-        if not comment:
-            continue
+    for ext, comment in COMMENT_STYLES.items():
+        for filepath in glob.glob(f"solutions/**/lc-*{ext}", recursive=True):
+            try:
+                with open(filepath, "r", encoding="utf-8") as f:
+                    content = f.read()
+            except OSError as e:
+                print(f"  ⚠ Could not read {filepath}: {e}", file=sys.stderr)
+                continue
 
-        print(f"  → LC {lc_meta['number']} ({lc_meta['name']}): analyzing...")
+            if has_marker(content, comment):
+                skipped += 1
+                continue
 
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                code = f.read()
-            notes = analyze_solution(client, code, lc_meta)
-            if append_notes(filepath, notes, comment):
-                print(f"    ✓ Added notes to {filepath}\n")
+            lc_num = extract_lc_number(filepath)
+            if not lc_num:
+                print(f"  ⚠ Invalid filename: {filepath}")
+                continue
+
+            if lc_num not in notes_db:
+                print(f"  ℹ LC {lc_num}: 노트 DB에 없음 ({filepath})")
+                no_note += 1
+                continue
+
+            note_text = format_note(notes_db[lc_num])
+            if append_notes(filepath, note_text, comment):
+                print(f"  ✓ LC {lc_num}: {filepath}")
                 success += 1
-        except Exception as e:
-            print(f"    ✗ Failed: {e}\n", file=sys.stderr)
 
-    print(f"\n✓ Successfully processed {success}/{len(unmarked)} files")
+    print("")
+    print(f"✓ Added: {success}")
+    print(f"⏭  Skipped (already noted): {skipped}")
+    print(f"ℹ  No note in DB: {no_note}")
 
 
 if __name__ == "__main__":

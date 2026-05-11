@@ -1,4 +1,4 @@
-name: Append AI Interview Notes
+name: Append Interview Notes
 
 on:
   push:
@@ -13,13 +13,13 @@ on:
       - "solutions/**/*.rs"
       - "solutions/**/*.kt"
       - "solutions/**/*.swift"
-      - "scripts/append-notes.py"  # 스크립트 자체 수정 시 백필
-  workflow_dispatch:  # 수동 트리거 (Actions 탭에서 Run 가능)
+      - "scripts/append-notes.py"  # 스크립트 수정 시 백필
+      - "data/lc-notes.json"       # 노트 DB 수정 시 백필
+  workflow_dispatch:  # 수동 트리거 (Actions 탭에서 Run)
 
 permissions:
   contents: write
 
-# 중복 실행 방지
 concurrency:
   group: append-notes-${{ github.ref }}
   cancel-in-progress: false
@@ -27,7 +27,7 @@ concurrency:
 jobs:
   append-notes:
     runs-on: ubuntu-latest
-    # 무한 루프 방지: 자기 자신이 만든 commit은 건너뜀
+    # 무한 루프 방지: action 자기 자신의 commit은 건너뜀
     if: "!contains(github.event.head_commit.message, '[skip notes]')"
 
     steps:
@@ -39,12 +39,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install anthropic
-
       - name: Run note appender
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/append-notes.py
 
       - name: Commit and push notes
@@ -53,7 +48,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if [[ -n "$(git status --porcelain)" ]]; then
             git add -A
-            git commit -m "🤖 Auto: append AI interview notes [skip notes]"
+            git commit -m "🤖 Auto: append interview notes [skip notes]"
             git push
           else
             echo "No changes to commit"

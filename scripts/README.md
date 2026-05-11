@@ -1,6 +1,6 @@
-# 🤖 AI Interview Notes (Auto)
+# 📝 Interview Notes (Auto-append)
 
-본인이 풀이 push하면 GitHub Action이 자동으로 Claude AI에게 분석 요청해서
+본인이 풀이 push하면 GitHub Action이 자동으로 `data/lc-notes.json`을 조회해서
 파일 끝에 면접 노트를 주석으로 추가합니다.
 
 ## 작동 방식
@@ -8,9 +8,9 @@
 ```
 [당신] git push solutions/janghyukjin/week-01/lc-49-group-anagrams.py
    ↓
-[GitHub Action] 파일 감지 → Claude API 호출 → 분석 결과 받음
+[GitHub Action] 파일 감지 → data/lc-notes.json에서 LC 49 노트 조회
    ↓
-[GitHub Action] 파일 끝에 주석으로 노트 append → 자동 commit + push
+[Action] 파일 끝에 주석으로 노트 append → 자동 commit + push
    ↓
 [당신] git pull 하면 노트 추가된 파일 받음
 ```
@@ -24,52 +24,86 @@ class Solution:
     def groupAnagrams(self, strs):
         # ... 본인 풀이 ...
 
-# ===== Interview Notes (AI-generated) =====
-# [풀이 평가]
-# 시간 O(n·k log k), 공간 O(n·k). sorted tuple key 방식은 가장 직관적이지만
-# k가 클 때 sorted 비용이 큽니다.
+# ===== Interview Notes =====
+# [Group Anagrams] Medium · Hash Map + Sorting/Counting
 #
-# [최적해]
-# Character count를 key로 쓰면 O(n·k)로 개선:
-#     cnt = [0] * 26
-#     for c in s: cnt[ord(c) - ord('a')] += 1
-#     d[tuple(cnt)].append(s)
+# [접근법]
+#   1. Sorted tuple key — O(n·k log k) / O(n·k)
+#      tuple(sorted(s))를 dict key로
+#   2. Character count key (optimal) — O(n·k) / O(n·k)
+#      [0]*26 카운트 배열을 tuple로
 #
-# [Follow-up 질문 3개]
-# 1. sorting 없이 풀 수 있나요? → char count
-# 2. k가 매우 크면? → count 방식이 더 유리
-# 3. unicode 입력 처리? → dict 카운트
+# [Follow-up 질문 (면접 단골)]
+#   - sort 없이 풀 수 있나? (→ char count)
+#   - k(문자열 길이)가 매우 크면?
+#   - Unicode/non-ASCII 처리는?
 #
-# [Pitfalls]
-# - list는 hashable 아님 → tuple로 변환
-# - 빈 문자열 edge case
+# [Pitfalls / 흔한 실수]
+#   - list는 hashable 아님 → tuple로 변환
+#   - 대소문자 구분 (Abc vs abc)
+#
+# [최적해 (참고)]
+#   from collections import defaultdict
+#   d = defaultdict(list)
+#   for s in strs:
+#       cnt = [0] * 26
+#       for c in s: cnt[ord(c) - ord('a')] += 1
+#       d[tuple(cnt)].append(s)
+#   return list(d.values())
 # ===== End Interview Notes =====
 ```
 
-## 셋업 (관리자만 1회)
+## 셋업
 
-1. Anthropic API key 발급: https://console.anthropic.com/settings/keys
-2. Repo Settings → Secrets and variables → Actions → New secret
-   - Name: `ANTHROPIC_API_KEY`
-   - Value: `sk-ant-...` (발급받은 키)
-3. 다음 push부터 자동 작동
+**셋업 불필요!** API 키, 토큰, 비용 모두 X. 자동 작동.
 
-## 비용
+## 커버리지
 
-- Claude Sonnet 기준 풀이 1개당 약 $0.005 (7원)
-- 한 달 평균 30 push 가정 시 약 1,000원
-- API key 발급한 사람의 계정으로 청구됨
+현재 노트 DB는 **NeetCode 150 Phase 1 (Week 1-4) = 29문제** 포함:
 
-## 이미 push된 파일도 노트 받으려면
+- Week 1: Arrays & Hashing (LC 49, 347, 238, 271, 128, 11, 42)
+- Week 2: Sliding Window + Stack (LC 3, 424, 567, 76, 239, 155, 22)
+- Week 3: Binary Search + Stack (LC 704, 74, 875, 153, 33, 4, 853, 84)
+- Week 4: Linked List (LC 143, 138, 2, 287, 146, 23, 25)
 
-스크립트는 노트 마커가 없는 파일을 모두 처리하므로, 새 push 시
-자동으로 백필됩니다. 또는 Actions 탭에서 "Run workflow" 수동 트리거 가능.
+→ Week 5+는 추후 추가 예정. 노트 없는 LC는 그냥 풀이만 남음.
+
+## 노트 DB 확장 (Week 5+ 추가하려면)
+
+`data/lc-notes.json`에 새 항목 추가:
+
+```json
+{
+  "226": {
+    "title": "Invert Binary Tree",
+    "difficulty": "Easy",
+    "pattern": "Tree DFS/BFS",
+    "approaches": [
+      {"name": "Recursive", "complexity": "O(n) / O(h)", "note": "left/right 교환"}
+    ],
+    "followups": ["iterative로?", "BFS로?", "verify 함수는?"],
+    "pitfalls": ["null 체크"],
+    "optimal_code": "if not root: return None\nroot.left, root.right = self.invertTree(root.right), self.invertTree(root.left)\nreturn root"
+  }
+}
+```
+
+push하면 Action이 자동으로 기존 풀이까지 백필.
 
 ## 노트 다시 받기 (재분석)
 
-파일에서 `===== Interview Notes` 부터 `===== End Interview Notes` 까지
-지우고 push하면 새 분석을 받습니다.
+파일에서 `===== Interview Notes` ~ `===== End Interview Notes` 블록을
+지우고 push하면 새로 받음.
 
 ## 무한 루프 방지
 
-Action이 만든 commit은 `[skip notes]` 태그가 있어 자기 자신을 재트리거하지 않습니다.
+Action의 자동 commit은 `[skip notes]` 태그가 있어 자기 자신을 재트리거하지 않음.
+
+## 향후: AI 분석 추가 옵션
+
+만약 본인 코드를 AI가 분석해서 개인화된 피드백을 받고 싶으면:
+1. Anthropic API 계정 추가 ($5 충전)
+2. `ANTHROPIC_API_KEY`를 GitHub Secret으로 등록
+3. 스크립트를 AI 분석 버전으로 교체
+
+지금은 정적 노트로도 충분히 면접 준비 가능. AI는 over-engineering.
