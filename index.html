@@ -556,6 +556,7 @@ footer .download {
 
 <a href="#top" class="fab" id="fab">↑</a>
 
+<script src="weeks-data.js"></script>
 <script>
 const fab = document.getElementById('fab');
 window.addEventListener('scroll', () => {
@@ -564,46 +565,7 @@ window.addEventListener('scroll', () => {
 });
 
 // ============ 오늘 풀 문제 (동적) ============
-const START_DATE = new Date(2026, 4, 8); // 2026-05-08
-
-const WEEK_PROBLEMS = {
-  1: { title: "Arrays & Hashing", problems: [
-    { lc: "49", name: "Group Anagrams", diff: "M", slug: "group-anagrams" },
-    { lc: "347", name: "Top K Frequent Elements", diff: "M", slug: "top-k-frequent-elements" },
-    { lc: "238", name: "Product of Array Except Self", diff: "M", slug: "product-of-array-except-self" },
-    { lc: "271", name: "Encode and Decode Strings", diff: "M", slug: "encode-and-decode-strings" },
-    { lc: "128", name: "Longest Consecutive Sequence", diff: "M", slug: "longest-consecutive-sequence" },
-    { lc: "11", name: "Container With Most Water", diff: "M", slug: "container-with-most-water" },
-    { lc: "42", name: "Trapping Rain Water", diff: "H", slug: "trapping-rain-water" }
-  ]},
-  2: { title: "Sliding Window", problems: [
-    { lc: "3", name: "Longest Substring Without Repeating", diff: "M", slug: "longest-substring-without-repeating-characters" },
-    { lc: "424", name: "Longest Repeating Char Replacement", diff: "M", slug: "longest-repeating-character-replacement" },
-    { lc: "567", name: "Permutation in String", diff: "M", slug: "permutation-in-string" },
-    { lc: "76", name: "Minimum Window Substring", diff: "H", slug: "minimum-window-substring" },
-    { lc: "239", name: "Sliding Window Maximum", diff: "H", slug: "sliding-window-maximum" },
-    { lc: "155", name: "Min Stack", diff: "M", slug: "min-stack" },
-    { lc: "22", name: "Generate Parentheses", diff: "M", slug: "generate-parentheses" }
-  ]},
-  3: { title: "Binary Search + Stack", problems: [
-    { lc: "704", name: "Binary Search", diff: "E", slug: "binary-search" },
-    { lc: "74", name: "Search a 2D Matrix", diff: "M", slug: "search-a-2d-matrix" },
-    { lc: "875", name: "Koko Eating Bananas", diff: "M", slug: "koko-eating-bananas" },
-    { lc: "153", name: "Find Min in Rotated Sorted Array", diff: "M", slug: "find-minimum-in-rotated-sorted-array" },
-    { lc: "33", name: "Search in Rotated Sorted Array", diff: "M", slug: "search-in-rotated-sorted-array" },
-    { lc: "4", name: "Median of Two Sorted Arrays", diff: "H", slug: "median-of-two-sorted-arrays" },
-    { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" }
-  ]},
-  4: { title: "Linked List", problems: [
-    { lc: "143", name: "Reorder List", diff: "M", slug: "reorder-list" },
-    { lc: "138", name: "Copy List with Random Pointer", diff: "M", slug: "copy-list-with-random-pointer" },
-    { lc: "2", name: "Add Two Numbers", diff: "M", slug: "add-two-numbers" },
-    { lc: "287", name: "Find the Duplicate Number", diff: "M", slug: "find-the-duplicate-number" },
-    { lc: "146", name: "LRU Cache", diff: "M", slug: "lru-cache" },
-    { lc: "23", name: "Merge k Sorted Lists", diff: "H", slug: "merge-k-sorted-lists" },
-    { lc: "25", name: "Reverse Nodes in k-Group", diff: "H", slug: "reverse-nodes-in-k-group" }
-  ]}
-};
+// START_DATE + WEEKS data are loaded from weeks-data.js
 
 function renderToday() {
   const titleEl = document.getElementById('today-title');
@@ -619,7 +581,7 @@ function renderToday() {
     const tomorrow = daysLeft === 1;
     titleEl.textContent = tomorrow ? '내일 (5/8) 시작' : `${daysLeft}일 뒤 시작`;
     subEl.textContent = tomorrow ? 'Week 1 미리보기' : '시작일 (5/8) Week 1 미리보기';
-    listEl.innerHTML = renderProblemsHTML(WEEK_PROBLEMS[1].problems, 'Week 1: ' + WEEK_PROBLEMS[1].title);
+    listEl.innerHTML = renderProblemsHTML(WEEKS[0].problems, 'Week 1: ' + WEEKS[0].title);
     return;
   }
 
@@ -632,11 +594,11 @@ function renderToday() {
     return;
   }
 
-  // 데이터 없는 주 (Week 5+ 등)
-  const weekData = WEEK_PROBLEMS[currentWeek];
+  // 안전장치 (26주 범위 벗어남)
+  const weekData = WEEKS[currentWeek - 1];
   if (!weekData) {
-    titleEl.textContent = `Week ${currentWeek} 진행 중`;
-    subEl.textContent = '이번주 문제는 체크리스트에서 확인';
+    titleEl.textContent = `Week ${currentWeek}`;
+    subEl.textContent = '이번주 데이터 누락 — 체크리스트 확인';
     listEl.innerHTML = `
       <div class="card" style="text-align:center;padding:24px;">
         <a href="checklist.html" style="display:inline-block;background:var(--accent);color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;">📋 체크리스트에서 보기</a>
