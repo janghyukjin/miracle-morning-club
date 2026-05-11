@@ -617,9 +617,9 @@ function renderToday() {
   if (daysSinceStart < 0) {
     const daysLeft = Math.abs(daysSinceStart);
     const tomorrow = daysLeft === 1;
-    titleEl.textContent = tomorrow ? '내일 (5/8) 시작 문제' : `${daysLeft}일 뒤 시작 문제`;
-    subEl.textContent = tomorrow ? '첫날부터 막막하지 않게' : `시작일 (5/8) 첫 주 미리보기`;
-    listEl.innerHTML = renderProblemsHTML(WEEK_PROBLEMS[1].problems.slice(0, 2), 'Week 1 첫 2문제');
+    titleEl.textContent = tomorrow ? '내일 (5/8) 시작' : `${daysLeft}일 뒤 시작`;
+    subEl.textContent = tomorrow ? 'Week 1 미리보기' : '시작일 (5/8) Week 1 미리보기';
+    listEl.innerHTML = renderProblemsHTML(WEEK_PROBLEMS[1].problems, 'Week 1: ' + WEEK_PROBLEMS[1].title);
     return;
   }
 
@@ -632,11 +632,11 @@ function renderToday() {
     return;
   }
 
-  // Week 4 이후는 일반 안내
+  // 데이터 없는 주 (Week 5+ 등)
   const weekData = WEEK_PROBLEMS[currentWeek];
   if (!weekData) {
     titleEl.textContent = `Week ${currentWeek} 진행 중`;
-    subEl.textContent = '이번주 문제는 체크리스트 페이지에서 확인';
+    subEl.textContent = '이번주 문제는 체크리스트에서 확인';
     listEl.innerHTML = `
       <div class="card" style="text-align:center;padding:24px;">
         <a href="checklist.html" style="display:inline-block;background:var(--accent);color:white;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;">📋 체크리스트에서 보기</a>
@@ -645,40 +645,10 @@ function renderToday() {
     return;
   }
 
-  // 오늘이 이번주 며칠째인지 (월=1, 화=2 ...)
-  const dayOfWeek = ((daysSinceStart % 7) + 7) % 7; // 0..6 (시작일이 목이니 0=목)
-  const dayNames = ['목', '금', '토', '일', '월', '화', '수'];
-  titleEl.textContent = `오늘 풀 문제 · Week ${currentWeek} ${dayNames[dayOfWeek]}요일`;
-  subEl.textContent = weekData.title;
-
-  // 오늘의 1-2문제 추천 (요일 기준)
-  // 평일 1문제, 토 2-3문제, 일 휴식
-  const todayIdx = Math.min(dayOfWeek, weekData.problems.length - 1);
-  const todayProblems = dayOfWeek === 3 // 일요일
-    ? []
-    : dayOfWeek === 2 // 토요일
-      ? weekData.problems.slice(Math.min(5, weekData.problems.length - 2), weekData.problems.length)
-      : [weekData.problems[todayIdx]];
-
-  if (todayProblems.length === 0) {
-    listEl.innerHTML = `
-      <div class="card" style="text-align:center;padding:24px;background:var(--green-light);border-color:var(--green);">
-        <div style="font-size:32px;">🌴</div>
-        <p style="margin-top:8px;font-weight:700;color:#065f46;">일요일은 휴식</p>
-        <p style="font-size:13px;color:var(--text-soft);margin-top:4px;">데이트 / 가족 / 여가 자유. 번아웃 방지가 핵심.</p>
-      </div>
-    `;
-  } else {
-    listEl.innerHTML = renderProblemsHTML(todayProblems, `${dayNames[dayOfWeek]}요일 · ${weekData.title}`);
-  }
-
-  // 이번주 전체 보기 토글
-  listEl.innerHTML += `
-    <details style="margin-top:14px;">
-      <summary style="cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;padding:8px 0;">📅 이번주 전체 보기 (${weekData.problems.length}문제)</summary>
-      <div style="margin-top:8px;">${renderProblemsHTML(weekData.problems, '')}</div>
-    </details>
-  `;
+  // 이번 주 전체 표시 (요일별 분기 X, 본인 페이스대로)
+  titleEl.textContent = `이번 주 목표 · Week ${currentWeek}`;
+  subEl.textContent = `${weekData.title} · 시간 날 때마다 자유롭게 풀기`;
+  listEl.innerHTML = renderProblemsHTML(weekData.problems, `Week ${currentWeek}: ${weekData.title}`);
 }
 
 function renderProblemsHTML(problems, header) {

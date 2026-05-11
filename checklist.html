@@ -1362,16 +1362,17 @@ function renderToday() {
   const titleEl = document.getElementById('today-week-title');
   const tasksEl = document.getElementById('today-tasks');
 
-  // 이번주 진행률
-  const total = w.problems.length;
-  const done = w.problems.filter((_, i) => isTaskDone(getTaskKey(cw, 'p', i))).length;
-  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  // 이번주 진행률 (LC + tasks 모두 포함)
+  const allKeys = getAllTaskKeys(cw);
+  const doneCount = allKeys.filter(k => isTaskDone(k)).length;
+  const totalCount = allKeys.length;
+  const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
-  todayLabel.textContent = `이번 주 목표 · ${done}/${total} 완료 (${pct}%)`;
+  todayLabel.textContent = `이번 주 목표 · ${doneCount}/${totalCount} 완료 (${pct}%)`;
   titleEl.textContent = `Week ${cw}: ${w.title}`;
   tasksEl.innerHTML = '';
 
-  // 이번주 모든 LC 문제 한꺼번에 표시
+  // 이번주 모든 LC 문제
   w.problems.forEach((p, i) => {
     const key = getTaskKey(cw, 'p', i);
     const isDone = isTaskDone(key);
@@ -1387,6 +1388,29 @@ function renderToday() {
     `;
     tasksEl.insertAdjacentHTML('beforeend', html);
   });
+
+  // 이번주 tasks (영어/디자인/모의 등)
+  if (w.tasks && w.tasks.length > 0) {
+    tasksEl.insertAdjacentHTML('beforeend',
+      '<div style="font-size:12px;color:var(--text-mute);margin-top:14px;margin-bottom:6px;font-weight:600;">📌 이번 주 추가 작업</div>'
+    );
+    w.tasks.forEach((t, i) => {
+      const key = getTaskKey(cw, 't', i);
+      const isDone = isTaskDone(key);
+      const tag = t.includes('영어') || t.includes('프로젝트') || t.includes('STAR') || t.includes('Pramp') || t.includes('이력서') || t.includes('LinkedIn') ? 'en' :
+                  t.includes('System') || t.includes('시나리오') || t.includes('영상') ? 'sd' :
+                  t.includes('모의') || t.includes('onsite') ? 'mock' : 'lc';
+      const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
+      const html = `
+        <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
+          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+          <span class="task-text">${t}</span>
+          <span class="task-tag ${tag}">${tagText}</span>
+        </label>
+      `;
+      tasksEl.insertAdjacentHTML('beforeend', html);
+    });
+  }
 }
 
 // ============ 이번주 공통 LC (전체) ============
