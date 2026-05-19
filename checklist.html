@@ -1234,14 +1234,14 @@ function renderToday() {
   titleEl.textContent = `Week ${cw}: ${w.title}`;
   tasksEl.innerHTML = '';
 
-  // 자동 carry-over: 이전 주 미완 LC 문제 자동 표시 (개인 localStorage 기반)
+  // 자동 carry-over: 이전 주 미완 LC 문제 자동 표시 (GitHub commit 기반)
+  // solutions/[username]/week-XX/lc-XXX-*.py 파일이 있으면 풀린 것으로 인식
   const carryoverProblems = [];
   for (let prevW = 1; prevW < cw; prevW++) {
     const pw = WEEKS.find(week => week.n === prevW);
     if (!pw) continue;
     pw.problems.forEach((p, i) => {
-      const prevKey = getTaskKey(prevW, 'p', i);
-      if (!isTaskDone(prevKey)) {
+      if (!isLCSolvedInRepo(prevW, i)) {
         carryoverProblems.push({ ...p, _fromWeek: prevW, _origIdx: i });
       }
     });
