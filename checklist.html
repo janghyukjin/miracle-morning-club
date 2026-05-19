@@ -1258,7 +1258,7 @@ function renderToday() {
       const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
       const html = `
         <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')" style="background:#fffbeb;">
-          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.preventDefault()">
           <span class="task-text">LC ${p.lc} — ${p.name}</span>
           ${linkBtn}
           <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
@@ -1281,7 +1281,7 @@ function renderToday() {
     const carryBadge = p.carryover ? `<span class="task-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">↩ W${p.carryover}</span>` : '';
     const html = `
       <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
-        <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+        <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.preventDefault()">
         <span class="task-text">LC ${p.lc} — ${p.name}</span>
         ${linkBtn}
         <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
@@ -1305,7 +1305,7 @@ function renderToday() {
       const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
       const html = `
         <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
-          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.preventDefault()">
           <span class="task-text">${t}</span>
           <span class="task-tag ${tag}">${tagText}</span>
         </label>
@@ -1338,7 +1338,7 @@ function renderPersonalGoals() {
   } else {
     listEl.innerHTML = goals.map(g => `
       <label class="task-row ${g.done ? 'done' : ''}" onclick="togglePersonalGoal('${g.id}')">
-        <input type="checkbox" ${g.done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <input type="checkbox" ${g.done ? 'checked' : ''} onclick="event.preventDefault()">
         <span class="task-text">${escapeHTML(g.text)}</span>
         <button onclick="event.stopPropagation();deletePersonalGoal('${g.id}')" style="background:none;border:none;color:var(--text-mute);cursor:pointer;font-size:14px;padding:2px 6px;" title="삭제">✕</button>
       </label>
@@ -1473,7 +1473,7 @@ function renderWeekDetail(weekNum) {
     const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
     problemsHTML += `
       <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
-        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.preventDefault()">
         <span class="task-text">LC ${p.lc} — ${p.name}</span>
         ${linkBtn}
         <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
@@ -1490,7 +1490,7 @@ function renderWeekDetail(weekNum) {
     const tagText = tag === 'en' ? '영어' : tag === 'sd' ? '디자인' : tag === 'mock' ? '모의' : '복습';
     tasksHTML += `
       <label class="task-row ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
-        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.stopPropagation()">
+        <input type="checkbox" ${done ? 'checked' : ''} onclick="event.preventDefault()">
         <span class="task-text">${t}</span>
         <span class="task-tag ${tag}">${tagText}</span>
       </label>
