@@ -35,9 +35,15 @@ class Solution:
 #      구분자 충돌 시 escape, 복잡함
 #
 # [Follow-up 질문 (면접 단골)]
-#   - 입력에 임의의 문자 포함되면?
-#   - 메모리 효율은? (큰 문자열)
-#   - 분산 환경에서 안전한 인코딩은?
+#   Q: 입력에 임의의 문자 포함되면?
+#   A: Length-prefix 방식이면 OK. 길이를 먼저 읽고 그만큼 정확히 잘라내니 어떤 문자가 와도 안전. 단순 ',' 같은 delimiter만 쓰면 conflict 발생.
+#
+#   Q: 메모리 효율은? (큰 문자열)
+#   A: encode는 list + join (O(n)). decode는 slicing 없이 포인터 i, j만 들고가서 in-place 파싱. 추가 메모리는 결과 배열만.
+#
+#   Q: 분산 환경에서 안전한 인코딩은?
+#   A: Protocol Buffers나 MessagePack 같은 표준 binary serialization 권장. UTF-8 + length-prefix는 cross-language 안전. JSON은 escape 처리 비용.
+#
 #
 # [Pitfalls / 흔한 실수]
 #   - 빈 문자열 처리 ('0#')

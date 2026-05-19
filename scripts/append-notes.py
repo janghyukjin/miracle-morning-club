@@ -80,7 +80,13 @@ def format_note(note_data):
         lines.append("")
         lines.append("[Follow-up 질문 (면접 단골)]")
         for q in note_data["followups"]:
-            lines.append(f"  - {q}")
+            if isinstance(q, dict):
+                lines.append(f"  Q: {q.get('q', '')}")
+                if q.get("a"):
+                    lines.append(f"  A: {q['a']}")
+                lines.append("")
+            else:
+                lines.append(f"  - {q}")
 
     if note_data.get("pitfalls"):
         lines.append("")
