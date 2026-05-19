@@ -611,6 +611,75 @@ function renderToday() {
   titleEl.textContent = `이번 주 목표 · Week ${currentWeek}`;
   subEl.textContent = `${weekData.title} · 시간 날 때마다 자유롭게 풀기`;
   listEl.innerHTML = renderProblemsHTML(weekData.problems, `Week ${currentWeek}: ${weekData.title}`);
+
+  // 자동 carry-over: GitHub commit 기반으로 이전 주 미완 자동 표시
+  loadCarryover(currentWeek, listEl);
+}
+
+// ============ Carry-over (commit 기반) ============
+const REPO = 'janghyukjin/miracle-morning-club';
+function getUsername() {
+  return localStorage.getItem('mmc_username') || '';
+}
+
+async function loadCarryover(currentWeek, listEl) {
+  const me = getUsername();
+  if (!me || currentWeek <= 1) return;
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/git/trees/main?recursive=1`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const solved = {}; // weekKey → Set(lc)
+    for (const item of (data.tree || [])) {
+      if (item.type !== 'blob') continue;
+      const m = item.path.match(/^solutions\/([^/]+)\/(week-\d+)\/lc-(\d+)/i);
+      if (!m) continue;
+      const [, username, week, lcNum] = m;
+      if (username.toLowerCase() !== me.toLowerCase()) continue;
+      if (!solved[week]) solved[week] = new Set();
+      solved[week].add(lcNum);
+    }
+
+    // 이전 주 미완 수집
+    const carryover = [];
+    for (let prevW = 1; prevW < currentWeek; prevW++) {
+      const pw = WEEKS.find(w => w.n === prevW);
+      if (!pw) continue;
+      const wKey = `week-${String(prevW).padStart(2, '0')}`;
+      const lcSet = solved[wKey] || new Set();
+      pw.problems.forEach(p => {
+        if (!lcSet.has(p.lc)) carryover.push({ ...p, _fromWeek: prevW });
+      });
+    }
+
+    if (carryover.length === 0) return;
+
+    // 홈 상단에 carry-over 섹션 prepend
+    const carrySection = document.createElement('div');
+    carrySection.innerHTML = `
+      <div style="margin-bottom:16px;padding:12px 16px;background:#fffbeb;border-left:4px solid #f59e0b;border-radius:6px;">
+        <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:8px;">
+          ↩ 지난 주 미완 ${carryover.length}개 (자동 carry-over)
+        </div>
+        ${carryover.map(p => {
+          const url = `https://leetcode.com/problems/${p.slug}/`;
+          const diffClass = p.diff === 'H' ? 'badge-hard' : p.diff === 'M' ? 'badge-med' : 'badge-easy';
+          const diffText = p.diff === 'H' ? 'Hard' : p.diff === 'M' ? 'Medium' : 'Easy';
+          return `
+            <a href="${url}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:6px 8px;margin:4px 0;background:white;border-radius:4px;text-decoration:none;color:inherit;font-size:13px;">
+              <span style="color:#92400e;font-size:11px;font-weight:600;">↩ W${p._fromWeek}</span>
+              <span style="flex:1;">LC ${p.lc} — ${p.name}</span>
+              <span class="badge ${diffClass}">${diffText}</span>
+            </a>
+          `;
+        }).join('')}
+      </div>
+    `;
+    listEl.parentNode.insertBefore(carrySection, listEl);
+  } catch (e) {
+    console.warn('carry-over fetch 실패:', e);
+  }
 }
 
 function renderProblemsHTML(problems, header) {
