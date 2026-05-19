@@ -624,6 +624,7 @@ function renderProblemsHTML(problems, header) {
         <div class="problem-title">
           LC ${p.lc} — ${p.name}
           <span class="badge ${diffClass}">${diffText}</span>
+          ${p.carryover ? `<span class="badge" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">↩ W${p.carryover} carry-over</span>` : ''}
         </div>
         <div class="problem-link" style="display:flex;align-items:center;gap:6px;">
           <span style="color:var(--accent);">↗</span>

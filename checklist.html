@@ -1234,18 +1234,58 @@ function renderToday() {
   titleEl.textContent = `Week ${cw}: ${w.title}`;
   tasksEl.innerHTML = '';
 
+  // 자동 carry-over: 이전 주 미완 LC 문제 자동 표시 (개인 localStorage 기반)
+  const carryoverProblems = [];
+  for (let prevW = 1; prevW < cw; prevW++) {
+    const pw = WEEKS.find(week => week.n === prevW);
+    if (!pw) continue;
+    pw.problems.forEach((p, i) => {
+      const prevKey = getTaskKey(prevW, 'p', i);
+      if (!isTaskDone(prevKey)) {
+        carryoverProblems.push({ ...p, _fromWeek: prevW, _origIdx: i });
+      }
+    });
+  }
+
+  if (carryoverProblems.length > 0) {
+    tasksEl.insertAdjacentHTML('beforeend',
+      '<div style="font-size:12px;color:#92400e;margin-bottom:6px;font-weight:600;">↩ 지난 주 미완 (자동 carry-over)</div>'
+    );
+    carryoverProblems.forEach(p => {
+      const key = getTaskKey(p._fromWeek, 'p', p._origIdx);
+      const isDone = isTaskDone(key);
+      const url = lcUrl(p.slug);
+      const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
+      const html = `
+        <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')" style="background:#fffbeb;">
+          <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
+          <span class="task-text">LC ${p.lc} — ${p.name}</span>
+          ${linkBtn}
+          <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
+          <span class="task-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">↩ W${p._fromWeek}</span>
+        </label>
+      `;
+      tasksEl.insertAdjacentHTML('beforeend', html);
+    });
+    tasksEl.insertAdjacentHTML('beforeend',
+      '<div style="font-size:12px;color:var(--text-mute);margin-top:14px;margin-bottom:6px;font-weight:600;">📋 이번 주 문제</div>'
+    );
+  }
+
   // 이번주 모든 LC 문제
   w.problems.forEach((p, i) => {
     const key = getTaskKey(cw, 'p', i);
     const isDone = isTaskDone(key);
     const url = lcUrl(p.slug);
     const linkBtn = url ? `<a href="${url}" target="_blank" rel="noopener" class="lc-link" onclick="event.stopPropagation()" title="LC에서 풀기">↗</a>` : '';
+    const carryBadge = p.carryover ? `<span class="task-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">↩ W${p.carryover}</span>` : '';
     const html = `
       <label class="task-row ${isDone ? 'done' : ''}" onclick="toggleTask('${key}')">
         <input type="checkbox" ${isDone ? 'checked' : ''} onclick="event.stopPropagation()">
         <span class="task-text">LC ${p.lc} — ${p.name}</span>
         ${linkBtn}
         <span class="task-tag ${p.diff === 'H' ? 'mock' : 'lc'}">${p.diff}</span>
+        ${carryBadge}
       </label>
     `;
     tasksEl.insertAdjacentHTML('beforeend', html);
