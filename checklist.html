@@ -716,7 +716,7 @@ function saveState(s) {
 
 let state = loadState();
 state.tasks = state.tasks || {};      // { "w1-p49": true, "w1-t0": true }
-state.dailyLog = state.dailyLog || {}; // { "2026-05-08": 3 }  (작업 수)
+state.dailyLog = state.dailyLog || {}; // { "2026-05-15": 3 }  (작업 수)
 state.personalGoals = state.personalGoals || {}; // { "w1": [{id, text, done}] }
 
 // ============ HELPERS ============
@@ -968,7 +968,7 @@ function renderPaceAlert() {
       <div class="pace-icon">⏳</div>
       <div class="pace-body">
         <div class="pace-title">시작까지 ${daysUntilStart}일 남았어요</div>
-        <div class="pace-msg">2026-05-08 (금) 시작 · 미리 NeetCode 가입 + Pramp 계정 만들어두세요</div>
+        <div class="pace-msg">2026-05-15 (금) 시작 · 미리 NeetCode 가입 + Pramp 계정 만들어두세요</div>
       </div>
     `;
     return;

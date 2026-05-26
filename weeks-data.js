@@ -1,7 +1,7 @@
 // ============ 26주 LC + Tasks 데이터 (단일 진실 소스) ============
 // 이 파일을 수정하면 index.html, checklist.html 모두 자동 반영됨.
 
-const START_DATE = new Date(2026, 4, 8); // 2026-05-08 (금)
+const START_DATE = new Date(2026, 4, 15); // 2026-05-15 (금)
 
 const WEEKS = [
   { n: 1, title: "Arrays & Hashing", topic: "주력 패턴 입문", problems: [

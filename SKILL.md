@@ -12,8 +12,8 @@ description: Use this skill when a member of the Miracle Morning Club study grou
 **스터디 정보**:
 - 사이트: https://janghyukjin.github.io/miracle-morning-club/
 - Repo: https://github.com/janghyukjin/miracle-morning-club
-- 시작일: 2026-05-08
-- 종료일: 2026-11-08 (26주)
+- 시작일: 2026-05-15
+- 종료일: 2026-11-15 (26주)
 - 메인 커리큘럼: NeetCode 150 + 영어 + 시스템 디자인
 - 주간 시간: 11h (평일 1h × 5 + 토 5h + 일 휴식)
 - 주간 LC: 7문제 (Easy 0 / Medium 5-6 / Hard 1-2)
@@ -31,7 +31,7 @@ description: Use this skill when a member of the Miracle Morning Club study grou
 ## 주요 기능 — 사용자 요청별 행동
 
 ### 1. "오늘 뭐 풀어?" / "내 진도 어때?"
-- 시작일(2026-05-08) 기준 현재 주차 계산
+- 시작일(2026-05-15) 기준 현재 주차 계산
 - 요일별 추천 문제 제시:
   - 목/금/월/화: LC 1문제 (이번주 인덱스 순서대로)
   - 토: 3문제 (집중일, Hard 포함)
