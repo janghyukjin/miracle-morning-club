@@ -39,3 +39,37 @@ class Solution:
                 left += 1
         
         return answer
+
+
+# ===== Interview Notes =====
+# [Minimum Window Substring] Hard · Sliding Window + Frequency Match
+#
+# [접근법]
+#   1. Variable sliding window — O(n) / O(Σ)
+#      확장 → 매치되면 축소
+#
+# [Follow-up 질문 (면접 단골)]
+#   - 중복 문자 t = 'AABC'에서 같은 A 두 개 필요한 경우?
+#   - 여러 패턴 중 어느 하나라도 포함?
+#   - 결과 substring 인덱스도 반환하면?
+#
+# [Pitfalls / 흔한 실수]
+#   - have == need가 아니라 매칭된 문자 수로 비교
+#   - window 시작/끝 인덱스 저장 (substring 반환용)
+#
+# [최적해 (참고)]
+#   from collections import Counter
+#   need = Counter(t)
+#   have, required = {}, len(need)
+#   l = matched = 0
+#   best = (-1, -1, float('inf'))
+#   for r, c in enumerate(s):
+#       have[c] = have.get(c, 0) + 1
+#       if c in need and have[c] == need[c]: matched += 1
+#       while matched == required:
+#           if r - l + 1 < best[2]: best = (l, r, r - l + 1)
+#           have[s[l]] -= 1
+#           if s[l] in need and have[s[l]] < need[s[l]]: matched -= 1
+#           l += 1
+#   return '' if best[2] == float('inf') else s[best[0]:best[1]+1]
+# ===== End Interview Notes =====
