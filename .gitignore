@@ -3,3 +3,7 @@
 node_modules/
 .env
 *.pdf
+
+# Python
+__pycache__/
+*.pyc
