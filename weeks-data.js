@@ -1,7 +1,8 @@
-// ============ 26주 LC + Tasks 데이터 (단일 진실 소스) ============
-// 이 파일을 수정하면 index.html, checklist.html 모두 자동 반영됨.
+// ============ 재편성판: 4문제/주 · 전부 유지 (단일 진실 소스) ============
+// W1~W3 = 완료(15문제) · W4~W30 = 남은 106문제 4개씩 · W31~ = 이후 트랙
+// 재생성: replan 4/wk, START 재정렬(오늘=W4)
 
-const START_DATE = new Date(2026, 4, 15); // 2026-05-15 (금)
+const START_DATE = new Date(2026, 4, 22); // 2026-05-22 (금) — 오늘이 W4 주간
 
 const WEEKS = [
   { n: 1, title: "Arrays & Hashing", topic: "주력 패턴 입문", problems: [
@@ -27,187 +28,214 @@ const WEEKS = [
   { n: 3, title: "Binary Search + Stack", topic: "어려운 패턴", problems: [
     { lc: "704", name: "Binary Search", diff: "E", slug: "binary-search" },
     { lc: "74", name: "Search a 2D Matrix", diff: "M", slug: "search-a-2d-matrix" },
-    { lc: "875", name: "Koko Eating Bananas", diff: "M", slug: "koko-eating-bananas" },
+    { lc: "875", name: "Koko Eating Bananas", diff: "M", slug: "koko-eating-bananas" }
+  ], tasks: ["본인 프로젝트 15분 영어 스크립트 시작", "ByteByteGo 영상 시청"] },
+
+  { n: 4, title: "Binary Search", topic: "어려운 패턴", problems: [
     { lc: "153", name: "Find Minimum in Rotated Sorted Array", diff: "M", slug: "find-minimum-in-rotated-sorted-array" },
     { lc: "33", name: "Search in Rotated Sorted Array", diff: "M", slug: "search-in-rotated-sorted-array" },
     { lc: "4", name: "Median of Two Sorted Arrays", diff: "H", slug: "median-of-two-sorted-arrays" },
-    { lc: "853", name: "Car Fleet", diff: "M", slug: "car-fleet" },
-    { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" }
+    { lc: "853", name: "Car Fleet", diff: "M", slug: "car-fleet" }
   ], tasks: ["본인 프로젝트 15분 영어 스크립트 시작", "ByteByteGo 영상 시청"] },
 
-  { n: 4, title: "Linked List + 첫 모의 인터뷰", topic: "Phase 1 마무리", problems: [
+  { n: 5, title: "Binary Search · Linked List", topic: "어려운 패턴 / Phase 1 마무리", problems: [
+    { lc: "84", name: "Largest Rectangle in Histogram", diff: "H", slug: "largest-rectangle-in-histogram" },
     { lc: "143", name: "Reorder List", diff: "M", slug: "reorder-list" },
     { lc: "138", name: "Copy List with Random Pointer", diff: "M", slug: "copy-list-with-random-pointer" },
-    { lc: "2", name: "Add Two Numbers", diff: "M", slug: "add-two-numbers" },
+    { lc: "2", name: "Add Two Numbers", diff: "M", slug: "add-two-numbers" }
+  ], tasks: ["Pramp 첫 모의 인터뷰", "본인 프로젝트 15분 영어 발표 완성"] },
+
+  { n: 6, title: "Linked List", topic: "Phase 1 마무리", problems: [
     { lc: "287", name: "Find the Duplicate Number", diff: "M", slug: "find-the-duplicate-number" },
     { lc: "146", name: "LRU Cache", diff: "M", slug: "lru-cache" },
     { lc: "23", name: "Merge k Sorted Lists", diff: "H", slug: "merge-k-sorted-lists" },
     { lc: "25", name: "Reverse Nodes in k-Group", diff: "H", slug: "reverse-nodes-in-k-group" }
-  ], tasks: ["Pramp 첫 모의 인터뷰", "본인 프로젝트 15분 영어 발표 완성"] },
+  ], tasks: [] },
 
-  { n: 5, title: "Trees 기초", topic: "Tree 패턴 1/2", problems: [
+  { n: 7, title: "Trees 기초", topic: "Tree 패턴 1/2", problems: [
     { lc: "226", name: "Invert Binary Tree", diff: "E", slug: "invert-binary-tree" },
     { lc: "543", name: "Diameter of Binary Tree", diff: "E", slug: "diameter-of-binary-tree" },
     { lc: "110", name: "Balanced Binary Tree", diff: "E", slug: "balanced-binary-tree" },
-    { lc: "100", name: "Same Tree", diff: "E", slug: "same-tree" },
-    { lc: "572", name: "Subtree of Another Tree", diff: "E", slug: "subtree-of-another-tree" },
-    { lc: "235", name: "Lowest Common Ancestor of a BST", diff: "M", slug: "lowest-common-ancestor-of-a-binary-search-tree" },
-    { lc: "102", name: "Binary Tree Level Order Traversal", diff: "M", slug: "binary-tree-level-order-traversal" }
+    { lc: "100", name: "Same Tree", diff: "E", slug: "same-tree" }
   ], tasks: ["STAR 답변 1번 (어려운 기술 문제)"] },
 
-  { n: 6, title: "Trees 심화 + Tries", topic: "Tree 패턴 2/2", problems: [
-    { lc: "199", name: "Binary Tree Right Side View", diff: "M", slug: "binary-tree-right-side-view" },
+  { n: 8, title: "Trees 기초 · Trees 심화", topic: "Tree 패턴 1/2 / Tree 패턴 2/2", problems: [
+    { lc: "572", name: "Subtree of Another Tree", diff: "E", slug: "subtree-of-another-tree" },
+    { lc: "235", name: "Lowest Common Ancestor of a BST", diff: "M", slug: "lowest-common-ancestor-of-a-binary-search-tree" },
+    { lc: "102", name: "Binary Tree Level Order Traversal", diff: "M", slug: "binary-tree-level-order-traversal" },
+    { lc: "199", name: "Binary Tree Right Side View", diff: "M", slug: "binary-tree-right-side-view" }
+  ], tasks: ["STAR 답변 2번 (갈등 해결)"] },
+
+  { n: 9, title: "Trees 심화", topic: "Tree 패턴 2/2", problems: [
     { lc: "1448", name: "Count Good Nodes in Binary Tree", diff: "M", slug: "count-good-nodes-in-binary-tree" },
     { lc: "230", name: "Kth Smallest Element in a BST", diff: "M", slug: "kth-smallest-element-in-a-bst" },
     { lc: "124", name: "Binary Tree Maximum Path Sum", diff: "H", slug: "binary-tree-maximum-path-sum" },
-    { lc: "297", name: "Serialize and Deserialize Binary Tree", diff: "H", slug: "serialize-and-deserialize-binary-tree" },
-    { lc: "208", name: "Implement Trie (Prefix Tree)", diff: "M", slug: "implement-trie-prefix-tree" },
-    { lc: "212", name: "Word Search II", diff: "H", slug: "word-search-ii" }
-  ], tasks: ["STAR 답변 2번 (갈등 해결)"] },
+    { lc: "297", name: "Serialize and Deserialize Binary Tree", diff: "H", slug: "serialize-and-deserialize-binary-tree" }
+  ], tasks: [] },
 
-  { n: 7, title: "Heap / Priority Queue", topic: "약점 영역 2/4", problems: [
+  { n: 10, title: "Trees 심화 · Heap / Priority Queue", topic: "Tree 패턴 2/2 / 약점 영역 2/4", problems: [
+    { lc: "208", name: "Implement Trie (Prefix Tree)", diff: "M", slug: "implement-trie-prefix-tree" },
+    { lc: "212", name: "Word Search II", diff: "H", slug: "word-search-ii" },
     { lc: "703", name: "Kth Largest Element in a Stream", diff: "E", slug: "kth-largest-element-in-a-stream" },
-    { lc: "1046", name: "Last Stone Weight", diff: "E", slug: "last-stone-weight" },
-    { lc: "973", name: "K Closest Points to Origin", diff: "M", slug: "k-closest-points-to-origin" },
-    { lc: "621", name: "Task Scheduler", diff: "M", slug: "task-scheduler" },
-    { lc: "295", name: "Find Median from Data Stream", diff: "H", slug: "find-median-from-data-stream" }
+    { lc: "1046", name: "Last Stone Weight", diff: "E", slug: "last-stone-weight" }
   ], tasks: ["STAR 답변 3번 (리더십)", "Pramp 모의 1회"] },
 
-  { n: 8, title: "Backtracking", topic: "재귀/탐색 마스터", problems: [
-    { lc: "39", name: "Combination Sum", diff: "M", slug: "combination-sum" },
+  { n: 11, title: "Heap / Priority Queue · Backtracking", topic: "약점 영역 2/4 / 재귀/탐색 마스터", problems: [
+    { lc: "973", name: "K Closest Points to Origin", diff: "M", slug: "k-closest-points-to-origin" },
+    { lc: "621", name: "Task Scheduler", diff: "M", slug: "task-scheduler" },
+    { lc: "295", name: "Find Median from Data Stream", diff: "H", slug: "find-median-from-data-stream" },
+    { lc: "39", name: "Combination Sum", diff: "M", slug: "combination-sum" }
+  ], tasks: ["STAR 답변 4번 (실패 경험)"] },
+
+  { n: 12, title: "Backtracking", topic: "재귀/탐색 마스터", problems: [
     { lc: "46", name: "Permutations", diff: "M", slug: "permutations" },
     { lc: "79", name: "Word Search", diff: "M", slug: "word-search" },
     { lc: "131", name: "Palindrome Partitioning", diff: "M", slug: "palindrome-partitioning" },
-    { lc: "17", name: "Letter Combinations of a Phone Number", diff: "M", slug: "letter-combinations-of-a-phone-number" },
-    { lc: "51", name: "N-Queens", diff: "H", slug: "n-queens" }
-  ], tasks: ["STAR 답변 4번 (실패 경험)"] },
+    { lc: "17", name: "Letter Combinations of a Phone Number", diff: "M", slug: "letter-combinations-of-a-phone-number" }
+  ], tasks: [] },
 
-  { n: 9, title: "Graphs (BFS/DFS)", topic: "약점 영역 3/4 ⚠️", problems: [
+  { n: 13, title: "Backtracking · Graphs (BFS/DFS)", topic: "재귀/탐색 마스터 / 약점 영역 3/4 ⚠️", problems: [
+    { lc: "51", name: "N-Queens", diff: "H", slug: "n-queens" },
     { lc: "200", name: "Number of Islands", diff: "M", slug: "number-of-islands" },
     { lc: "695", name: "Max Area of Island", diff: "M", slug: "max-area-of-island" },
-    { lc: "133", name: "Clone Graph", diff: "M", slug: "clone-graph" },
+    { lc: "133", name: "Clone Graph", diff: "M", slug: "clone-graph" }
+  ], tasks: ["STAR 답변 5번 (영향력)", "System Design: Rate Limiter 시나리오"] },
+
+  { n: 14, title: "Graphs (BFS/DFS)", topic: "약점 영역 3/4 ⚠️", problems: [
     { lc: "994", name: "Rotting Oranges", diff: "M", slug: "rotting-oranges" },
     { lc: "207", name: "Course Schedule", diff: "M", slug: "course-schedule" },
     { lc: "210", name: "Course Schedule II", diff: "M", slug: "course-schedule-ii" },
     { lc: "417", name: "Pacific Atlantic Water Flow", diff: "M", slug: "pacific-atlantic-water-flow" }
-  ], tasks: ["STAR 답변 5번 (영향력)", "System Design: Rate Limiter 시나리오"] },
+  ], tasks: [] },
 
-  { n: 10, title: "Graphs Hard", topic: "약점 영역 마무리", problems: [
+  { n: 15, title: "Graphs Hard", topic: "약점 영역 마무리", problems: [
     { lc: "130", name: "Surrounded Regions", diff: "M", slug: "surrounded-regions" },
     { lc: "127", name: "Word Ladder", diff: "H", slug: "word-ladder" },
     { lc: "329", name: "Longest Increasing Path in a Matrix", diff: "H", slug: "longest-increasing-path-in-a-matrix" },
-    { lc: "286", name: "Walls and Gates", diff: "M", slug: "walls-and-gates" },
-    { lc: "261", name: "Graph Valid Tree", diff: "M", slug: "graph-valid-tree" },
-    { lc: "323", name: "Number of Connected Components in an Undirected Graph", diff: "M", slug: "number-of-connected-components-in-an-undirected-graph" }
+    { lc: "286", name: "Walls and Gates", diff: "M", slug: "walls-and-gates" }
   ], tasks: ["Rate Limiter 영어 발표 녹음"] },
 
-  { n: 11, title: "Advanced Graphs", topic: "Dijkstra/MST", problems: [
+  { n: 16, title: "Graphs Hard · Advanced Graphs", topic: "약점 영역 마무리 / Dijkstra/MST", problems: [
+    { lc: "261", name: "Graph Valid Tree", diff: "M", slug: "graph-valid-tree" },
+    { lc: "323", name: "Number of Connected Components in an Undirected Graph", diff: "M", slug: "number-of-connected-components-in-an-undirected-graph" },
     { lc: "743", name: "Network Delay Time (Dijkstra)", diff: "M", slug: "network-delay-time" },
-    { lc: "332", name: "Reconstruct Itinerary", diff: "H", slug: "reconstruct-itinerary" },
-    { lc: "1584", name: "Min Cost to Connect All Points (MST)", diff: "M", slug: "min-cost-to-connect-all-points" },
-    { lc: "787", name: "Cheapest Flights Within K Stops", diff: "M", slug: "cheapest-flights-within-k-stops" },
-    { lc: "778", name: "Swim in Rising Water", diff: "H", slug: "swim-in-rising-water" }
+    { lc: "332", name: "Reconstruct Itinerary", diff: "H", slug: "reconstruct-itinerary" }
   ], tasks: ["System Design: Distributed Cache 시나리오"] },
 
-  { n: 12, title: "1D DP 시작", topic: "DP 입문", problems: [
-    { lc: "213", name: "House Robber II", diff: "M", slug: "house-robber-ii" },
+  { n: 17, title: "Advanced Graphs · 1D DP 시작", topic: "Dijkstra/MST / DP 입문", problems: [
+    { lc: "1584", name: "Min Cost to Connect All Points (MST)", diff: "M", slug: "min-cost-to-connect-all-points" },
+    { lc: "787", name: "Cheapest Flights Within K Stops", diff: "M", slug: "cheapest-flights-within-k-stops" },
+    { lc: "778", name: "Swim in Rising Water", diff: "H", slug: "swim-in-rising-water" },
+    { lc: "213", name: "House Robber II", diff: "M", slug: "house-robber-ii" }
+  ], tasks: ["URL Shortener 시나리오"] },
+
+  { n: 18, title: "1D DP 시작", topic: "DP 입문", problems: [
     { lc: "5", name: "Longest Palindromic Substring", diff: "M", slug: "longest-palindromic-substring" },
     { lc: "91", name: "Decode Ways", diff: "M", slug: "decode-ways" },
     { lc: "322", name: "Coin Change", diff: "M", slug: "coin-change" },
-    { lc: "152", name: "Maximum Product Subarray", diff: "M", slug: "maximum-product-subarray" },
-    { lc: "139", name: "Word Break", diff: "M", slug: "word-break" },
-    { lc: "300", name: "Longest Increasing Subsequence", diff: "M", slug: "longest-increasing-subsequence" }
-  ], tasks: ["URL Shortener 시나리오"] },
+    { lc: "152", name: "Maximum Product Subarray", diff: "M", slug: "maximum-product-subarray" }
+  ], tasks: [] },
 
-  { n: 13, title: "1D DP 마스터", topic: "DP 심화 1/2", problems: [
+  { n: 19, title: "1D DP 시작 · 1D DP 마스터", topic: "DP 입문 / DP 심화 1/2", problems: [
+    { lc: "139", name: "Word Break", diff: "M", slug: "word-break" },
+    { lc: "300", name: "Longest Increasing Subsequence", diff: "M", slug: "longest-increasing-subsequence" },
     { lc: "416", name: "Partition Equal Subset Sum", diff: "M", slug: "partition-equal-subset-sum" },
-    { lc: "32", name: "Longest Valid Parentheses", diff: "H", slug: "longest-valid-parentheses" },
-    { lc: "64", name: "Minimum Path Sum", diff: "M", slug: "minimum-path-sum" },
-    { lc: "120", name: "Triangle", diff: "M", slug: "triangle" },
-    { lc: "198", name: "House Robber 복습", diff: "M", slug: "house-robber" }
+    { lc: "32", name: "Longest Valid Parentheses", diff: "H", slug: "longest-valid-parentheses" }
   ], tasks: ["본인 프로젝트 30분 영어 발표 작성"] },
 
-  { n: 14, title: "1D DP 마무리", topic: "DP 추가 패턴", problems: [
-    { lc: "877", name: "Stone Game", diff: "M", slug: "stone-game" },
-    { lc: "1027", name: "Longest Arithmetic Subsequence", diff: "M", slug: "longest-arithmetic-subsequence" },
-    { lc: "740", name: "Delete and Earn", diff: "M", slug: "delete-and-earn" },
-    { lc: "542", name: "01 Matrix", diff: "M", slug: "01-matrix" }
+  { n: 20, title: "1D DP 마스터 · 1D DP 마무리", topic: "DP 심화 1/2 / DP 추가 패턴", problems: [
+    { lc: "64", name: "Minimum Path Sum", diff: "M", slug: "minimum-path-sum" },
+    { lc: "120", name: "Triangle", diff: "M", slug: "triangle" },
+    { lc: "198", name: "House Robber 복습", diff: "M", slug: "house-robber" },
+    { lc: "877", name: "Stone Game", diff: "M", slug: "stone-game" }
   ], tasks: ["본인 프로젝트 30분 영어 발표 녹음"] },
 
-  { n: 15, title: "2D DP 1/2", topic: "약점 영역 4/4", problems: [
-    { lc: "62", name: "Unique Paths", diff: "M", slug: "unique-paths" },
+  { n: 21, title: "1D DP 마무리 · 2D DP", topic: "DP 추가 패턴 / 약점 영역 4/4", problems: [
+    { lc: "1027", name: "Longest Arithmetic Subsequence", diff: "M", slug: "longest-arithmetic-subsequence" },
+    { lc: "740", name: "Delete and Earn", diff: "M", slug: "delete-and-earn" },
+    { lc: "542", name: "01 Matrix", diff: "M", slug: "01-matrix" },
+    { lc: "62", name: "Unique Paths", diff: "M", slug: "unique-paths" }
+  ], tasks: ["Distributed Inference 시나리오"] },
+
+  { n: 22, title: "2D DP", topic: "약점 영역 4/4", problems: [
     { lc: "1143", name: "Longest Common Subsequence", diff: "M", slug: "longest-common-subsequence" },
     { lc: "309", name: "Best Time to Buy/Sell Stock with Cooldown", diff: "M", slug: "best-time-to-buy-and-sell-stock-with-cooldown" },
     { lc: "518", name: "Coin Change II", diff: "M", slug: "coin-change-ii" },
     { lc: "494", name: "Target Sum", diff: "M", slug: "target-sum" }
-  ], tasks: ["Distributed Inference 시나리오"] },
+  ], tasks: [] },
 
-  { n: 16, title: "2D DP 2/2 (Hard)", topic: "Hard DP", problems: [
+  { n: 23, title: "2D DP", topic: "Hard DP", problems: [
     { lc: "72", name: "Edit Distance", diff: "H", slug: "edit-distance" },
     { lc: "312", name: "Burst Balloons", diff: "H", slug: "burst-balloons" },
     { lc: "115", name: "Distinct Subsequences", diff: "H", slug: "distinct-subsequences" },
     { lc: "97", name: "Interleaving String", diff: "M", slug: "interleaving-string" }
   ], tasks: ["Pramp 주 2회 시작"] },
 
-  { n: 17, title: "Greedy + Intervals", topic: "면접 빈출", problems: [
+  { n: 24, title: "Greedy", topic: "면접 빈출", problems: [
     { lc: "55", name: "Jump Game", diff: "M", slug: "jump-game" },
     { lc: "45", name: "Jump Game II", diff: "M", slug: "jump-game-ii" },
     { lc: "134", name: "Gas Station", diff: "M", slug: "gas-station" },
-    { lc: "846", name: "Hand of Straights", diff: "M", slug: "hand-of-straights" },
-    { lc: "1899", name: "Merge Triplets to Form Target", diff: "M", slug: "merge-triplets-to-form-target-triplet" },
-    { lc: "57", name: "Insert Interval", diff: "M", slug: "insert-interval" },
-    { lc: "56", name: "Merge Intervals", diff: "M", slug: "merge-intervals" }
+    { lc: "846", name: "Hand of Straights", diff: "M", slug: "hand-of-straights" }
   ], tasks: ["영문 이력서 정제 시작"] },
 
-  { n: 18, title: "Intervals + Math", topic: "기타 패턴", problems: [
-    { lc: "435", name: "Non-overlapping Intervals", diff: "M", slug: "non-overlapping-intervals" },
+  { n: 25, title: "Greedy · Intervals", topic: "면접 빈출 / 기타 패턴", problems: [
+    { lc: "1899", name: "Merge Triplets to Form Target", diff: "M", slug: "merge-triplets-to-form-target-triplet" },
+    { lc: "57", name: "Insert Interval", diff: "M", slug: "insert-interval" },
+    { lc: "56", name: "Merge Intervals", diff: "M", slug: "merge-intervals" },
+    { lc: "435", name: "Non-overlapping Intervals", diff: "M", slug: "non-overlapping-intervals" }
+  ], tasks: ["LinkedIn 영문화"] },
+
+  { n: 26, title: "Intervals", topic: "기타 패턴", problems: [
     { lc: "252", name: "Meeting Rooms", diff: "E", slug: "meeting-rooms" },
     { lc: "253", name: "Meeting Rooms II", diff: "M", slug: "meeting-rooms-ii" },
     { lc: "1851", name: "Minimum Interval to Include Each Query", diff: "H", slug: "minimum-interval-to-include-each-query" },
-    { lc: "763", name: "Partition Labels", diff: "M", slug: "partition-labels" },
-    { lc: "678", name: "Valid Parenthesis String", diff: "M", slug: "valid-parenthesis-string" }
-  ], tasks: ["LinkedIn 영문화"] },
+    { lc: "763", name: "Partition Labels", diff: "M", slug: "partition-labels" }
+  ], tasks: [] },
 
-  { n: 19, title: "빅테크 빈출 Hard", topic: "Hard 집중", problems: [
+  { n: 27, title: "Intervals · 빅테크 빈출 Hard", topic: "기타 패턴 / Hard 집중", problems: [
+    { lc: "678", name: "Valid Parenthesis String", diff: "M", slug: "valid-parenthesis-string" },
     { lc: "329", name: "Longest Increasing Path Matrix (복습)", diff: "H", slug: "longest-increasing-path-in-a-matrix" },
     { lc: "588", name: "Design In-Memory File System", diff: "H", slug: "design-in-memory-file-system" },
-    { lc: "212", name: "Word Search II (복습)", diff: "H", slug: "word-search-ii" },
-    { lc: "2115", name: "Find All Possible Recipes", diff: "M", slug: "find-all-possible-recipes-from-given-supplies" },
-    { lc: "84", name: "Largest Rectangle (복습)", diff: "H", slug: "largest-rectangle-in-histogram" },
-    { lc: "1235", name: "Maximum Profit in Job Scheduling", diff: "H", slug: "maximum-profit-in-job-scheduling" }
+    { lc: "212", name: "Word Search II (복습)", diff: "H", slug: "word-search-ii" }
   ], tasks: ["모의 onsite 시뮬레이션 1회"] },
 
-  { n: 20, title: "Design 문제", topic: "Design 패턴", problems: [
-    { lc: "146", name: "LRU Cache (복습)", diff: "M", slug: "lru-cache" },
+  { n: 28, title: "빅테크 빈출 Hard · Design 문제", topic: "Hard 집중 / Design 패턴", problems: [
+    { lc: "2115", name: "Find All Possible Recipes", diff: "M", slug: "find-all-possible-recipes-from-given-supplies" },
+    { lc: "84", name: "Largest Rectangle (복습)", diff: "H", slug: "largest-rectangle-in-histogram" },
+    { lc: "1235", name: "Maximum Profit in Job Scheduling", diff: "H", slug: "maximum-profit-in-job-scheduling" },
+    { lc: "146", name: "LRU Cache (복습)", diff: "M", slug: "lru-cache" }
+  ], tasks: ["모의 onsite 시뮬레이션 1회"] },
+
+  { n: 29, title: "Design 문제", topic: "Design 패턴", problems: [
     { lc: "460", name: "LFU Cache", diff: "H", slug: "lfu-cache" },
     { lc: "295", name: "Find Median from Data Stream", diff: "H", slug: "find-median-from-data-stream" },
     { lc: "380", name: "Insert Delete GetRandom O(1)", diff: "M", slug: "insert-delete-getrandom-o1" },
     { lc: "355", name: "Design Twitter", diff: "M", slug: "design-twitter" }
-  ], tasks: ["모의 onsite 시뮬레이션 1회"] },
+  ], tasks: [] },
 
-  { n: 21, title: "회사 태그 1/2", topic: "회사별 빈출 50/100", problems: [
+  { n: 30, title: "회사 태그 1/2", topic: "회사별 빈출 50/100", problems: [
     { lc: "TAG", name: "회사 태그 문제 1-7 (LC Premium)", diff: "M", slug: null },
     { lc: "TAG", name: "회사 태그 문제 8-14", diff: "M", slug: null }
   ], tasks: ["JD 키워드 매핑 영어 답변", "모의 onsite 시뮬레이션"] },
 
-  { n: 22, title: "회사 태그 2/2", topic: "회사별 빈출 50/100", problems: [
+  { n: 31, title: "회사 태그 2/2", topic: "회사별 빈출 50/100", problems: [
     { lc: "TAG", name: "회사 태그 문제 15-21", diff: "M", slug: null },
     { lc: "TAG", name: "회사 태그 문제 22-28 (Hard 집중)", diff: "H", slug: null }
   ], tasks: ["모의 onsite 시뮬레이션", "최종 이력서 점검"] },
 
-  { n: 23, title: "지원 시작", topic: "3-5개사 지원", problems: [
+  { n: 32, title: "지원 시작", topic: "3-5개사 지원", problems: [
     { lc: "REVIEW", name: "이번주는 약점 영역 복습", diff: "M", slug: null }
   ], tasks: ["회사 1 지원", "회사 2 지원", "회사 3 지원"] },
 
-  { n: 24, title: "인터뷰 진행", topic: "라운드 진행", problems: [
+  { n: 33, title: "인터뷰 진행", topic: "라운드 진행", problems: [
     { lc: "REVIEW", name: "어려웠던 문제 재풀이", diff: "M", slug: null }
   ], tasks: ["인터뷰 라운드 진행", "라운드별 즉시 복기"] },
 
-  { n: 25, title: "약점 보강", topic: "Last-mile 보강", problems: [
+  { n: 34, title: "약점 보강", topic: "Last-mile 보강", problems: [
     { lc: "REVIEW", name: "Heap / Graph / 2D DP 약점 보강", diff: "M", slug: null }
   ], tasks: ["인터뷰 진행", "약점 보강"] },
 
-  { n: 26, title: "오퍼 협상 + 마무리", topic: "🎉 완주", problems: [
+  { n: 35, title: "오퍼 협상 + 마무리", topic: "🎉 완주", problems: [
     { lc: "FINAL", name: "최종 인터뷰 마무리", diff: "M", slug: null }
   ], tasks: ["오퍼 협상", "다음 단계 계획"] }
 ];
