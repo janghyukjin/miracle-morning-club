@@ -98,3 +98,52 @@ class LRUCache:
 # 규칙: 덮어쓸 포인터를 참조하는 작업을 먼저 끝낸다.
 #       head.next 를 새 노드로 바꾸기 전에 원래 첫 노드의 prev 를 세팅해야 한다.
 #       (이 순서를 뒤집으면 노드가 자기 자신을 prev 로 가리킨다)
+
+
+# ===== Interview Notes =====
+# [LRU Cache] Medium · HashMap + Doubly Linked List
+# 제약: O(1) get + put
+#
+# [접근법]
+#   1. Hash + DLL (정통) — O(1) / O(capacity)
+#      dummy head/tail로 코드 단순화
+#   2. OrderedDict (Python only) — O(1) / O(capacity)
+#      면접에서는 정통 풀이 선호
+#
+# [Follow-up 질문 (면접 단골)]
+#   - LFU (LC 460)와 차이?
+#   - Thread-safe하게?
+#   - TTL (Time-to-live) 추가?
+#
+# [Pitfalls / 흔한 실수]
+#   - get도 'recently used'로 업데이트
+#   - capacity 초과 시 LRU 제거 + hash에서도 삭제
+#   - dummy head/tail로 edge case 단순화
+#
+# [최적해 (참고)]
+#   class Node:
+#       def __init__(self, k, v):
+#           self.key, self.val = k, v
+#           self.prev = self.next = None
+#
+#   class LRUCache:
+#       def __init__(self, cap):
+#           self.cap, self.cache = cap, {}
+#           self.head, self.tail = Node(0,0), Node(0,0)
+#           self.head.next, self.tail.prev = self.tail, self.head
+#       def _remove(self, n):
+#           n.prev.next, n.next.prev = n.next, n.prev
+#       def _add(self, n):
+#           n.prev = self.head; n.next = self.head.next
+#           self.head.next.prev = n; self.head.next = n
+#       def get(self, k):
+#           if k in self.cache:
+#               n = self.cache[k]; self._remove(n); self._add(n)
+#               return n.val
+#           return -1
+#       def put(self, k, v):
+#           if k in self.cache: self._remove(self.cache[k])
+#           n = Node(k, v); self.cache[k] = n; self._add(n)
+#           if len(self.cache) > self.cap:
+#               lru = self.tail.prev; self._remove(lru); del self.cache[lru.key]
+# ===== End Interview Notes =====
