@@ -92,3 +92,35 @@ class SolutionHeap:
 # 면접 서술: brute force(매번 k개 스캔) -> "최솟값만 싸게 얻으면 된다" -> heap.
 # 각 리스트가 이미 정렬돼 있으므로 후보는 head k개로 충분하다는 것이 핵심.
 # 전체를 sorted() 로 다시 정렬하는 풀이는 이 전제를 버리는 것이라 감점.
+
+
+# ===== Interview Notes =====
+# [Merge k Sorted Lists] Hard · Heap / Divide and Conquer
+#
+# [접근법]
+#   1. Min heap — O(n log k) / O(k)
+#      (val, idx, node) 튜플로 비교
+#   2. Divide and conquer — O(n log k) / O(log k)
+#      두 리스트씩 병합 반복
+#
+# [Follow-up 질문 (면접 단골)]
+#   - 외부 정렬 (external sort)?
+#   - lists가 매우 크면? (스트리밍)
+#   - weighted merge?
+#
+# [Pitfalls / 흔한 실수]
+#   - heapq는 첫 원소가 같으면 다음 원소 비교 — ListNode는 비교 불가 → idx tiebreak
+#   - 빈 리스트 / lists=[]
+#
+# [최적해 (참고)]
+#   import heapq
+#   h = []
+#   for i, l in enumerate(lists):
+#       if l: heapq.heappush(h, (l.val, i, l))
+#   dummy = cur = ListNode()
+#   while h:
+#       val, i, node = heapq.heappop(h)
+#       cur.next = node; cur = node
+#       if node.next: heapq.heappush(h, (node.next.val, i, node.next))
+#   return dummy.next
+# ===== End Interview Notes =====
